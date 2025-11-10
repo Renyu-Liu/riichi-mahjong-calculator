@@ -79,6 +79,59 @@ fn check_thirteen_orphans(counts: &[u8; 34], winning_tile: Tile) -> Option<HandS
     None
 }
 
+/// Checks for Pure Nine Gates (Junsei Chuuren Poutou).
+/// This must be called ONLY on a closed hand.
+fn check_nine_gates(counts: &[u8; 34], winning_tile: Tile) -> Option<HandStructure> {
+    
+    for suit_info in [(Suit::Man, 0), (Suit::Pin, 9), (Suit::Sou, 18)].iter() {
+        let (suit, start_idx) = *suit_info;
+        
+        // 1. Check if all 14 tiles are in this suit.
+        let mut in_suit_count = 0;
+        let mut suit_counts = [0u8; 9];
+        
+        for i in start_idx..(start_idx + 9) {
+            suit_counts[i - start_idx] = counts[i];
+            in_suit_count += counts[i];
+        }
+
+        // Check tiles outside this suit
+        let mut outside_suit_count = 0;
+        for i in 0..34 {
+            if i < start_idx || i >= (start_idx + 9) {
+                outside_suit_count += counts[i];
+            }
+        }
+
+        if in_suit_count == 14 && outside_suit_count == 0 {
+            // Hand is one-suit. Now check the Nine Gates pattern.
+            // The "pure" 9-sided wait pattern is 111,2,3,4,5,6,7,8,999 + one extra tile
+            // Base counts: [3, 1, 1, 1, 1, 1, 1, 1, 3]
+            
+            // Check if counts are at least the base
+            if suit_counts[0] < 3 { continue; } // 1s
+            if suit_counts[8] < 3 { continue; } // 9s
+            if (1..=7).any(|i| suit_counts[i] < 1) { continue; } // 2-8
+
+            // If we are here, the hand has at least [3, 1, 1, 1, 1, 1, 1, 1, 3].
+            // The sum of suit_counts is already checked to be 14 (in_suit_count).
+            // So, if it passes the minimums, it *must* be the pure pattern.
+            
+            // This is a valid Nine Gates hand, and because it has this
+            // specific completed pattern, it must have come from the 9-sided wait.
+            
+            return Some(HandStructure::NineGates {
+                suit,
+                winning_tile,
+                wait_type: WaitType::NineSided,
+            });
+        }
+    }
+    
+    None
+}
+
+
 /// Public function to check all special hand types.
 /// This function assumes the hand is CLOSED.
 pub fn check_special_hands(raw_hand: &RawHandInput, counts: &[u8; 34]) -> Option<HandStructure> {
@@ -87,13 +140,18 @@ pub fn check_special_hands(raw_hand: &RawHandInput, counts: &[u8; 34]) -> Option
         return None;
     }
 
-    // Try checking for 7 pairs
-    if let Some(hand_structure) = check_seven_pairs(counts, raw_hand.winning_tile) {
+    // Try checking for 13 orphans
+    if let Some(hand_structure) = check_thirteen_orphans(counts, raw_hand.winning_tile) {
         return Some(hand_structure);
     }
 
-    // Try checking for 13 orphans
-    if let Some(hand_structure) = check_thirteen_orphans(counts, raw_hand.winning_tile) {
+    // Try checking for 9 gates
+    if let Some(hand_structure) = check_nine_gates(counts, raw_hand.winning_tile) {
+        return Some(hand_structure);
+    }
+
+    // Try checking for 7 pairs
+    if let Some(hand_structure) = check_seven_pairs(counts, raw_hand.winning_tile) {
         return Some(hand_structure);
     }
 

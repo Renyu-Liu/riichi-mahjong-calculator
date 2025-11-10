@@ -26,6 +26,7 @@ pub enum WaitType {
     Edge,     // Penchan
     Closed,   // Kanchan
     Single,   // Shanpon
+    NineSided, // For Nine Gates
     KokushiSingle, // For 13 orphans
     KokushiThirteenSided, // For 13 orphans
 }
