@@ -17,7 +17,7 @@ pub enum MeldType { Sequence, Triplet, Kan }
 // The value at the index is the count of that tile (0-4).
 pub enum WaitType { TwoSided, Pair, Edge, Closed, Single }
 pub struct Hand {
-    pub tiles: [u8; 34],
+    pub tiles: [u8; 34], // counts of each tile in the hand
 }
 pub struct WinningHand {
     pub melds: [Meld; 4],
@@ -36,6 +36,20 @@ pub struct GameConditions {
     pub ura_dora_indicators: Vec<Tile>,
     // ... and booleans for Haitei, Rinshan, etc.
 }
+
+// this structure holds the raw input before hand organization.
+// this will later be transformed into OrganizedHandInput.
+pub struct RawHandInput {
+    pub tiles: Vec<Tile>, // all 14 tiles including winning tile
+    pub winning_tile: Tile,
+    pub game_conditions: GameConditions,
+}
+// The input structure for the main calculation function after hand organization.
+pub struct OrganizedHandInput {
+    pub winning_hand: WinningHand,
+    pub game_conditions: GameConditions,
+}
+
 // An enum listing every Yaku, storing its Han value.
 pub enum Yaku {
     Riichi(u8),       // 1 Han

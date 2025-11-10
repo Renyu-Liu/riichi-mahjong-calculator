@@ -3,8 +3,8 @@ mod implements {
     pub use types::*;
     pub mod yaku_checker;
     pub use yaku_checker::*;
-    pub mod score_calc;
-    pub use score_calc::*;
+    pub mod score_calculator;
+    pub use score_calculator::*;
 }
 fn main() {
 	// simple usage to ensure the implements module is included and types are accessible
