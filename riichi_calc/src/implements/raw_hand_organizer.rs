@@ -1,47 +1,173 @@
 // Import all the new modular types
 use super::types::{
-    tiles::{Hai, Jihai, Kaze, Sangenpai, Suhai},
+    // --- NEW: Add imports needed for validation ---
+    game::{AgariType, GameContext, PlayerContext},
     hand::{AgariHand, HandOrganization, Machi, Mentsu, MentsuType},
+    // Import centralized helper functions
+    tiles::{index_to_tile, tile_to_index, Hai, Jihai, Kaze, Sangenpai, Suhai},
+    input::{OpenMeldInput, UserInput},
 };
 // Used for converting Vec<Mentsu> to [Mentsu; 4]
 use std::convert::TryInto;
 
-
-// === Private Helper Functions ===
-pub mod helpers {
+// === Input Validation Module ===
+mod input_validator {
     use super::*;
 
-    /// Converts a Hai enum to its corresponding index (0-33).
-    pub fn tile_to_index(tile: &Hai) -> usize {
-        match tile {
-            Hai::Suhai(n, Suhai::Manzu) => (*n - 1) as usize,       // 0-8
-            Hai::Suhai(n, Suhai::Pinzu) => (*n - 1) as usize + 9,  // 9-17
-            Hai::Suhai(n, Suhai::Souzu) => (*n - 1) as usize + 18, // 18-26
-            Hai::Jihai(Jihai::Kaze(Kaze::Ton)) => 27,
-            Hai::Jihai(Jihai::Kaze(Kaze::Nan)) => 28,
-            Hai::Jihai(Jihai::Kaze(Kaze::Shaa)) => 29,
-            Hai::Jihai(Jihai::Kaze(Kaze::Pei)) => 30,
-            Hai::Jihai(Jihai::Sangen(Sangenpai::Haku)) => 31,
-            Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => 32,
-            Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)) => 33,
+    /// Checks for logical conflicts in declared game state yaku.
+    fn validate_game_state(
+        p: &PlayerContext,
+        g: &GameContext,
+        a: AgariType,
+        input: &UserInput,
+    ) -> Result<(), &'static str> {
+        // Riichi conflicts
+        if p.is_daburu_riichi && p.is_riichi {
+            return Err("Invalid state: Cannot be both Riichi and Daburu Riichi.");
         }
+        if p.is_ippatsu && !(p.is_riichi || p.is_daburu_riichi) {
+            return Err("Invalid state: Ippatsu requires Riichi or Daburu Riichi.");
+        }
+
+        // Menzen (Concealed) conflicts
+        if p.is_menzen && !input.open_melds.is_empty() {
+            return Err("Invalid state: Hand is declared menzen but has open melds.");
+        }
+        if !p.is_menzen && input.open_melds.is_empty() {
+            return Err("Invalid state: Hand is declared not-menzen but has no open melds.");
+        }
+
+        // Tsumo/Ron conflicts
+        if g.is_haitei && a == AgariType::Ron {
+            return Err("Invalid state: Haitei (last draw) cannot be a Ron win.");
+        }
+        if g.is_houtei && a == AgariType::Tsumo {
+            return Err("Invalid state: Houtei (last discard) cannot be a Tsumo win.");
+        }
+        if g.is_haitei && g.is_houtei {
+            return Err("Invalid state: Cannot be both Haitei and Houtei.");
+        }
+        if g.is_rinshan && a == AgariType::Ron {
+            return Err("Invalid state: Rinshan (kan draw) cannot be a Ron win.");
+        }
+        if g.is_chankan && a == AgariType::Tsumo {
+            return Err("Invalid state: Chankan (robbing kan) cannot be a Tsumo win.");
+        }
+
+        // Yakuman state conflicts
+        if g.is_tenhou {
+            if !p.is_oya {
+                return Err("Invalid state: Tenhou requires player to be Oya (dealer).");
+            }
+            if a != AgariType::Tsumo {
+                return Err("Invalid state: Tenhou must be a Tsumo win.");
+            }
+            if !input.open_melds.is_empty() || !input.closed_kans.is_empty() {
+                return Err("Invalid state: Tenhou cannot have any calls (no open melds or kans).");
+            }
+        }
+        if g.is_chiihou {
+            if p.is_oya {
+                return Err("Invalid state: Chiihou requires player to be non-Oya.");
+            }
+            if a != AgariType::Tsumo {
+                return Err("Invalid state: Chiihou must be a Tsumo win.");
+            }
+            if !input.open_melds.is_empty() || !input.closed_kans.is_empty() {
+                return Err("Invalid state: Chiihou cannot have any calls (no open melds or kans).");
+            }
+        }
+        if g.is_renhou && a != AgariType::Ron {
+            return Err("Invalid state: Renhou must be a Ron win.");
+        }
+
+        Ok(())
     }
 
-    /// Converts an index (0-33) back into a Hai.
-    pub fn index_to_tile(index: usize) -> Hai {
-        match index {
-            0..=8 => Hai::Suhai((index + 1) as u8, Suhai::Manzu),
-            9..=17 => Hai::Suhai(((index - 9) + 1) as u8, Suhai::Pinzu),
-            18..=26 => Hai::Suhai(((index - 18) + 1) as u8, Suhai::Souzu),
-            27 => Hai::Jihai(Jihai::Kaze(Kaze::Ton)),
-            28 => Hai::Jihai(Jihai::Kaze(Kaze::Nan)),
-            29 => Hai::Jihai(Jihai::Kaze(Kaze::Shaa)),
-            30 => Hai::Jihai(Jihai::Kaze(Kaze::Pei)),
-            31 => Hai::Jihai(Jihai::Sangen(Sangenpai::Haku)),
-            32 => Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)),
-            33 => Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)),
-            _ => panic!("Invalid tile index: {}", index),
+    /// Checks for invalid hand composition (tile counts, meld counts, etc.)
+    fn validate_hand_composition(
+        input: &UserInput,
+        master_counts: &[u8; 34],
+    ) -> Result<(), &'static str> {
+        // Check 1: Total Meld Count
+        if input.closed_kans.len() + input.open_melds.len() > 4 {
+            return Err("Invalid hand: More than 4 total melds (kans + open melds) declared.");
         }
+
+        // Check 2: Total Tile Count based on melds
+        let total_kans = input.closed_kans.len()
+            + input
+                .open_melds
+                .iter()
+                .filter(|m| m.mentsu_type == MentsuType::Kantsu)
+                .count();
+
+        let num_non_kans = (input.closed_kans.len() + input.open_melds.len()) - total_kans;
+        // This is not right. A hand has 4 melds + 1 pair.
+        // Let's recalculate.
+        let num_kantsu_melds = total_kans;
+        let num_normal_melds = 4 - num_kantsu_melds;
+        
+        // This calculation assumes the input is for a *complete* hand (4 melds + 1 pair)
+        // A hand with 0 kans has (4 * 3) + 2 = 14 tiles
+        // A hand with 1 kan has (1 * 4) + (3 * 3) + 2 = 15 tiles
+        // A hand with 2 kans has (2 * 4) + (2 * 3) + 2 = 16 tiles
+        // A hand with 3 kans has (3 * 4) + (1 * 3) + 2 = 17 tiles
+        // A hand with 4 kans has (4 * 4) + 0 + 2 = 18 tiles
+        // Formula: (total_kans * 4) + ((4 - total_kans) * 3) + 2
+        
+        let expected_tiles = (total_kans * 4) + ((4 - total_kans) * 3) + 2;
+
+        if input.hand_tiles.len() != expected_tiles {
+            let err_msg = "Invalid hand: Tile count does not match declared kans. (Expected 14 for 0 kans, 15 for 1 kan, 16 for 2, 17 for 3, 18 for 4).";
+            return Err(err_msg);
+        }
+
+        // Check 3: Winning Tile Presence
+        if !input.hand_tiles.contains(&input.winning_tile) {
+            return Err("Invalid input: Winning tile is not present in the list of hand tiles.");
+        }
+
+        // Check 4: Max 4 of any tile (checked from master_counts)
+        if master_counts.iter().any(|&count| count > 4) {
+            return Err("Invalid hand: Contains 5 or more of a single tile type.");
+        }
+
+        // Check 5: Akadora counts (using your new field)
+        let num_5m = master_counts[tile_to_index(&Hai::Suhai(5, Suhai::Manzu))];
+        let num_5p = master_counts[tile_to_index(&Hai::Suhai(5, Suhai::Pinzu))];
+        let num_5s = master_counts[tile_to_index(&Hai::Suhai(5, Suhai::Souzu))];
+        let total_fives = num_5m + num_5p + num_5s;
+
+        if input.game_context.num_akadora > total_fives {
+            return Err(
+                "Invalid input: Number of akadora exceeds the total number of '5' tiles in the hand.",
+            );
+        }
+        
+        // Sanity check: most rulesets have 3 or 4 red fives *total in the deck*.
+        // A hand having more than 4 is impossible.
+        if input.game_context.num_akadora > 4 {
+            return Err("Invalid input: Number of akadora cannot be greater than 4.");
+        }
+
+        Ok(())
+    }
+
+    /// Runs all validation checks.
+    pub fn validate_input(input: &UserInput, master_counts: &[u8; 34]) -> Result<(), &'static str> {
+        // Validate game state conflicts first
+        validate_game_state(
+            &input.player_context,
+            &input.game_context,
+            input.agari_type,
+            input,
+        )?;
+        
+        // Then validate hand composition
+        validate_hand_composition(input, master_counts)?;
+        
+        Ok(())
     }
 }
 
@@ -55,11 +181,13 @@ mod recursive_parser {
         while i < 34 && counts[i] == 0 {
             i += 1;
         }
-        if i == 34 { return true; } // Success: all tiles used up
+        if i == 34 {
+            return true;
+        } // Success: all tiles used up
 
         // --- Try to form a Triplet (Koutsu) ---
         if counts[i] >= 3 {
-            let tile = helpers::index_to_tile(i);
+            let tile = index_to_tile(i);
             counts[i] -= 3;
             mentsu.push(Mentsu {
                 mentsu_type: MentsuType::Koutsu,
@@ -67,7 +195,9 @@ mod recursive_parser {
                 tiles: [tile, tile, tile, tile], // 4th tile is ignored
             });
 
-            if find_mentsu_recursive(counts, mentsu) { return true; }
+            if find_mentsu_recursive(counts, mentsu) {
+                return true;
+            }
 
             // Backtrack
             mentsu.pop();
@@ -75,12 +205,10 @@ mod recursive_parser {
         }
 
         // --- Try to form a Sequence (Shuntsu) ---
-        // i < 27 checks that it's not an honor tile
-        // (i % 9) < 7 checks that it's not 8 or 9 (can't start a sequence)
         if i < 27 && (i % 9) < 7 && counts[i] > 0 && counts[i + 1] > 0 && counts[i + 2] > 0 {
-            let tile1 = helpers::index_to_tile(i);
-            let tile2 = helpers::index_to_tile(i + 1);
-            let tile3 = helpers::index_to_tile(i + 2);
+            let tile1 = index_to_tile(i);
+            let tile2 = index_to_tile(i + 1);
+            let tile3 = index_to_tile(i + 2);
 
             counts[i] -= 1;
             counts[i + 1] -= 1;
@@ -88,11 +216,12 @@ mod recursive_parser {
             mentsu.push(Mentsu {
                 mentsu_type: MentsuType::Shuntsu,
                 is_minchou: false,
-                // Store sorted, 4th is ignored (using tile3 as placeholder)
-                tiles: [tile1, tile2, tile3, tile3], 
+                tiles: [tile1, tile2, tile3, tile3],
             });
 
-            if find_mentsu_recursive(counts, mentsu) { return true; }
+            if find_mentsu_recursive(counts, mentsu) {
+                return true;
+            }
 
             // Backtrack
             mentsu.pop();
@@ -100,8 +229,7 @@ mod recursive_parser {
             counts[i + 1] += 1;
             counts[i + 2] += 1;
         }
-        
-        // If neither Koutsu nor Shuntsu could be formed from this tile, this branch fails
+
         false
     }
 }
@@ -110,7 +238,6 @@ mod recursive_parser {
 mod wait_analyzer {
     use super::*;
 
-    /// Checks if a meld contains a specific tile.
     fn mentsu_contains_tile(mentsu: &Mentsu, tile: &Hai) -> bool {
         match mentsu.mentsu_type {
             MentsuType::Koutsu | MentsuType::Kantsu => mentsu.tiles[0] == *tile,
@@ -120,49 +247,37 @@ mod wait_analyzer {
         }
     }
 
-    /// Analyzes the completed hand to determine the wait type.
     pub fn determine_wait_type(
         mentsu: &[Mentsu; 4],
-        atama: (Hai, Hai), // pair
-        agari_hai: Hai,    // winning_tile
-    ) -> Machi { // WaitType
-        // 1. Check for Pair Wait (Tanki)
+        atama: (Hai, Hai), 
+        agari_hai: Hai,    
+    ) -> Machi {
         if agari_hai == atama.0 {
             return Machi::Tanki;
         }
 
-        // Find the meld that the winning tile completes
         let winning_meld = mentsu
             .iter()
             .find(|m| mentsu_contains_tile(m, &agari_hai))
             .expect("Winning tile not in pair or melds. Invalid hand.");
 
         match winning_meld.mentsu_type {
-            // 2. Check for Shanpon wait
-            // If the winning tile forms a Koutsu, it must have been a Shanpon wait.
             MentsuType::Koutsu | MentsuType::Kantsu => Machi::Shanpon,
-            
-            // 3. Check for Ryanmen, Kanchan, or Penchan
             MentsuType::Shuntsu => {
                 let t1 = winning_meld.tiles[0];
                 let t2 = winning_meld.tiles[1];
                 let t3 = winning_meld.tiles[2];
-                
+
                 if agari_hai == t2 {
-                    // e.g., Hand had 4-6, won on 5. This is Kanchan.
                     Machi::Kanchan
                 } else if agari_hai == t1 {
-                    // e.g., Hand had t2, t3 (like 3-4, won on 2). This is Ryanmen.
-                    // Special case: Hand had 8-9, won on 7. This is Penchan.
-                    if helpers::tile_to_index(&t3) % 9 == 8 {
+                    if tile_to_index(&t3) % 9 == 8 {
                         Machi::Penchan
                     } else {
                         Machi::Ryanmen
                     }
                 } else if agari_hai == t3 {
-                    // e.g., Hand had t1, t2 (like 2-3, won on 4). This is Ryanmen.
-                    // Special case: Hand had 1-2, won on 3. This is Penchan.
-                    if helpers::tile_to_index(&t1) % 9 == 0 {
+                    if tile_to_index(&t1) % 9 == 0 {
                         Machi::Penchan
                     } else {
                         Machi::Ryanmen
@@ -175,69 +290,128 @@ mod wait_analyzer {
     }
 }
 
-
 // === Public Function ===
 
-/// Organizes a raw hand into a standard 4-meld, 1-pair structure
+/// Organizes a raw hand from `UserInput` into a standard 4-meld, 1-pair structure
 /// or flags it as irregular for special yaku checking (Chiitoitsu, Kokushi).
-/// 
+///
 /// # Arguments
-/// * `all_tiles` - A slice containing all 14 tiles of the winning hand.
-/// * `agari_hai` - The single winning tile.
-/// * `open_mentsu` - A slice of any open melds (pon, chii, kan).
-pub fn organize_hand(
-    all_tiles: &[Hai],
-    agari_hai: Hai,
-    open_mentsu: &[Mentsu],
-) -> Result<HandOrganization, &'static str> {
+/// * `input` - The `UserInput` struct containing all tiles, meld info, and context.
+pub fn organize_hand(input: &UserInput) -> Result<HandOrganization, &'static str> {
     
-    // We will add all melds (open and closed) to this Vec
-    let mut final_mentsu = open_mentsu.to_vec();
-    
-    // 1. Create tile counts from ALL 14 tiles
-    let mut counts = [0u8; 34];
-    for tile in all_tiles {
-        counts[helpers::tile_to_index(tile)] += 1;
+    // 1. Create a count of ALL tiles provided by the user (14-18 tiles)
+    let mut master_counts = [0u8; 34];
+    for tile in &input.hand_tiles {
+        master_counts[tile_to_index(tile)] += 1;
     }
 
-    // 2. Subtract tiles from open melds to find the remaining *closed* hand.
-    for mentsu in open_mentsu {
-        match mentsu.mentsu_type {
-            MentsuType::Shuntsu | MentsuType::Koutsu => {
-                counts[helpers::tile_to_index(&mentsu.tiles[0])] -= 1;
-                counts[helpers::tile_to_index(&mentsu.tiles[1])] -= 1;
-                counts[helpers::tile_to_index(&mentsu.tiles[2])] -= 1;
+    // --- NEW: Run all validation checks FIRST ---
+    // This will return an Err(&'static str) if any rule is violated.
+    input_validator::validate_input(input, &master_counts)?;
+    // --- End of new validation block ---
+
+
+    // 2. Create counts for the *concealed* part of the hand
+    //    We start with all tiles and subtract the known melds.
+    let mut concealed_counts = master_counts;
+    let mut final_mentsu: Vec<Mentsu> = Vec::with_capacity(4);
+
+    // 3. Process and subtract Closed Kans (Ankan)
+    for rep_tile in &input.closed_kans {
+        let kan_tile = *rep_tile;
+        let index = tile_to_index(&kan_tile);
+
+        if concealed_counts[index] < 4 {
+            // This check is still good, acting as a failsafe
+            return Err("Invalid input: declared closed kan not present in hand tiles.");
+        }
+        concealed_counts[index] -= 4;
+        final_mentsu.push(Mentsu {
+            mentsu_type: MentsuType::Kantsu,
+            is_minchou: false, // Ankan is not "open"
+            tiles: [kan_tile, kan_tile, kan_tile, kan_tile],
+        });
+    }
+
+    // 4. Process and subtract Open Melds (Chi, Pon, Daiminkan, Shouminkan)
+    for meld in &input.open_melds {
+        let rep_tile = meld.representative_tile;
+        let index = tile_to_index(&rep_tile);
+
+        match meld.mentsu_type {
+            MentsuType::Koutsu => {
+                if concealed_counts[index] < 3 {
+                    return Err("Invalid input: declared Pon not present in hand tiles.");
+                }
+                concealed_counts[index] -= 3;
+                final_mentsu.push(Mentsu {
+                    mentsu_type: MentsuType::Koutsu,
+                    is_minchou: true, 
+                    tiles: [rep_tile, rep_tile, rep_tile, rep_tile], 
+                });
             }
             MentsuType::Kantsu => {
-                // A Kan uses 4 tiles
-                counts[helpers::tile_to_index(&mentsu.tiles[0])] -= 1;
-                counts[helpers::tile_to_index(&mentsu.tiles[1])] -= 1;
-                counts[helpers::tile_to_index(&mentsu.tiles[2])] -= 1;
-                counts[helpers::tile_to_index(&mentsu.tiles[3])] -= 1;
+                if concealed_counts[index] < 4 {
+                    return Err("Invalid input: declared open Kan not present in hand tiles.");
+                }
+                concealed_counts[index] -= 4;
+                final_mentsu.push(Mentsu {
+                    mentsu_type: MentsuType::Kantsu,
+                    is_minchou: true, 
+                    tiles: [rep_tile, rep_tile, rep_tile, rep_tile],
+                });
+            }
+            MentsuType::Shuntsu => {
+                let index1 = index;
+                let index2 = index1 + 1;
+                let index3 = index1 + 2;
+
+                if index1 >= 27 || (index1 % 9) >= 7 {
+                    return Err("Invalid representative tile for Chi (must be 1-7 of a suit).");
+                }
+                if concealed_counts[index1] < 1
+                    || concealed_counts[index2] < 1
+                    || concealed_counts[index3] < 1
+                {
+                    return Err("Invalid input: declared Chi not present in hand tiles.");
+                }
+
+                concealed_counts[index1] -= 1;
+                concealed_counts[index2] -= 1;
+                concealed_counts[index3] -= 1;
+
+                let t1 = rep_tile;
+                let t2 = index_to_tile(index2);
+                let t3 = index_to_tile(index3);
+                final_mentsu.push(Mentsu {
+                    mentsu_type: MentsuType::Shuntsu,
+                    is_minchou: true, 
+                    tiles: [t1, t2, t3, t3], 
+                });
             }
         }
     }
 
-    // 3. Determine how many closed melds we still need to find
+    // 5. Determine how many closed melds we still need to find
     let mentsu_needed = 4 - final_mentsu.len();
-    
-    // --- Case A: 4 open melds (e.g., Hadaka Tanki / Naked Wait) ---
+    let agari_hai = input.winning_tile;
+
+    // --- Case A: 4 known melds (e.g., Hadaka Tanki / Naked Wait) ---
     if mentsu_needed == 0 {
-        // The remaining tiles in `counts` must be the pair
         for i in 0..34 {
-            if counts[i] == 2 {
-                let pair_tile = helpers::index_to_tile(i);
+            if concealed_counts[i] == 2 {
+                let pair_tile = index_to_tile(i);
                 let atama = (pair_tile, pair_tile);
-                
-                // Convert Vec<Mentsu> to [Mentsu; 4]
-                let mentsu_array: [Mentsu; 4] = final_mentsu.try_into()
+
+                let mentsu_array: [Mentsu; 4] = final_mentsu
+                    .try_into()
                     .expect("Hand parsing logic error: final_mentsu length not 4");
-                
+
                 let agari_hand = AgariHand {
                     mentsu: mentsu_array,
                     atama,
                     agari_hai,
-                    machi: Machi::Tanki, // Must be a pair wait
+                    machi: Machi::Tanki, 
                 };
 
                 return Ok(HandOrganization::YonmentsuIchiatama(agari_hand));
@@ -246,32 +420,24 @@ pub fn organize_hand(
         return Err("Invalid hand: 4 open melds but no pair found.");
     }
 
-    // --- Case B: 0-3 open melds (Standard Hand Check) ---
-    // Try to find a 4-meld, 1-pair hand by iterating through all possible pairs.
+    // --- Case B: 0-3 known melds (Standard Hand Check) ---
     for i in 0..34 {
-        if counts[i] >= 2 {
-            // Assume this tile `i` is the pair
-            let mut temp_counts = counts; // Copy the closed hand counts
+        if concealed_counts[i] >= 2 {
+            let mut temp_counts = concealed_counts; 
             temp_counts[i] -= 2;
-            let atama = (helpers::index_to_tile(i), helpers::index_to_tile(i));
+            let atama = (index_to_tile(i), index_to_tile(i));
             let mut closed_mentsu: Vec<Mentsu> = Vec::with_capacity(mentsu_needed);
 
-            // 3. Try to find the remaining melds recursively
             if recursive_parser::find_mentsu_recursive(&mut temp_counts, &mut closed_mentsu) {
-                // If we found the exact number of melds needed, we have a valid hand
                 if closed_mentsu.len() == mentsu_needed {
-                    // Success!
                     final_mentsu.append(&mut closed_mentsu);
-                    
-                    // Convert Vec<Mentsu> to [Mentsu; 4]
-                    let mentsu_array: [Mentsu; 4] = final_mentsu.try_into()
+
+                    let mentsu_array: [Mentsu; 4] = final_mentsu
+                        .try_into()
                         .expect("Hand parsing logic error: final_mentsu length not 4");
 
-                    let machi = wait_analyzer::determine_wait_type(
-                        &mentsu_array,
-                        atama,
-                        agari_hai
-                    );
+                    let machi =
+                        wait_analyzer::determine_wait_type(&mentsu_array, atama, agari_hai);
 
                     let agari_hand = AgariHand {
                         mentsu: mentsu_array,
@@ -279,12 +445,10 @@ pub fn organize_hand(
                         agari_hai,
                         machi,
                     };
-                    
+
                     return Ok(HandOrganization::YonmentsuIchiatama(agari_hand));
                 }
             }
-            // If recursion failed or didn't find the right number of melds,
-            // we loop and try the next tile as the pair.
         }
     }
 
@@ -292,17 +456,11 @@ pub fn organize_hand(
     // If we are here, the 4-meld-1-pair parse failed.
     // This means the hand is either irregular (Chiitoitsu, Kokushi) or invalid.
     
-    // We must return the *original* 14-tile counts for the yaku checker.
-    // The `counts` variable is already mutated, so we re-create it.
-    let mut original_counts = [0u8; 34];
-    for tile in all_tiles {
-        original_counts[helpers::tile_to_index(tile)] += 1;
-    }
-        
-    // Return the irregular structure for the next module to check.
+    // We've already checked for tile count/composition errors, so if
+    // it's irregular, it's now the yaku_checker's job to validate
+    // it as Kokushi or Chiitoitsu.
     Ok(HandOrganization::Irregular {
-        counts: original_counts,
+        counts: master_counts,
         agari_hai,
     })
-
 }
