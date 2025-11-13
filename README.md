@@ -1,12 +1,12 @@
-## CS-128H-Group-12-Project
-# Group member names and NetIDs: @Thomas (tj29) @Karan (annam17) @Renyu Liu (renyul2) 
+CS-128H-Group-12-Project
+Group member names and NetIDs: @Thomas (tj29) @Karan (annam17) @Renyu Liu (renyul2) 
 # Project Name: Riichi Mahjong Score Calculator
 
-# About This Program
+## About This Program
 
 This is a Rust library that calculates the score of a winning Riichi Mahjong hand. It takes a complete description of the hand and game state, validates it, and returns a detailed score breakdown.
 
-# The Logical Flow
+## The Logical Flow
 
 The calculator operates in a clear sequence:
 
@@ -18,7 +18,7 @@ Check Yaku (yaku_checker.rs): It finds all Yaku. It checks for Yakuman first. If
 
 Calculate Score (score_calculator.rs): Finally, it converts the Yaku list into Han and calculates the Fu based on the hand's composition. It applies score limits (e.g., Mangan, Haneman) and calculates the final point payments, including Honba.
 
-# How to Provide Input
+## How to Provide Input
 
 You must provide a single UserInput struct, which contains:
 
@@ -36,7 +36,7 @@ player_context: Your status (dealer, seat wind, Riichi status, etc.).
 
 game_context: The game state (round wind, Honba, Dora indicators, etc.).
 
-# Expected Output
+## Expected Output
 
 The program will return a Result<AgariResult, &'static str>.
 
