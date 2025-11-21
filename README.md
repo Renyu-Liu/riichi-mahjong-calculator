@@ -1,8 +1,8 @@
-CS-128H-Group-12-Project
+CS 128H Group 12 Project
 
-Worked with help of Google Gemini
+Worked with help from Google Gemini
 
-Group member names and NetIDs: @Thomas (tj29) @Karan (annam17) @Renyu Liu (renyul2) 
+Group member names and NetIDs: Thomas (tj29) Karan (annam17) Renyu (renyul2) 
 
 # Project Name: Riichi Mahjong Score Calculator
 
@@ -22,45 +22,10 @@ Check Yaku (yaku_checker.rs): It finds all Yaku. It checks for Yakuman first. If
 
 Calculate Score (score_calculator.rs): Finally, it converts the Yaku list into Han and calculates the Fu based on the hand's composition. It applies score limits (e.g., Mangan, Haneman) and calculates the final point payments, including Honba.
 
-## How to Provide Input
+## Input
 
-You must provide a single UserInput struct, which contains:
+todo
 
-hand_tiles: A Vec<Hai> of all 14+ tiles in your hand.
+## Output
 
-winning_tile: The single Hai that completed the hand.
-
-open_melds: A list of any open calls (Chi, Pon, open Kan).
-
-closed_kans: A list of any closed Kans (Ankan).
-
-agari_type: How the hand was won (AgariType::Tsumo or AgariType::Ron).
-
-player_context: Your status (dealer, seat wind, Riichi status, etc.).
-
-game_context: The game state (round wind, Honba, Dora indicators, etc.).
-
-## Expected Output
-
-The program will return a Result<AgariResult, &'static str>.
-
-On Success: AgariResult
-
-An object containing the full score:
-
-han: Total Han count.
-
-fu: Total Fu count (rounded, 0 for Yakuman).
-
-yaku_list: A list of all Yaku and Dora achieved.
-
-limit_name: (Optional) The hand's limit, e.g., HandLimit::Mangan.
-
-total_payment: The total points you receive.
-
-oya_payment / ko_payment: A breakdown of who pays what.
-
-On Failure: Error Message
-
-A &'static str describing the error.
-Example: "Invalid hand: Contains 5 or more of a single tile type."
+todo
