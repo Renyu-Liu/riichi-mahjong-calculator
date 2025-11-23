@@ -149,7 +149,7 @@ impl Sandbox for RiichiGui {
                     if self.tile_counts[idx] > 0 {
                         self.tile_counts[idx] -= 1;
                         self.hand_tiles.push(tile);
-                        self.hand_tiles.sort();
+                        self.hand_tiles.sort_by_key(Self::sort_tiles_by_type);
                     }
                 }
             }
@@ -170,6 +170,7 @@ impl Sandbox for RiichiGui {
                 self.winning_tile = None;
                 self.open_melds.clear();
                 self.closed_kans.clear();
+                self.num_akadora = 0;
             }
             Message::StartSelectWinningTile => {
                 self.phase = Phase::SelectingWinningTile;
@@ -446,6 +447,27 @@ impl Sandbox for RiichiGui {
 }
 
 impl RiichiGui {
+    /// Helper function to sort tiles by type first, then by number
+    /// Returns a tuple (type_order, number) for sorting
+    fn sort_tiles_by_type(tile: &Hai) -> (u8, u8) {
+        match tile {
+            // Man tiles: type order 0, sorted by number 1-9
+            Hai::Suhai(n, Suhai::Manzu) => (0, *n),
+            // Pin tiles: type order 1, sorted by number 1-9
+            Hai::Suhai(n, Suhai::Pinzu) => (1, *n),
+            // Sou tiles: type order 2, sorted by number 1-9
+            Hai::Suhai(n, Suhai::Souzu) => (2, *n),
+            // Wind tiles: type order 3, sorted by Ton, Nan, Shaa, Pei
+            Hai::Jihai(Jihai::Kaze(Kaze::Ton)) => (3, 0),
+            Hai::Jihai(Jihai::Kaze(Kaze::Nan)) => (3, 1),
+            Hai::Jihai(Jihai::Kaze(Kaze::Shaa)) => (3, 2),
+            Hai::Jihai(Jihai::Kaze(Kaze::Pei)) => (3, 3),
+            // Dragon tiles: type order 4, sorted by Haku, Hatsu, Chun
+            Hai::Jihai(Jihai::Sangen(Sangenpai::Haku)) => (4, 0),
+            Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => (4, 1),
+            Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)) => (4, 2),
+        }
+    }
     fn view_composition(&self) -> Element<'_, Message> {
         let hand_preview = self.view_hand_preview();
         let tile_pool = self.view_tile_pool();
@@ -705,17 +727,40 @@ impl RiichiGui {
             row![
                 text(format!("Honba: {}", self.honba)),
                 button(text("+")).on_press(Message::IncrementHonba),
-                button(text("-")).on_press(Message::DecrementHonba),
+                button(text("-")).on_press_maybe(if self.honba > 0 {
+                    Some(Message::DecrementHonba)
+                } else {
+                    None
+                }),
             ]
             .spacing(10)
             .align_items(iced::Alignment::Center),
-            row![
-                text(format!("Akadora: {}", self.num_akadora)),
-                button(text("+")).on_press(Message::IncrementAkadora),
-                button(text("-")).on_press(Message::DecrementAkadora),
-            ]
-            .spacing(10)
-            .align_items(iced::Alignment::Center),
+            {
+                // Count 5-tiles in hand
+                let five_tile_count = self.count_five_tiles();
+
+                if five_tile_count > 0 {
+                    row![
+                        text(format!("Akadora: {}", self.num_akadora)),
+                        button(text("+")).on_press_maybe(
+                            if self.num_akadora < five_tile_count && self.num_akadora < 4 {
+                                Some(Message::IncrementAkadora)
+                            } else {
+                                None
+                            }
+                        ),
+                        button(text("-")).on_press_maybe(if self.num_akadora > 0 {
+                            Some(Message::DecrementAkadora)
+                        } else {
+                            None
+                        }),
+                    ]
+                    .spacing(10)
+                    .align_items(iced::Alignment::Center)
+                } else {
+                    row![] // Empty row when no 5-tiles
+                }
+            },
             column![
                 text("Dora Indicators:"),
                 row(self
@@ -1260,6 +1305,45 @@ impl RiichiGui {
             }
         }
         tiles
+    }
+
+    /// Counts the total number of 5-tiles in the hand (including winning tile, melds, and kans)
+    fn count_five_tiles(&self) -> u8 {
+        let mut count = 0;
+
+        // Count 5-tiles in hand_tiles
+        for tile in &self.hand_tiles {
+            if matches!(tile, Hai::Suhai(5, _)) {
+                count += 1;
+            }
+        }
+
+        // Count 5-tiles in winning_tile
+        if let Some(tile) = &self.winning_tile {
+            if matches!(tile, Hai::Suhai(5, _)) {
+                count += 1;
+            }
+        }
+
+        // Count 5-tiles in open_melds
+        for meld in &self.open_melds {
+            let tiles = self.get_meld_tiles(meld);
+            for tile in tiles {
+                if matches!(tile, Hai::Suhai(5, _)) {
+                    count += 1;
+                }
+            }
+        }
+
+        // Count 5-tiles in closed_kans
+        for tile in &self.closed_kans {
+            if matches!(tile, Hai::Suhai(5, _)) {
+                // Closed kan has 4 tiles
+                count += 4;
+            }
+        }
+
+        count
     }
 }
 
