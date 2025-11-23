@@ -435,7 +435,7 @@ impl Sandbox for RiichiGui {
             Phase::Result => self.view_result(),
         };
 
-        container(scrollable(content))
+        container(scrollable(container(content).width(Length::Fill).center_x()).width(Length::Fill))
             .width(Length::Fill)
             .height(Length::Fill)
             .center_x()
@@ -1194,7 +1194,7 @@ impl RiichiGui {
             })
             .collect();
 
-        create_grid(tiles, 14)
+        row(tiles).spacing(5).into()
     }
 
     fn view_tile_pool(&self) -> Element<'_, Message> {
@@ -1283,7 +1283,7 @@ fn get_tile_image_path(tile: &Hai, is_akadora: bool) -> String {
             Hai::Suhai(5, Suhai::Manzu) => return "lib/Man5-Dora.png".to_string(),
             Hai::Suhai(5, Suhai::Pinzu) => return "lib/Pin5-Dora.png".to_string(),
             Hai::Suhai(5, Suhai::Souzu) => return "lib/Sou5-Dora.png".to_string(),
-            _ => {} // Fallback for invalid akadora
+            _ => {}
         }
     }
 
