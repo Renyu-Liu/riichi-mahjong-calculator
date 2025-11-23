@@ -5,7 +5,7 @@ Riichi Mahjong has a complicated mechanism of scoring calculation. People often 
 ## Installation
 ### Step 1: Install Rust (skip if already done)
 
-Visit official Rust website [Rustup](https://rustup.rs) to download Rust. Follow instructions on the website to configure Rust locally. Make sure Rust is installed successfully by running `rustc --version` in the terminal.
+Visit official Rust website [Rustup](https://rustup.rs) to download Rust. Follow instructions on the website to configure Rust locally. Run `rustc --version` in the terminal to check if Rust is installed successfully.
 
 ### Step 2: Download the program
 
@@ -14,6 +14,8 @@ Option 1: Download and extract the ZIP file from [GitHub repo](https://github.co
 Option 2: Clone the repository from [GitHub repo](https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator):
 
     git clone https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator.git
+
+(Note: Make sure the the folder directly contains `Cargo.toml` file (.../Riichi_Mahjong_Scoring_Calculator/Cargo.toml). Do not move `Cargo.toml` to other folders.)
 
 ### Step 3: Run the program
 

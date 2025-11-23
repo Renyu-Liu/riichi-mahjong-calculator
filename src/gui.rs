@@ -1373,9 +1373,9 @@ impl<'a> OnPressMaybe for button::Button<'a, Message> {
 fn get_tile_image_path(tile: &Hai, is_akadora: bool) -> String {
     if is_akadora {
         match tile {
-            Hai::Suhai(5, Suhai::Manzu) => return "lib/Man5-Dora.png".to_string(),
-            Hai::Suhai(5, Suhai::Pinzu) => return "lib/Pin5-Dora.png".to_string(),
-            Hai::Suhai(5, Suhai::Souzu) => return "lib/Sou5-Dora.png".to_string(),
+            Hai::Suhai(5, Suhai::Manzu) => return "lib/tile_images/Man5-Dora.png".to_string(),
+            Hai::Suhai(5, Suhai::Pinzu) => return "lib/tile_images/Pin5-Dora.png".to_string(),
+            Hai::Suhai(5, Suhai::Souzu) => return "lib/tile_images/Sou5-Dora.png".to_string(),
             _ => {}
         }
     }
@@ -1392,7 +1392,7 @@ fn get_tile_image_path(tile: &Hai, is_akadora: bool) -> String {
         Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => "Hatsu.png".to_string(),
         Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)) => "Chun.png".to_string(),
     };
-    format!("lib/{}", filename)
+    format!("lib/tile_images/{}", filename)
 }
 
 fn create_grid(elements: Vec<Element<Message>>, columns: usize) -> Element<Message> {
