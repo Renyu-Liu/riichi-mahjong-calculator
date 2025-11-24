@@ -31,7 +31,27 @@ Option 2: Clone the repository from [GitHub repo](https://github.com/Renyu-Liu/R
 
 ## User Manual
 
-todo
+### 1: Selecting Tiles
+
+Click the tile in Tile Pool to add the tile into Hand Preview. Click the tile in Hand Preview to remove the tile.
+
+You have to select at least 14 tiles to continue to next phase.
+
+### 2: Selecting Winning Tile
+
+Click "Select" button under Winning Tile to select from your hand. You must select one winning tile to continue to next phase.
+
+### 3: Selecting Game States
+
+You may select any open melds/kans from your hand as long as they are available. You may also check winds, state-dependent yaku, dora, and honba.
+
+Selecting correct game states yields accurate score breakdown. 
+
+Click "Calculate" button to view the final score breakdown.
+
+### 4: Generating Score Breakdown
+
+
 
 ## Technical Overview
 
@@ -46,11 +66,3 @@ todo
 Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://riichi.wiki/Japanese_mahjong_scoring_rules).
 
 Yaku check is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
-
-### Note
-
-CS 128H Group 12 Project
-
-Work with assistance from Gemini
-
-Group member names and NetIDs: Thomas (tj29) Karan (annam17) Renyu (renyul2)

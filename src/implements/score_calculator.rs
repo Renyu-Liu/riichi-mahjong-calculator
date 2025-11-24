@@ -1,5 +1,6 @@
 // score_calculator.rs: Calculates the final score
 
+use super::YakuResult;
 use super::types::{
     game::{AgariType, GameContext, PlayerContext},
     hand::{HandStructure, Machi, MentsuType},
@@ -7,7 +8,6 @@ use super::types::{
     tiles::{Hai, Jihai},
     yaku::Yaku,
 };
-use super::yaku_checker::YakuResult;
 
 // will be called by gui.rs
 pub fn calculate_score(
