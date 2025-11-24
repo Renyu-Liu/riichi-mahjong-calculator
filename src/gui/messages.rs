@@ -12,7 +12,6 @@ pub enum Message {
     // Phase 2 Messages
     StartSelectWinningTile,
     SelectWinningTile(Hai),
-    StartAddOpenMeld,
     SelectMeldType(MentsuType),
     SelectMeldTile(Hai),
     StartAddClosedKan,

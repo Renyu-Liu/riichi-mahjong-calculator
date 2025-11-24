@@ -8,7 +8,6 @@ pub enum Phase {
     Composition,
     Definition,
     SelectingWinningTile,
-    SelectingMeldType { editing_index: Option<usize> },
     SelectingMeldTile(MentsuType, Option<usize>),
     SelectingClosedKan { editing_index: Option<usize> },
     SelectingDora,

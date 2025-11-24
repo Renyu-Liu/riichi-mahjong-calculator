@@ -15,7 +15,7 @@ Option 2: Clone the repository from [GitHub repo](https://github.com/Renyu-Liu/R
 
     git clone https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator.git
 
-(Note: Make sure the the folder directly contains `Cargo.toml` file (.../Riichi_Mahjong_Scoring_Calculator/Cargo.toml). Do not move `Cargo.toml` to other folders.)
+Note: Make sure the the folder directly contains `Cargo.toml` file (.../Riichi_Mahjong_Scoring_Calculator/Cargo.toml). Do not move `Cargo.toml` to other folders.
 
 ### Step 3: Run the program
 
@@ -23,7 +23,7 @@ Option 2: Clone the repository from [GitHub repo](https://github.com/Renyu-Liu/R
     
     cd .../Riichi_Mahjong_Scoring_Calculator
 
-(Note: If you renamed "Riichi_Mahjong_Scoring_Calculator", `cd` goes with your renamed folder name)
+Note: If you renamed "Riichi_Mahjong_Scoring_Calculator", `cd` goes with your renamed folder name
 
 2: Run the program:
 
@@ -67,3 +67,5 @@ todo
 Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://riichi.wiki/Japanese_mahjong_scoring_rules).
 
 Yaku check is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
+
+Images of tiles are from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles)

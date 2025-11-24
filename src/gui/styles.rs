@@ -13,7 +13,7 @@ impl button::StyleSheet for ColoredButtonStyle {
         button::Appearance {
             background: Some(iced::Background::Color(self.background_color)),
             text_color: self.text_color,
-            border: iced::Border::with_radius(4.0),
+            border: iced::Border::with_radius(8.0),
             ..Default::default()
         }
     }

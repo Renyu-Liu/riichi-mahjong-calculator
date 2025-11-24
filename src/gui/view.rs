@@ -14,7 +14,6 @@ pub trait View {
     fn view_definition(&self) -> Element<'_, Message>;
     fn view_result(&self) -> Element<'_, Message>;
     fn view_selecting_winning_tile(&self) -> Element<'_, Message>;
-    fn view_selecting_meld_type(&self) -> Element<'_, Message>;
     fn view_selecting_meld_tile(&self, m_type: MentsuType) -> Element<'_, Message>;
     fn view_selecting_closed_kan(&self) -> Element<'_, Message>;
     fn view_selecting_dora(&self, is_ura: bool) -> Element<'_, Message>;
@@ -29,7 +28,6 @@ impl View for RiichiGui {
             Phase::Composition => self.view_composition(),
             Phase::Definition => self.view_definition(),
             Phase::SelectingWinningTile => self.view_selecting_winning_tile(),
-            Phase::SelectingMeldType { .. } => self.view_selecting_meld_type(),
             Phase::SelectingMeldTile(m_type, _) => self.view_selecting_meld_tile(*m_type),
             Phase::SelectingClosedKan { .. } => self.view_selecting_closed_kan(),
             Phase::SelectingDora => self.view_selecting_dora(false),
@@ -86,7 +84,12 @@ impl View for RiichiGui {
 
     fn view_definition(&self) -> Element<'_, Message> {
         let hand_preview = self.view_hand_preview_locked();
-        let modify_btn = button(text("Modify Hand")).on_press(Message::ModifyHand);
+        let modify_btn = button(text("Modify Hand"))
+            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                text_color: Color::WHITE,
+            })))
+            .on_press(Message::ModifyHand);
 
         let winning_tile_section = column![
             text("Winning Tile:"),
@@ -98,7 +101,12 @@ impl View for RiichiGui {
                                 get_tile_image_path(t, false)
                             )
                             .width(40),
-                            button(text("Change")).on_press(Message::StartSelectWinningTile)
+                            button(text("Change"))
+                                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                                    text_color: Color::WHITE,
+                                })))
+                                .on_press(Message::StartSelectWinningTile)
                         ]
                         .spacing(10)
                         .align_items(iced::Alignment::Center)
@@ -106,16 +114,23 @@ impl View for RiichiGui {
                         e
                     }
                 }
-                None => row![button(text("Select")).on_press(Message::StartSelectWinningTile)]
-                    .align_items(iced::Alignment::Center)
-                    .into(),
+                None => row![
+                    button(text("Select"))
+                        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                            background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                            text_color: Color::WHITE,
+                        })))
+                        .on_press(Message::StartSelectWinningTile)
+                ]
+                .align_items(iced::Alignment::Center)
+                .into(),
             }
         ]
         .spacing(10)
         .align_items(iced::Alignment::Center);
 
         let melds_section = column![
-            text("Melds:"),
+            text("Open Melds:"),
             column(
                 self.open_melds
                     .iter()
@@ -136,8 +151,18 @@ impl View for RiichiGui {
 
                         row![
                             tile_images,
-                            button(text("Change")).on_press(Message::EditOpenMeld(i)),
-                            button(text("Remove")).on_press(Message::RemoveOpenMeld(i))
+                            button(text("Change"))
+                                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                                    text_color: Color::WHITE,
+                                })))
+                                .on_press(Message::EditOpenMeld(i)),
+                            button(text("Remove"))
+                                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                                    text_color: Color::WHITE,
+                                })))
+                                .on_press(Message::RemoveOpenMeld(i))
                         ]
                         .spacing(10)
                         .align_items(iced::Alignment::Center)
@@ -166,8 +191,18 @@ impl View for RiichiGui {
 
                         row![
                             tile_images,
-                            button(text("Change")).on_press(Message::EditClosedKan(i)),
-                            button(text("Remove")).on_press(Message::RemoveClosedKan(i))
+                            button(text("Change"))
+                                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                                    text_color: Color::WHITE,
+                                })))
+                                .on_press(Message::EditClosedKan(i)),
+                            button(text("Remove"))
+                                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                                    text_color: Color::WHITE,
+                                })))
+                                .on_press(Message::RemoveClosedKan(i))
                         ]
                         .spacing(10)
                         .align_items(iced::Alignment::Center)
@@ -177,8 +212,24 @@ impl View for RiichiGui {
             )
             .spacing(10),
             row![
-                button(text("Add Open Meld")).on_press(Message::StartAddOpenMeld),
-                button(text("Add Closed Kan")).on_press(Message::StartAddClosedKan)
+                button(text("Add Pon"))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                        text_color: Color::WHITE,
+                    })))
+                    .on_press(Message::SelectMeldType(MentsuType::Koutsu)),
+                button(text("Add Chii"))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                        text_color: Color::WHITE,
+                    })))
+                    .on_press(Message::SelectMeldType(MentsuType::Shuntsu)),
+                button(text("Add Kan"))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                        text_color: Color::WHITE,
+                    })))
+                    .on_press(Message::StartAddClosedKan)
             ]
             .spacing(10)
         ]
@@ -605,28 +656,6 @@ impl View for RiichiGui {
         column![
             text("Select Winning Tile").size(24),
             create_grid(tiles, 10),
-            button(text("Cancel"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::ConfirmHand)
-        ]
-        .spacing(20)
-        .align_items(iced::Alignment::Center)
-        .into()
-    }
-
-    fn view_selecting_meld_type(&self) -> Element<'_, Message> {
-        column![
-            text("Select Meld Type").size(24),
-            row![
-                button(text("Pon (Koutsu)")).on_press(Message::SelectMeldType(MentsuType::Koutsu)),
-                button(text("Chi (Shuntsu)"))
-                    .on_press(Message::SelectMeldType(MentsuType::Shuntsu)),
-                button(text("Kan (Kantsu)")).on_press(Message::SelectMeldType(MentsuType::Kantsu)),
-            ]
-            .spacing(20),
             button(text("Cancel"))
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),

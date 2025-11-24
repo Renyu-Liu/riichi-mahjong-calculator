@@ -49,18 +49,8 @@ impl Update for RiichiGui {
                 self.winning_tile = Some(tile);
                 self.phase = Phase::Definition;
             }
-            Message::StartAddOpenMeld => {
-                self.phase = Phase::SelectingMeldType {
-                    editing_index: None,
-                };
-            }
             Message::SelectMeldType(m_type) => {
-                let editing_idx = if let Phase::SelectingMeldType { editing_index } = self.phase {
-                    editing_index
-                } else {
-                    None
-                };
-                self.phase = Phase::SelectingMeldTile(m_type, editing_idx);
+                self.phase = Phase::SelectingMeldTile(m_type, None);
             }
             Message::SelectMeldTile(tile) => {
                 if let Phase::SelectingMeldTile(m_type, editing_idx) = self.phase {
@@ -110,9 +100,9 @@ impl Update for RiichiGui {
             }
             Message::EditOpenMeld(idx) => {
                 if idx < self.open_melds.len() {
-                    self.phase = Phase::SelectingMeldType {
-                        editing_index: Some(idx),
-                    };
+                    let meld = &self.open_melds[idx];
+                    // When editing, we keep the same type and go to tile selection
+                    self.phase = Phase::SelectingMeldTile(meld.mentsu_type, Some(idx));
                 }
             }
             Message::EditClosedKan(idx) => {
