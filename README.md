@@ -36,7 +36,7 @@ Option 2: Clone the repository from [GitHub repo](https://github.com/Renyu-Liu/R
 
 Click the tile in Tile Pool to add the tile into Hand Preview. Click the tile in Hand Preview to remove the tile.
 
-You have to select at least 14 tiles to continue to next phase.
+You have to select at least 14 tiles to continue to next phase. Click "Confirm Hand" to continue.
 
 ### 2: Selecting Winning Tile
 Click "Modify Hand" to return to tile selecting phase.
@@ -48,7 +48,7 @@ You may select any open melds/kans from your hand as long as they are available.
 
 Selecting correct game states yields accurate score breakdown. 
 
-Click "Calculate" button to view the final score breakdown.
+Scroll down and click "Calculate" button to view the final score breakdown.
 
 ### 4: Generating Score Breakdown
 
