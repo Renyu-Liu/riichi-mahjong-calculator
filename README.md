@@ -32,7 +32,8 @@ Option 2: Clone the repository from [GitHub repo](https://github.com/Renyu-Liu/R
 ## User Manual
 
 ### 1: Selecting Tiles
-![Selecting Tiles Phase]("lib/readme_images/Composition_Phase.png")
+![Selecting Tiles](lib/readme_images/Composition_Phase.jpg)
+
 Click the tile in Tile Pool to add the tile into Hand Preview. Click the tile in Hand Preview to remove the tile.
 
 You have to select at least 14 tiles to continue to next phase.
