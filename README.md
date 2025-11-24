@@ -40,7 +40,7 @@ You have to select at least 14 tiles to continue to next phase. Click "Confirm H
 
 ### 2: Selecting Winning Tile
 
-![winning tiles](lib/readme_images/Winning_Tile.png)
+![winning tiles](lib/readme_images/winning_tile.png)
 
 Click "Modify Hand" to return to tile selecting phase.
 
@@ -48,9 +48,9 @@ Click "Select" button under Winning Tile to select from your hand. You must sele
 
 ### 3: Selecting Game States
 
-![select_huntsu](lib/readme_images/select_shuntsu.png)
-
 ![selection_done](lib/readme_images/selection_done.png)
+
+![select_huntsu](lib/readme_images/select_shuntsu.png)
 
 You may select pon/chii/kan from your hand as long as they are available. You may also check winds, state-dependent yaku, dora, and honba.
 
@@ -58,11 +58,13 @@ You may select pon/chii/kan from your hand as long as they are available. You ma
 
 Selecting correct game states yields accurate score breakdown. 
 
-Scroll down and click "Calculate" button to view the final score breakdown.
+Scroll down and click "Calculate Score" button to view the final score breakdown.
 
 ### 4: Generating Score Breakdown
 
 ![score](lib/readme_images/score.png)
+
+The score breakdown includes the total points, fu/han points, and yaku detected. It also guides players to redistribute their points.
 
 ## Technical Overview
 
@@ -70,7 +72,7 @@ todo
 
 ## Challenges
 
-todo
+We face challenges in improving loading speed. We found that the loading time for the tile pool is too long, which is restricted by the image loading speed. We are working on it.
 
 ## Reference
 
@@ -78,4 +80,4 @@ Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://
 
 Yaku check is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
 
-Images of tiles are from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles)
+Images of tiles are from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles).
