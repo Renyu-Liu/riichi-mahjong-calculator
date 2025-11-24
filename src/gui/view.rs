@@ -170,6 +170,7 @@ impl View for RiichiGui {
                     })
                     .collect::<Vec<Element<Message>>>()
             )
+            .align_items(iced::Alignment::Center)
             .spacing(10),
             column(
                 self.closed_kans
@@ -232,8 +233,10 @@ impl View for RiichiGui {
                     .on_press(Message::StartAddClosedKan)
             ]
             .spacing(10)
+            .align_items(iced::Alignment::Center)
         ]
-        .spacing(10);
+        .spacing(10)
+        .align_items(iced::Alignment::Center);
 
         let is_oya = self.jikaze == Kaze::Ton;
         let is_ron = self.agari_type == AgariType::Ron;
@@ -363,43 +366,62 @@ impl View for RiichiGui {
             .spacing(5),
             row![
                 text(format!("Honba: {}", self.honba)),
-                button(text("+")).on_press(Message::IncrementHonba),
-                button(text("-")).on_press_maybe(if self.honba > 0 {
-                    Some(Message::DecrementHonba)
-                } else {
-                    None
-                }),
+                button(text("+"))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                        text_color: Color::WHITE,
+                    })))
+                    .on_press(Message::IncrementHonba),
+                button(text("-"))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                        text_color: Color::WHITE,
+                    })))
+                    .on_press_maybe(if self.honba > 0 {
+                        Some(Message::DecrementHonba)
+                    } else {
+                        None
+                    }),
             ]
             .spacing(10)
             .align_items(iced::Alignment::Center),
             {
-                // Count 5-tiles in hand
                 let five_tile_count = self.count_five_tiles();
 
                 if five_tile_count > 0 {
                     row![
                         text(format!("Akadora: {}", self.num_akadora)),
-                        button(text("+")).on_press_maybe(
-                            if self.num_akadora < five_tile_count && self.num_akadora < 4 {
-                                Some(Message::IncrementAkadora)
+                        button(text("+"))
+                            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                                background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                                text_color: Color::WHITE,
+                            })))
+                            .on_press_maybe(
+                                if self.num_akadora < five_tile_count && self.num_akadora < 4 {
+                                    Some(Message::IncrementAkadora)
+                                } else {
+                                    None
+                                }
+                            ),
+                        button(text("-"))
+                            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                                background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                                text_color: Color::WHITE,
+                            })))
+                            .on_press_maybe(if self.num_akadora > 0 {
+                                Some(Message::DecrementAkadora)
                             } else {
                                 None
-                            }
-                        ),
-                        button(text("-")).on_press_maybe(if self.num_akadora > 0 {
-                            Some(Message::DecrementAkadora)
-                        } else {
-                            None
-                        }),
+                            }),
                     ]
                     .spacing(10)
                     .align_items(iced::Alignment::Center)
                 } else {
-                    row![] // Empty row when no 5-tiles
+                    row![]
                 }
             },
             column![
-                text("Dora Indicators:"),
+                text("Dora:"),
                 row(self
                     .dora_indicators
                     .iter()
@@ -410,10 +432,15 @@ impl View for RiichiGui {
                     .into())
                     .collect::<Vec<Element<Message>>>())
                 .spacing(5),
-                button(text("Add")).on_press(Message::StartAddDora),
+                button(text("Add"))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                        text_color: Color::WHITE,
+                    })))
+                    .on_press(Message::StartAddDora),
                 if self.is_riichi {
                     column![
-                        text("Ura Dora Indicators:"),
+                        text("Ura Dora:"),
                         row(self
                             .uradora_indicators
                             .iter()
@@ -424,7 +451,12 @@ impl View for RiichiGui {
                             .into())
                             .collect::<Vec<Element<Message>>>())
                         .spacing(5),
-                        button(text("Add")).on_press(Message::StartAddUraDora),
+                        button(text("Add"))
+                            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                                background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                                text_color: Color::WHITE,
+                            })))
+                            .on_press(Message::StartAddUraDora),
                     ]
                     .spacing(5)
                 } else {
@@ -669,46 +701,72 @@ impl View for RiichiGui {
     }
 
     fn view_selecting_meld_tile(&self, m_type: MentsuType) -> Element<'_, Message> {
-        let mut valid_tiles = Vec::new();
-        let mut counts = [0; 34];
-        for t in &self.hand_tiles {
-            counts[crate::implements::tiles::tile_to_index(t)] += 1;
-        }
+        let editing_idx = if let Phase::SelectingMeldTile(_, idx) = &self.phase {
+            *idx
+        } else {
+            None
+        };
 
-        for i in 0..34 {
-            let tile = crate::implements::tiles::index_to_tile(i);
-            let count = counts[i];
-            let is_valid = match m_type {
-                MentsuType::Koutsu => count >= 3,
-                MentsuType::Kantsu => count >= 4,
-                MentsuType::Shuntsu => count > 0,
-            };
-
-            if is_valid {
-                valid_tiles.push(tile);
+        let possible_melds = match m_type {
+            MentsuType::Koutsu => self.get_all_possible_pons(editing_idx),
+            MentsuType::Shuntsu => self.get_all_possible_chiis(editing_idx),
+            MentsuType::Kantsu => {
+                vec![]
             }
+        };
+
+        if possible_melds.is_empty() {
+            return column![
+                text(format!("No valid {:?} available", m_type)).size(24),
+                button(text("Cancel"))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                        text_color: Color::WHITE,
+                    })))
+                    .on_press(Message::ConfirmHand)
+            ]
+            .spacing(20)
+            .align_items(iced::Alignment::Center)
+            .into();
         }
 
-        let tiles: Vec<Element<Message>> = valid_tiles
+        // Create grouped meld buttons
+        let meld_buttons: Vec<Element<Message>> = possible_melds
             .iter()
-            .map(|tile| {
-                let image_path = get_tile_image_path(tile, false);
-                button(
-                    iced::widget::Image::<iced::widget::image::Handle>::new(image_path).width(50),
+            .map(|meld| {
+                let tiles = self.get_meld_tiles(meld);
+                let tile_images = row(tiles
+                    .iter()
+                    .map(|t| {
+                        iced::widget::Image::<iced::widget::image::Handle>::new(
+                            get_tile_image_path(t, false),
+                        )
+                        .width(50)
+                        .into()
+                    })
+                    .collect::<Vec<Element<Message>>>())
+                .spacing(2);
+
+                // Create a button that contains the grouped tiles
+                let meld_button = button(
+                    container(tile_images)
+                        .padding(5)
+                        .style(theme::Container::Box),
                 )
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::WHITE,
+                    background_color: Color::from_rgb(0.95, 0.95, 0.95),
                     text_color: Color::BLACK,
                 })))
-                .on_press(Message::SelectMeldTile(*tile))
-                .padding(5)
-                .into()
+                .on_press(Message::SelectCompleteMeld(meld.clone()))
+                .padding(3);
+
+                meld_button.into()
             })
             .collect();
 
         column![
-            text(format!("Select Tile for {:?}", m_type)).size(24),
-            create_grid(tiles, 10),
+            text(format!("Select {:?}", m_type)).size(24),
+            create_grid(meld_buttons, 5),
             button(text("Cancel"))
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),
@@ -722,39 +780,60 @@ impl View for RiichiGui {
     }
 
     fn view_selecting_closed_kan(&self) -> Element<'_, Message> {
-        let mut valid_tiles = Vec::new();
-        let mut counts = [0; 34];
-        for t in &self.hand_tiles {
-            counts[crate::implements::tiles::tile_to_index(t)] += 1;
+        let possible_kans = self.get_all_possible_kans();
+
+        if possible_kans.is_empty() {
+            return column![
+                text("No valid closed Kan available").size(24),
+                button(text("Cancel"))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                        text_color: Color::WHITE,
+                    })))
+                    .on_press(Message::ConfirmHand)
+            ]
+            .spacing(20)
+            .align_items(iced::Alignment::Center)
+            .into();
         }
 
-        for i in 0..34 {
-            let tile = crate::implements::tiles::index_to_tile(i);
-            if counts[i] == 4 {
-                valid_tiles.push(tile);
-            }
-        }
-
-        let tiles: Vec<Element<Message>> = valid_tiles
+        // Create grouped kan buttons (4 tiles each)
+        let kan_buttons: Vec<Element<Message>> = possible_kans
             .iter()
             .map(|tile| {
-                let image_path = get_tile_image_path(tile, false);
-                button(
-                    iced::widget::Image::<iced::widget::image::Handle>::new(image_path).width(50),
+                let tiles = vec![*tile; 4];
+                let tile_images = row(tiles
+                    .iter()
+                    .map(|t| {
+                        iced::widget::Image::<iced::widget::image::Handle>::new(
+                            get_tile_image_path(t, false),
+                        )
+                        .width(50)
+                        .into()
+                    })
+                    .collect::<Vec<Element<Message>>>())
+                .spacing(2);
+
+                // Create a button that contains the grouped tiles
+                let kan_button = button(
+                    container(tile_images)
+                        .padding(5)
+                        .style(theme::Container::Box),
                 )
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::WHITE,
+                    background_color: Color::from_rgb(0.95, 0.95, 0.95),
                     text_color: Color::BLACK,
                 })))
                 .on_press(Message::SelectClosedKan(*tile))
-                .padding(5)
-                .into()
+                .padding(3);
+
+                kan_button.into()
             })
             .collect();
 
         column![
             text("Select Tile for Closed Kan").size(24),
-            create_grid(tiles, 10),
+            create_grid(kan_buttons, 5),
             button(text("Cancel"))
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),

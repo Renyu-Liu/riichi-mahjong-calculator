@@ -52,27 +52,25 @@ impl Update for RiichiGui {
             Message::SelectMeldType(m_type) => {
                 self.phase = Phase::SelectingMeldTile(m_type, None);
             }
-            Message::SelectMeldTile(tile) => {
-                if let Phase::SelectingMeldTile(m_type, editing_idx) = self.phase {
-                    let meld = OpenMeldInput {
-                        mentsu_type: m_type,
-                        representative_tile: tile,
-                    };
-                    if let Some(idx) = editing_idx {
-                        if idx < self.open_melds.len() {
-                            self.open_melds[idx] = meld;
+            Message::SelectCompleteMeld(meld) => {
+                if let Phase::SelectingMeldTile(_, editing_idx) = self.phase {
+                    if self.can_form_meld(&meld, editing_idx) {
+                        if let Some(idx) = editing_idx {
+                            if idx < self.open_melds.len() {
+                                self.open_melds[idx] = meld;
+                            }
+                        } else {
+                            self.open_melds.push(meld);
                         }
-                    } else {
-                        self.open_melds.push(meld);
-                    }
 
-                    if !self.open_melds.is_empty() {
-                        self.is_riichi = false;
-                        self.is_daburu_riichi = false;
-                        self.is_ippatsu = false;
-                        self.is_tenhou = false;
-                        self.is_chiihou = false;
-                        self.is_renhou = false;
+                        if !self.open_melds.is_empty() {
+                            self.is_riichi = false;
+                            self.is_daburu_riichi = false;
+                            self.is_ippatsu = false;
+                            self.is_tenhou = false;
+                            self.is_chiihou = false;
+                            self.is_renhou = false;
+                        }
                     }
                 }
                 self.phase = Phase::Definition;
@@ -101,7 +99,6 @@ impl Update for RiichiGui {
             Message::EditOpenMeld(idx) => {
                 if idx < self.open_melds.len() {
                     let meld = &self.open_melds[idx];
-                    // When editing, we keep the same type and go to tile selection
                     self.phase = Phase::SelectingMeldTile(meld.mentsu_type, Some(idx));
                 }
             }
@@ -193,7 +190,6 @@ impl Update for RiichiGui {
             Message::CalculateScore => {
                 // Collected inputs
                 if let Some(winning_tile) = self.winning_tile {
-                    // Remove tiles used in Open Melds
                     let mut hand_tiles = self.hand_tiles.clone();
                     for meld in &self.open_melds {
                         let tiles = self.get_meld_tiles(meld);
@@ -204,7 +200,6 @@ impl Update for RiichiGui {
                         }
                     }
 
-                    // Remove tiles in Closed Kans
                     for kan in &self.closed_kans {
                         for _ in 0..4 {
                             if let Some(pos) = hand_tiles.iter().position(|x| x == kan) {
@@ -213,7 +208,6 @@ impl Update for RiichiGui {
                         }
                     }
 
-                    // remove the winning tile
                     if self.agari_type == AgariType::Ron {
                         if let Some(pos) = hand_tiles.iter().position(|x| x == &winning_tile) {
                             hand_tiles.remove(pos);

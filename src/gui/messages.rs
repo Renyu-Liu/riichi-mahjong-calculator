@@ -1,5 +1,6 @@
 use crate::implements::game::AgariType;
 use crate::implements::hand::MentsuType;
+use crate::implements::input::OpenMeldInput;
 use crate::implements::tiles::{Hai, Kaze};
 
 #[derive(Debug, Clone)]
@@ -13,7 +14,7 @@ pub enum Message {
     StartSelectWinningTile,
     SelectWinningTile(Hai),
     SelectMeldType(MentsuType),
-    SelectMeldTile(Hai),
+    SelectCompleteMeld(OpenMeldInput),
     StartAddClosedKan,
     SelectClosedKan(Hai),
     EditOpenMeld(usize),

@@ -149,4 +149,134 @@ impl RiichiGui {
 
         count
     }
+
+    pub fn can_form_meld(&self, meld: &OpenMeldInput, editing_idx: Option<usize>) -> bool {
+        let mut hand_counts = [0u8; 34];
+        for tile in &self.hand_tiles {
+            hand_counts[crate::implements::tiles::tile_to_index(tile)] += 1;
+        }
+
+        // Calculate tiles needed for existing melds (excluding the one being edited)
+        for (i, existing_meld) in self.open_melds.iter().enumerate() {
+            if Some(i) == editing_idx {
+                continue;
+            }
+            for tile in self.get_meld_tiles(existing_meld) {
+                let idx = crate::implements::tiles::tile_to_index(&tile);
+                if hand_counts[idx] > 0 {
+                    hand_counts[idx] -= 1;
+                } else {
+                    // This shouldn't happen if state is consistent, but if it does,
+                    // it means we don't have enough tiles.
+                    return false;
+                }
+            }
+        }
+
+        // Check if we have enough tiles for the new meld
+        for tile in self.get_meld_tiles(meld) {
+            let idx = crate::implements::tiles::tile_to_index(&tile);
+            if hand_counts[idx] > 0 {
+                hand_counts[idx] -= 1;
+            } else {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    /// Get all possible Pon (Koutsu) melds from available tiles
+    pub fn get_all_possible_pons(&self, editing_idx: Option<usize>) -> Vec<OpenMeldInput> {
+        let mut available_counts = [0u8; 34];
+        for tile in &self.hand_tiles {
+            available_counts[crate::implements::tiles::tile_to_index(tile)] += 1;
+        }
+
+        // Subtract tiles used in existing melds (excluding the one being edited)
+        for (i, existing_meld) in self.open_melds.iter().enumerate() {
+            if Some(i) == editing_idx {
+                continue;
+            }
+            for tile in self.get_meld_tiles(existing_meld) {
+                let idx = crate::implements::tiles::tile_to_index(&tile);
+                if available_counts[idx] > 0 {
+                    available_counts[idx] -= 1;
+                }
+            }
+        }
+
+        let mut pons = Vec::new();
+        for i in 0..34 {
+            if available_counts[i] >= 3 {
+                let tile = crate::implements::tiles::index_to_tile(i);
+                pons.push(OpenMeldInput {
+                    mentsu_type: MentsuType::Koutsu,
+                    representative_tile: tile,
+                });
+            }
+        }
+        pons
+    }
+
+    /// Get all possible Chii (Shuntsu) melds from available tiles
+    pub fn get_all_possible_chiis(&self, editing_idx: Option<usize>) -> Vec<OpenMeldInput> {
+        let mut available_counts = [0u8; 34];
+        for tile in &self.hand_tiles {
+            available_counts[crate::implements::tiles::tile_to_index(tile)] += 1;
+        }
+
+        // Subtract tiles used in existing melds (excluding the one being edited)
+        for (i, existing_meld) in self.open_melds.iter().enumerate() {
+            if Some(i) == editing_idx {
+                continue;
+            }
+            for tile in self.get_meld_tiles(existing_meld) {
+                let idx = crate::implements::tiles::tile_to_index(&tile);
+                if available_counts[idx] > 0 {
+                    available_counts[idx] -= 1;
+                }
+            }
+        }
+
+        let mut chiis = Vec::new();
+        // Check all possible sequences (only for numbered tiles 1-7 as starting point)
+        for suit_offset in [0, 9, 18] {
+            for start_num in 0..7 {
+                let idx1 = suit_offset + start_num;
+                let idx2 = idx1 + 1;
+                let idx3 = idx1 + 2;
+
+                if available_counts[idx1] > 0
+                    && available_counts[idx2] > 0
+                    && available_counts[idx3] > 0
+                {
+                    let tile = crate::implements::tiles::index_to_tile(idx1);
+                    chiis.push(OpenMeldInput {
+                        mentsu_type: MentsuType::Shuntsu,
+                        representative_tile: tile,
+                    });
+                }
+            }
+        }
+        chiis
+    }
+
+    /// Get all possible Kan (Kantsu) melds from available tiles
+    pub fn get_all_possible_kans(&self) -> Vec<Hai> {
+        let mut available_counts = [0u8; 34];
+        for tile in &self.hand_tiles {
+            available_counts[crate::implements::tiles::tile_to_index(tile)] += 1;
+        }
+
+        // For closed kans, we need all 4 tiles from hand (not affected by open melds)
+        let mut kans = Vec::new();
+        for i in 0..34 {
+            if available_counts[i] == 4 {
+                let tile = crate::implements::tiles::index_to_tile(i);
+                kans.push(tile);
+            }
+        }
+        kans
+    }
 }
