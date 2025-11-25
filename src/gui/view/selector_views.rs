@@ -38,7 +38,7 @@ impl RiichiGui {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),
                     text_color: Color::WHITE,
                 })))
-                .on_press(Message::ConfirmHand)
+                .on_press(Message::CancelSelection)
         ]
         .spacing(20)
         .align_items(iced::Alignment::Center)
@@ -70,7 +70,7 @@ impl RiichiGui {
                         background_color: Color::from_rgb(0.6, 0.0, 0.0),
                         text_color: Color::WHITE,
                     })))
-                    .on_press(Message::ConfirmHand)
+                    .on_press(Message::CancelSelection)
             ]
             .spacing(20)
             .align_items(iced::Alignment::Center)
@@ -117,7 +117,7 @@ impl RiichiGui {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),
                     text_color: Color::WHITE,
                 })))
-                .on_press(Message::ConfirmHand)
+                .on_press(Message::CancelSelection)
         ]
         .spacing(20)
         .align_items(iced::Alignment::Center)
@@ -129,13 +129,13 @@ impl RiichiGui {
 
         if possible_kans.is_empty() {
             return column![
-                text("No valid closed Kan available").size(24),
+                text("No valid Kantsu available").size(24),
                 button(text("Cancel"))
                     .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                         background_color: Color::from_rgb(0.6, 0.0, 0.0),
                         text_color: Color::WHITE,
                     })))
-                    .on_press(Message::ConfirmHand)
+                    .on_press(Message::CancelSelection)
             ]
             .spacing(20)
             .align_items(iced::Alignment::Center)
@@ -175,14 +175,14 @@ impl RiichiGui {
             .collect();
 
         column![
-            text("Select Tile for Closed Kan").size(24),
+            text("Select Kantsu").size(24),
             create_grid(kan_buttons, 5),
             button(text("Cancel"))
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),
                     text_color: Color::WHITE,
                 })))
-                .on_press(Message::ConfirmHand)
+                .on_press(Message::CancelSelection)
         ]
         .spacing(20)
         .align_items(iced::Alignment::Center)
@@ -222,7 +222,7 @@ impl RiichiGui {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),
                     text_color: Color::WHITE,
                 })))
-                .on_press(Message::ConfirmHand)
+                .on_press(Message::CancelSelection)
         ]
         .spacing(20)
         .align_items(iced::Alignment::Center)

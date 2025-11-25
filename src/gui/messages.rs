@@ -9,6 +9,7 @@ pub enum Message {
     AddTile(Hai),
     RemoveTile(usize),
     ConfirmHand,
+    CancelSelection,
     // definition phase
     ModifyHand,
     StartSelectWinningTile,

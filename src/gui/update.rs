@@ -35,6 +35,9 @@ impl Update for RiichiGui {
                     self.phase = Phase::Definition;
                 }
             }
+            Message::CancelSelection => {
+                self.phase = Phase::Definition;
+            }
             Message::ModifyHand => {
                 self.phase = Phase::Composition;
                 self.winning_tile = None;
