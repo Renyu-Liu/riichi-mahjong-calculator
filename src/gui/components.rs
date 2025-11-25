@@ -30,7 +30,7 @@ pub fn get_tile_image_path(tile: &Hai) -> String {
         Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => "Hatsu.png".to_string(),
         Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)) => "Chun.png".to_string(),
     };
-    format!("lib/{}", filename)
+    format!("assets/{}", filename)
 }
 
 pub fn create_grid(elements: Vec<Element<Message>>, columns: usize) -> Element<Message> {
