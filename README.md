@@ -46,31 +46,35 @@ You have to select at least 14 tiles to continue to next phase. Click "Confirm H
 
 ### 2: Selecting Winning Tile
 
-<img width="778" height="218" alt="winning_tile" src="https://github.com/user-attachments/assets/be44c957-56e9-485d-bcc5-80a8b31a28c6" />
+<img width="964" height="220" alt="image" src="https://github.com/user-attachments/assets/0b3bebbf-d852-455c-9d48-e074e73736c6" />
 
 Click "Modify Hand" to return to tile selecting phase.
 
 Click "Select" button under Winning Tile to select from your hand. You must select one winning tile to continue to next phase.
 
-<img width="730" height="297" alt="select_winning_tile" src="https://github.com/user-attachments/assets/04ad8828-8df4-4316-a4dd-940929b2e2d8" />
+<img width="1003" height="323" alt="image" src="https://github.com/user-attachments/assets/634e6f75-232c-406e-8fa3-77ba80162350" />
 
 Click the tile image to select the winning tile.
 
-<img width="847" height="291" alt="winning_tile_done" src="https://github.com/user-attachments/assets/44f5bdda-47b1-451b-9ba4-95a7ae01e237" />
+<img width="947" height="246" alt="select_win_tile_done" src="https://github.com/user-attachments/assets/a95fd1c4-01f5-4251-96cc-431cead03c6e" />
 
-Click "Change" to modify the winning tile.
+Click the image of the winning tile to modify.
 
-### 3: Selecting Game States
+### 3: Selecting Game Context
 
-<img width="807" height="188" alt="open_meld" src="https://github.com/user-attachments/assets/eadffdea-e5bf-411a-aff1-409cd58373f7" />
+<img width="948" height="105" alt="image" src="https://github.com/user-attachments/assets/e1e6b611-d399-4701-a34c-57922900cfc4" />
 
 Click "Add Pon/Chii/Kan" to add pon/chii/kan you made in your round. Click "Change" to modify the open meld. Click "Remove" to remove the open meld.
 
-<img width="752" height="213" alt="select_shuntsu" src="https://github.com/user-attachments/assets/d7525893-153a-4147-9440-2fc574888f55" />
+<img width="997" height="216" alt="image" src="https://github.com/user-attachments/assets/93efbd4b-9976-44d7-8cd0-1b253a0a7b1b" />
 
 It will display all possible pon/chii/kan from your hand. Click the meld to select pon/chii/kan you made in your round. 
 
-<img width="968" height="635" alt="context" src="https://github.com/user-attachments/assets/94e2c986-f594-4b76-b2d6-376ec644dbfe" />
+<img width="974" height="183" alt="image" src="https://github.com/user-attachments/assets/d7a58a7c-829c-4a32-8194-11d00b2468bc" />
+
+Click the meld image to remove the selected open meld.
+
+<img width="974" height="651" alt="image" src="https://github.com/user-attachments/assets/014c7538-7acf-493e-a489-58666e30e16a" />
 
 You may check for seats, context-dependent yaku, and choose the number of honba and akadora in your round. Click "Add" to add a (ura)dora tile. Click the image of (ura)dora tile to remove it.
 
@@ -78,7 +82,7 @@ You may check for seats, context-dependent yaku, and choose the number of honba 
 
 Scroll down and click "Calculate Score" button to view the final score breakdown.
 
-<img width="1019" height="551" alt="score" src="https://github.com/user-attachments/assets/cada3a9a-3d79-4030-ae31-8c7b9241b7e9" />
+<img width="1008" height="551" alt="image" src="https://github.com/user-attachments/assets/ebe2d444-c1a8-46e9-bea5-243fab2cdb55" />
 
 The score breakdown includes the total points, fu/han points, and yaku detected. It also guides players to redistribute their points.
 
@@ -102,6 +106,6 @@ The flowchart below shows the logic flow of Riichi Mahjong Scoring Calculator:
 
 Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://riichi.wiki/Japanese_mahjong_scoring_rules).
 
-Yaku check is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
+Yaku checker is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
 
 Images of tiles are from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles).
