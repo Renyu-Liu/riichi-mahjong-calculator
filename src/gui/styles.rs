@@ -29,3 +29,19 @@ impl button::StyleSheet for ColoredButtonStyle {
         }
     }
 }
+
+pub struct OverlayStyle;
+
+impl iced::widget::container::StyleSheet for OverlayStyle {
+    type Style = iced::Theme;
+
+    fn appearance(&self, _style: &Self::Style) -> iced::widget::container::Appearance {
+        iced::widget::container::Appearance {
+            background: Some(iced::Background::Color(Color {
+                a: 0.95,
+                ..Color::BLACK
+            })),
+            ..Default::default()
+        }
+    }
+}

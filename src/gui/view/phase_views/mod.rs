@@ -6,9 +6,10 @@ mod result;
 use super::super::messages::Message;
 use super::super::state::{Phase, RiichiGui};
 use super::View;
+use crate::gui::styles::ColoredButtonStyle;
 use crate::implements::hand::MentsuType;
 use iced::widget::{container, scrollable};
-use iced::{Element, Length};
+use iced::{Color, Element, Length, theme};
 
 impl View for RiichiGui {
     fn view(&self) -> Element<'_, Message> {
@@ -23,13 +24,46 @@ impl View for RiichiGui {
             Phase::Result => result::build_result_view(self),
         };
 
-        container(scrollable(container(content).width(Length::Fill).center_x()).width(Length::Fill))
+        let needs_scroll = !matches!(self.phase, Phase::Composition);
+
+        let main_content = if needs_scroll {
+            container(
+                scrollable(container(content).width(Length::Fill).center_x()).width(Length::Fill),
+            )
             .width(Length::Fill)
             .height(Length::Fill)
             .center_x()
             .center_y()
             .padding(20)
-            .into()
+        } else {
+            container(container(content).width(Length::Fill).center_x())
+                .width(Length::Fill)
+                .height(Length::Fill)
+                .center_x()
+                .center_y()
+                .padding(20)
+        };
+
+        let help_button = iced::widget::button(iced::widget::text("Rules").size(20))
+            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                background_color: Color::from_rgb(0.6, 0.6, 0.6),
+                text_color: Color::WHITE,
+            })))
+            .on_press(Message::ShowRules)
+            .padding(10);
+
+        let main_view = container(iced::widget::column![
+            iced::widget::row![iced::widget::horizontal_space(), help_button].padding(10),
+            main_content
+        ])
+        .width(Length::Fill)
+        .height(Length::Fill);
+
+        if self.show_rules {
+            self.view_rules_overlay()
+        } else {
+            main_view.into()
+        }
     }
 
     fn view_composition(&self) -> Element<'_, Message> {

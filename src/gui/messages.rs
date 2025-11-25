@@ -47,4 +47,6 @@ pub enum Message {
     CalculateScore,
     // Final score phase
     StartOver,
+    ShowRules,
+    HideRules,
 }

@@ -47,6 +47,7 @@ pub struct RiichiGui {
     pub uradora_indicators: Vec<Hai>,
 
     pub score_result: Option<Result<crate::implements::scoring::AgariResult, String>>,
+    pub show_rules: bool,
 }
 
 impl RiichiGui {
@@ -76,6 +77,7 @@ impl RiichiGui {
             dora_indicators: Vec::new(),
             uradora_indicators: Vec::new(),
             score_result: None,
+            show_rules: false,
         }
     }
 

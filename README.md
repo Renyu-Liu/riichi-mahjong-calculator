@@ -84,7 +84,9 @@ Scroll down and click "Calculate Score" button to view the final score breakdown
 
 <img width="1008" height="551" alt="image" src="https://github.com/user-attachments/assets/ebe2d444-c1a8-46e9-bea5-243fab2cdb55" />
 
-The score breakdown includes the total points, fu/han points, and yaku detected. It also guides players to redistribute their points.
+The score breakdown includes the total points, fu/han points, and yaku detected. It also guides players to redistribute their points. It will show "No Yaku Found" if no yaku is detected. 
+
+To familiarize yourself with yaku and scoring rules, you may click "Rules" button at top right corner to view them at any time.
 
 ## Technical Overview
 

@@ -158,9 +158,6 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                 .size(30)
                 .style(Color::from_rgb(0.8, 0.0, 0.0)),
             text("You need at least 1 Yaku to win.").size(20),
-            text("(Dora does not count as Yaku)")
-                .size(16)
-                .style(Color::from_rgb(0.5, 0.5, 0.5))
         ]
         .spacing(15)
         .align_items(iced::Alignment::Center),

@@ -267,7 +267,13 @@ impl Update for RiichiGui {
                 }
             }
             Message::StartOver => {
-                *self = Self::new();
+                *self = RiichiGui::new();
+            }
+            Message::ShowRules => {
+                self.show_rules = true;
+            }
+            Message::HideRules => {
+                self.show_rules = false;
             }
             Message::IncrementAkadora => {
                 if self.num_akadora < 4 {

@@ -96,4 +96,38 @@ impl RiichiGui {
 
         super::super::components::create_grid(tiles, 9)
     }
+
+    pub fn view_rules_overlay(&self) -> Element<'_, Message> {
+        let rules_image = iced::widget::scrollable(
+            iced::widget::image("assets/riichi_rule.png")
+                .width(Length::Fill)
+                .content_fit(iced::ContentFit::Contain),
+        )
+        .height(Length::Fill)
+        .width(Length::Fill);
+
+        let close_button = button(text("Close").size(20))
+            .on_press(Message::HideRules)
+            .padding(10)
+            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                text_color: Color::WHITE,
+            })));
+
+        container(
+            column![
+                row![iced::widget::horizontal_space(), close_button]
+                    .align_items(iced::Alignment::Center)
+                    .padding(10),
+                rules_image
+            ]
+            .align_items(iced::Alignment::Center),
+        )
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .style(theme::Container::Custom(Box::new(
+            super::super::styles::OverlayStyle,
+        )))
+        .into()
+    }
 }
