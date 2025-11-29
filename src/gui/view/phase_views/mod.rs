@@ -1,4 +1,3 @@
-// Submodules containing phase-specific view logic
 mod composition;
 mod definition;
 mod result;

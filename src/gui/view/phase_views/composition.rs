@@ -7,7 +7,6 @@ use iced::{Color, Element, Length, theme};
 pub fn build_composition_view(gui: &RiichiGui) -> Element<'_, Message> {
     let hand_preview = gui.view_hand_preview();
     let tile_pool = gui.view_tile_pool();
-
     let tile_count = gui.hand_tiles.len();
     let counter_color = if tile_count < 14 {
         Color::from_rgb(0.8, 0.0, 0.0)

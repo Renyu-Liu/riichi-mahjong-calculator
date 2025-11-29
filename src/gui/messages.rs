@@ -5,12 +5,13 @@ use crate::implements::tiles::{Hai, Kaze};
 
 #[derive(Debug, Clone)]
 pub enum Message {
-    // composition phase
+    // --- Composition Phase ---
     AddTile(Hai),
     RemoveTile(usize),
     ConfirmHand,
     CancelSelection,
-    // definition phase
+
+    // --- Definition Phase ---
     ModifyHand,
     StartSelectWinningTile,
     SelectWinningTile(Hai),
@@ -18,7 +19,6 @@ pub enum Message {
     SelectCompleteMeld(OpenMeldInput),
     StartAddClosedKan,
     SelectClosedKan(Hai),
-
     EditClosedKan(usize),
     RemoveOpenMeld(usize),
     RemoveClosedKan(usize),
@@ -46,7 +46,8 @@ pub enum Message {
     RemoveDora(usize),
     RemoveUraDora(usize),
     CalculateScore,
-    // Final score phase
+
+    // --- Result Phase ---
     StartOver,
     ShowRules,
     HideRules,

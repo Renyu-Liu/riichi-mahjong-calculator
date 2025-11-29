@@ -44,7 +44,7 @@ pub fn check_all_yaku(
         return Ok(YakuResult {
             hand_structure,
             yaku_list: final_yakuman,
-            num_akadora: 0, // Akadora don't count for Yakuman
+            num_akadora: 0,
         });
     }
 
@@ -96,6 +96,7 @@ pub fn check_all_yaku(
     })
 }
 
+// unwrap result from raw_hand_organizer.rs
 fn resolve_hand_structure(
     org: HandOrganization,
     player: &PlayerContext,

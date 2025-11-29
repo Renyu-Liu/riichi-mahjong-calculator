@@ -35,6 +35,8 @@ Note: If you renamed "Riichi_Mahjong_Scoring_Calculator", `cd` goes with your re
     cargo run
 ```
 
+Note: Wait approx. 5 seconds for the program to launch. The program may freeze for a while when preloading images.
+
 ## User Manual
 
 ### 1: Selecting Tiles
@@ -100,7 +102,7 @@ The flowchart below shows the logic flow of Riichi Mahjong Scoring Calculator:
 
 ## Challenges
 
-* Loading speed: We found that the loading time for a large amount of tiles is too long, which is restricted by the image loading speed. We are working on it.
+* Launch speed: Launching the program is slow due to the large amount of images. We are working on it.
 
 * Yaku check: Some rare yaku with complicated rules are not correctly detected. We are working on it.
 

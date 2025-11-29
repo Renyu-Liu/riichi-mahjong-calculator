@@ -7,6 +7,7 @@ name = "Riichi_Mahjong_Scoring_Calculator"
 version = "0.1.0"
 dependencies = [
  "iced",
+ "image",
 ]
 
 [[package]]

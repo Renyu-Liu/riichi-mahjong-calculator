@@ -8,11 +8,11 @@ use super::types::{
 };
 use std::convert::TryInto;
 
-// Recursive Parsing
+// find melds
 mod recursive_parser {
     use super::*;
 
-    /// Find melds
+    /// Find melds recursively
     pub fn find_mentsu_recursive(counts: &mut [u8; 34], mentsu: &mut Vec<Mentsu>) -> bool {
         let mut i = 0;
         while i < 34 && counts[i] == 0 {
@@ -28,7 +28,7 @@ mod recursive_parser {
             counts[i] -= 3;
             mentsu.push(Mentsu {
                 mentsu_type: MentsuType::Koutsu,
-                is_minchou: false, // is_open
+                is_minchou: false,
                 tiles: [tile, tile, tile, tile],
             });
 
@@ -69,7 +69,7 @@ mod recursive_parser {
     }
 }
 
-// Wait Type Analysis
+// Wait Type
 mod wait_analyzer {
     use super::*;
 
@@ -114,7 +114,7 @@ mod wait_analyzer {
                         Machi::Ryanmen
                     }
                 } else {
-                    unreachable!("Winning tile in sequence but not t1, t2, or t3");
+                    unreachable!("Winning tile not found in winning meld")
                 }
             }
         }
@@ -127,7 +127,6 @@ pub fn organize_hand(input: &UserInput) -> Result<HandOrganization, &'static str
         master_counts[tile_to_index(tile)] += 1;
     }
 
-    // If Ron, the winning tile is not in hand_tiles
     if input.agari_type == AgariType::Ron {
         master_counts[tile_to_index(&input.winning_tile)] += 1;
     }
@@ -171,7 +170,7 @@ pub fn organize_hand(input: &UserInput) -> Result<HandOrganization, &'static str
                 let index3 = index1 + 2;
 
                 if index1 >= 27 || (index1 % 9) >= 7 {
-                    return Err("Invalid representative tile for Chi (must be 1-7 of a suit).");
+                    return Err("Invalid representative tile for Chi (must be 1-7)");
                 }
 
                 let t1 = rep_tile;
@@ -196,9 +195,8 @@ pub fn organize_hand(input: &UserInput) -> Result<HandOrganization, &'static str
                 let pair_tile = index_to_tile(i);
                 let atama = (pair_tile, pair_tile);
 
-                let mentsu_array: [Mentsu; 4] = final_mentsu
-                    .try_into()
-                    .expect("Hand parsing logic error: final_mentsu length not 4");
+                let mentsu_array: [Mentsu; 4] =
+                    final_mentsu.try_into().expect("final_mentsu length not 4");
 
                 let agari_hand = AgariHand {
                     mentsu: mentsu_array,
@@ -211,9 +209,8 @@ pub fn organize_hand(input: &UserInput) -> Result<HandOrganization, &'static str
             }
         }
         if input.hand_tiles.len() == 14 {
-            // placeholder
         } else {
-            return Err("Invalid hand: 4 open melds but no pair found.");
+            return Err("4 open melds but no pair found");
         }
     }
 
@@ -229,9 +226,8 @@ pub fn organize_hand(input: &UserInput) -> Result<HandOrganization, &'static str
                 if closed_mentsu.len() == mentsu_needed {
                     final_mentsu.append(&mut closed_mentsu);
 
-                    let mentsu_array: [Mentsu; 4] = final_mentsu
-                        .try_into()
-                        .expect("Hand parsing logic error: final_mentsu length not 4");
+                    let mentsu_array: [Mentsu; 4] =
+                        final_mentsu.try_into().expect("final_mentsu length not 4");
 
                     let machi = wait_analyzer::determine_wait_type(&mentsu_array, atama, agari_hai);
 

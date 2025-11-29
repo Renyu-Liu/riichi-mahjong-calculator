@@ -9,6 +9,7 @@ pub struct ColoredButtonStyle {
 impl button::StyleSheet for ColoredButtonStyle {
     type Style = iced::Theme;
 
+    /// button style
     fn active(&self, _style: &Self::Style) -> button::Appearance {
         button::Appearance {
             background: Some(iced::Background::Color(self.background_color)),
@@ -18,6 +19,7 @@ impl button::StyleSheet for ColoredButtonStyle {
         }
     }
 
+    /// button style when hovered
     fn hovered(&self, style: &Self::Style) -> button::Appearance {
         let active = self.active(style);
         button::Appearance {
@@ -35,6 +37,7 @@ pub struct OverlayStyle;
 impl iced::widget::container::StyleSheet for OverlayStyle {
     type Style = iced::Theme;
 
+    /// overlay style
     fn appearance(&self, _style: &Self::Style) -> iced::widget::container::Appearance {
         iced::widget::container::Appearance {
             background: Some(iced::Background::Color(Color {

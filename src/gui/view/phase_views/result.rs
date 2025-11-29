@@ -30,6 +30,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                 .filter(|y| !matches!(y, Yaku::Dora | Yaku::UraDora | Yaku::AkaDora))
                 .count();
 
+            // Error if no valid yaku and not a Yakuman
             if valid_yaku_count == 0 && limit_name.is_none() {
                 column![
                     text("No Yaku Found")
@@ -53,7 +54,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                     .size(40)
                     .style(Color::from_rgb(0.8, 0.2, 0.2));
 
-                // Limit Name (if any)
+                // Limit Name
                 let limit_text = if let Some(limit) = limit_name {
                     let limit_str = match limit {
                         HandLimit::Mangan => "Mangan",
@@ -69,14 +70,14 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                     text("")
                 };
 
-                // Han / Fu
+                // Han/Fu Display
                 let han_fu_text = if limit_name.as_ref() == Some(&HandLimit::Yakuman) {
                     text(format!("{} Han", han)).size(20)
                 } else {
                     text(format!("{} Han / {} Fu", han, fu)).size(20)
                 };
 
-                // Yaku List
+                // Yaku List Display
                 let mut yaku_col =
                     column![text("Yaku:").size(18).style(Color::from_rgb(0.3, 0.3, 0.3))];
                 let mut dora_count = 0;
@@ -94,6 +95,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                     }
                 }
 
+                // Append bonus han counts
                 if dora_count > 0 {
                     yaku_col = yaku_col.push(text(format!("• Dora x{}", dora_count)).size(18));
                 }
@@ -106,7 +108,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                         yaku_col.push(text(format!("• Aka Dora x{}", akadora_count)).size(18));
                 }
 
-                // Payment Detail
+                // Payment Detail Breakdown
                 let tsumo_bonus = *honba as u32 * 100;
                 let ron_bonus = *honba as u32 * 300;
 

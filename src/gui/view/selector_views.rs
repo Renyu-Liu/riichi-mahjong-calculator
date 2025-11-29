@@ -1,4 +1,4 @@
-use super::super::components::{create_grid, get_tile_image_path};
+use super::super::components::create_grid;
 use super::super::messages::Message;
 use super::super::state::RiichiGui;
 use super::super::styles::ColoredButtonStyle;
@@ -8,6 +8,7 @@ use iced::widget::{button, column, container, row, text};
 use iced::{Color, Element, theme};
 
 impl RiichiGui {
+    /// Renders selecting winning tile view
     pub fn view_selecting_winning_tile(&self) -> Element<'_, Message> {
         let mut unique_tiles: Vec<Hai> = self.hand_tiles.iter().map(|t| *t).collect();
         unique_tiles.sort();
@@ -16,17 +17,19 @@ impl RiichiGui {
         let tiles: Vec<Element<Message>> = unique_tiles
             .iter()
             .map(|tile| {
-                let image_path = get_tile_image_path(tile);
-                button(
-                    iced::widget::Image::<iced::widget::image::Handle>::new(image_path).width(50),
-                )
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::WHITE,
-                    text_color: Color::BLACK,
-                })))
-                .on_press(Message::SelectWinningTile(*tile))
-                .padding(5)
-                .into()
+                let handle = self
+                    .tile_images
+                    .get(tile)
+                    .expect("Tile image not found")
+                    .clone();
+                button(iced::widget::Image::new(handle).width(50))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                        background_color: Color::WHITE,
+                        text_color: Color::BLACK,
+                    })))
+                    .on_press(Message::SelectWinningTile(*tile))
+                    .padding(5)
+                    .into()
             })
             .collect();
 
@@ -45,6 +48,7 @@ impl RiichiGui {
         .into()
     }
 
+    /// Renders selecting meld view
     pub fn view_selecting_meld_tile(&self, m_type: MentsuType) -> Element<'_, Message> {
         use super::super::state::Phase;
 
@@ -84,11 +88,12 @@ impl RiichiGui {
                 let tile_images = row(tiles
                     .iter()
                     .map(|t| {
-                        iced::widget::Image::<iced::widget::image::Handle>::new(
-                            get_tile_image_path(t),
-                        )
-                        .width(50)
-                        .into()
+                        let handle = self
+                            .tile_images
+                            .get(t)
+                            .expect("Tile image not found")
+                            .clone();
+                        iced::widget::Image::new(handle).width(50).into()
                     })
                     .collect::<Vec<Element<Message>>>())
                 .spacing(2);
@@ -124,6 +129,7 @@ impl RiichiGui {
         .into()
     }
 
+    /// Renders selecting closed Kan view
     pub fn view_selecting_closed_kan(&self) -> Element<'_, Message> {
         let possible_kans = self.get_all_possible_kans();
 
@@ -149,11 +155,12 @@ impl RiichiGui {
                 let tile_images = row(tiles
                     .iter()
                     .map(|t| {
-                        iced::widget::Image::<iced::widget::image::Handle>::new(
-                            get_tile_image_path(t),
-                        )
-                        .width(50)
-                        .into()
+                        let handle = self
+                            .tile_images
+                            .get(t)
+                            .expect("Tile image not found")
+                            .clone();
+                        iced::widget::Image::new(handle).width(50).into()
                     })
                     .collect::<Vec<Element<Message>>>())
                 .spacing(2);
@@ -189,27 +196,30 @@ impl RiichiGui {
         .into()
     }
 
+    /// Renders selecting Dora view
     pub fn view_selecting_dora(&self, is_ura: bool) -> Element<'_, Message> {
         let mut tiles = Vec::new();
 
         for i in 0..34 {
             let tile = crate::implements::tiles::index_to_tile(i);
-            let image_path = get_tile_image_path(&tile);
+            let handle = self
+                .tile_images
+                .get(&tile)
+                .expect("Tile image not found")
+                .clone();
 
-            let btn = button(
-                iced::widget::Image::<iced::widget::image::Handle>::new(image_path).width(40),
-            )
-            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                background_color: Color::WHITE,
-                text_color: Color::BLACK,
-            })))
-            .on_press(if is_ura {
-                Message::SelectUraDora(tile)
-            } else {
-                Message::SelectDora(tile)
-            })
-            .padding(5)
-            .into();
+            let btn = button(iced::widget::Image::new(handle).width(40))
+                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                    background_color: Color::WHITE,
+                    text_color: Color::BLACK,
+                })))
+                .on_press(if is_ura {
+                    Message::SelectUraDora(tile)
+                } else {
+                    Message::SelectDora(tile)
+                })
+                .padding(5)
+                .into();
 
             tiles.push(btn);
         }

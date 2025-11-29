@@ -13,7 +13,9 @@ pub trait Update {
 impl Update for RiichiGui {
     fn update(&mut self, message: Message) {
         match message {
+            // --- Composition Phase ---
             Message::AddTile(tile) => {
+                // Add tile to hand
                 if self.hand_tiles.len() < 18 {
                     let idx = crate::implements::tiles::tile_to_index(&tile);
                     if self.tile_counts[idx] > 0 {
@@ -24,6 +26,7 @@ impl Update for RiichiGui {
                 }
             }
             Message::RemoveTile(index) => {
+                // Remove tile from hand and return it to the pool
                 if index < self.hand_tiles.len() {
                     let tile = self.hand_tiles.remove(index);
                     let idx = crate::implements::tiles::tile_to_index(&tile);
@@ -31,6 +34,7 @@ impl Update for RiichiGui {
                 }
             }
             Message::ConfirmHand => {
+                // go to definition phase
                 if self.hand_tiles.len() >= 14 {
                     self.phase = Phase::Definition;
                 }
@@ -38,7 +42,10 @@ impl Update for RiichiGui {
             Message::CancelSelection => {
                 self.phase = Phase::Definition;
             }
+
+            // --- Definition Phase ---
             Message::ModifyHand => {
+                // go to composition phase
                 self.phase = Phase::Composition;
                 self.winning_tile = None;
                 self.open_melds.clear();
@@ -56,6 +63,7 @@ impl Update for RiichiGui {
                 self.phase = Phase::SelectingMeldTile(m_type, None);
             }
             Message::SelectCompleteMeld(meld) => {
+                // Add a meld
                 if let Phase::SelectingMeldTile(_, editing_idx) = self.phase {
                     if self.can_form_meld(&meld, editing_idx) {
                         if let Some(idx) = editing_idx {
@@ -66,6 +74,7 @@ impl Update for RiichiGui {
                             self.open_melds.push(meld);
                         }
 
+                        // Reset if hand becomes open
                         if !self.open_melds.is_empty() {
                             self.is_riichi = false;
                             self.is_daburu_riichi = false;
@@ -84,6 +93,7 @@ impl Update for RiichiGui {
                 };
             }
             Message::SelectClosedKan(tile) => {
+                // Add a closed Kan
                 let editing_idx = if let Phase::SelectingClosedKan { editing_index } = self.phase {
                     editing_index
                 } else {
@@ -117,8 +127,11 @@ impl Update for RiichiGui {
                     self.closed_kans.remove(idx);
                 }
             }
+
+            // --- Settings Updates ---
             Message::ToggleAgariType(agari_type) => {
                 self.agari_type = agari_type;
+                // Reset incompatible flags
                 match self.agari_type {
                     AgariType::Ron => {
                         self.is_tenhou = false;
@@ -138,6 +151,7 @@ impl Update for RiichiGui {
             }
             Message::SetJikaze(kaze) => {
                 self.jikaze = kaze;
+                // Reset Tenhou/Chiihou based on dealer
                 if self.jikaze != Kaze::Ton {
                     self.is_tenhou = false;
                 } else {
@@ -195,10 +209,13 @@ impl Update for RiichiGui {
                     self.uradora_indicators.remove(index);
                 }
             }
+
+            // --- Result Phase ---
             Message::CalculateScore => {
-                // Collected inputs
                 if let Some(winning_tile) = self.winning_tile {
                     let mut hand_tiles = self.hand_tiles.clone();
+
+                    // Remove tiles in open melds
                     for meld in &self.open_melds {
                         let tiles = self.get_meld_tiles(meld);
                         for t in tiles {
@@ -208,6 +225,7 @@ impl Update for RiichiGui {
                         }
                     }
 
+                    // Remove tiles in closed kans
                     for kan in &self.closed_kans {
                         for _ in 0..4 {
                             if let Some(pos) = hand_tiles.iter().position(|x| x == kan) {
@@ -216,6 +234,7 @@ impl Update for RiichiGui {
                         }
                     }
 
+                    // Remove winning tile if Ron
                     if self.agari_type == AgariType::Ron {
                         if let Some(pos) = hand_tiles.iter().position(|x| x == &winning_tile) {
                             hand_tiles.remove(pos);
@@ -257,6 +276,7 @@ impl Update for RiichiGui {
                             is_chankan: self.is_chankan,
                         },
                     };
+
                     // Calculate score
                     match calculate_agari(&input) {
                         Ok(result) => {
@@ -270,7 +290,7 @@ impl Update for RiichiGui {
                 }
             }
             Message::StartOver => {
-                *self = RiichiGui::new();
+                self.reset();
             }
             Message::ShowRules => {
                 self.show_rules = true;

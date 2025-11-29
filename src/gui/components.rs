@@ -33,6 +33,7 @@ pub fn get_tile_image_path(tile: &Hai) -> String {
     format!("assets/{}", filename)
 }
 
+/// Creates tile grid layout
 pub fn create_grid(elements: Vec<Element<Message>>, columns: usize) -> Element<Message> {
     let mut rows = column![].spacing(10);
     let mut current_row = row![].spacing(10);

@@ -1,3 +1,5 @@
+// utils.rs: utility functions for yaku checkers
+
 use crate::implements::types::{
     game::AgariType,
     hand::{AgariHand, HandStructure, Machi, Mentsu, MentsuType},

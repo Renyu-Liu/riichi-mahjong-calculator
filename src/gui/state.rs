@@ -18,16 +18,16 @@ pub enum Phase {
 pub struct RiichiGui {
     pub phase: Phase,
 
-    // Phase 1 State
+    // --- Composition Phase ---
     pub hand_tiles: Vec<Hai>,
     pub tile_counts: [u8; 34],
 
-    // Phase 2 State
+    // --- Definition Phase ---
     pub winning_tile: Option<Hai>,
     pub open_melds: Vec<OpenMeldInput>,
     pub closed_kans: Vec<Hai>,
 
-    // Phase 3 State
+    // --- Result Phase ---
     pub agari_type: AgariType,
     pub bakaze: Kaze,
     pub jikaze: Kaze,
@@ -45,13 +45,50 @@ pub struct RiichiGui {
     pub num_akadora: u8,
     pub dora_indicators: Vec<Hai>,
     pub uradora_indicators: Vec<Hai>,
-
     pub score_result: Option<Result<crate::implements::scoring::AgariResult, String>>,
     pub show_rules: bool,
+    pub tile_images: std::collections::HashMap<Hai, iced::widget::image::Handle>,
+    pub rules_image: Option<iced::widget::image::Handle>,
 }
 
 impl RiichiGui {
     pub fn new() -> Self {
+        let mut tile_images: std::collections::HashMap<
+            crate::implements::tiles::Hai,
+            iced::widget::image::Handle,
+        > = std::collections::HashMap::new();
+        for i in 0..34 {
+            let tile = crate::implements::tiles::index_to_tile(i);
+            let path = crate::gui::components::get_tile_image_path(&tile);
+
+            // fast rendering
+            if let Ok(img) = image::open(&path) {
+                let resized = img.resize(64, 64, image::imageops::FilterType::Triangle);
+                let rgba = resized.to_rgba8();
+                let width = rgba.width();
+                let height = rgba.height();
+                let pixels = rgba.into_raw();
+
+                let handle = iced::widget::image::Handle::from_pixels(width, height, pixels);
+                tile_images.insert(tile, handle);
+            } else {
+                eprintln!("Failed to load image: {}", path);
+            }
+        }
+
+        let rules_image = if let Ok(img) = image::open("assets/riichi_rule.png") {
+            let rgba = img.to_rgba8();
+            let width = rgba.width();
+            let height = rgba.height();
+            let pixels = rgba.into_raw();
+            Some(iced::widget::image::Handle::from_pixels(
+                width, height, pixels,
+            ))
+        } else {
+            eprintln!("Failed to load rules image");
+            None
+        };
+
         Self {
             phase: Phase::Composition,
             hand_tiles: Vec::new(),
@@ -78,9 +115,12 @@ impl RiichiGui {
             uradora_indicators: Vec::new(),
             score_result: None,
             show_rules: false,
+            tile_images,
+            rules_image,
         }
     }
 
+    /// get all tiles in a meld
     pub fn get_meld_tiles(&self, meld: &OpenMeldInput) -> Vec<Hai> {
         let mut tiles = Vec::new();
         match meld.mentsu_type {
@@ -113,6 +153,7 @@ impl RiichiGui {
         tiles
     }
 
+    /// Counts number of 5-tiles for akadora
     pub fn count_five_tiles(&self) -> u8 {
         let mut count = 0;
 
@@ -146,6 +187,7 @@ impl RiichiGui {
         count
     }
 
+    /// Checks if a meld can be formed
     pub fn can_form_meld(&self, meld: &OpenMeldInput, editing_idx: Option<usize>) -> bool {
         let mut hand_counts = [0u8; 34];
         for tile in &self.hand_tiles {
@@ -178,6 +220,7 @@ impl RiichiGui {
         true
     }
 
+    /// Returns all possible Pon melds
     pub fn get_all_possible_pons(&self, editing_idx: Option<usize>) -> Vec<OpenMeldInput> {
         let mut available_counts = [0u8; 34];
         for tile in &self.hand_tiles {
@@ -209,6 +252,7 @@ impl RiichiGui {
         pons
     }
 
+    /// Returns all possible Chii melds
     pub fn get_all_possible_chiis(&self, editing_idx: Option<usize>) -> Vec<OpenMeldInput> {
         let mut available_counts = [0u8; 34];
         for tile in &self.hand_tiles {
@@ -249,6 +293,7 @@ impl RiichiGui {
         chiis
     }
 
+    /// Returns all possible Kan melds
     pub fn get_all_possible_kans(&self) -> Vec<Hai> {
         let mut available_counts = [0u8; 34];
         for tile in &self.hand_tiles {
@@ -263,5 +308,33 @@ impl RiichiGui {
             }
         }
         kans
+    }
+
+    pub fn reset(&mut self) {
+        self.phase = Phase::Composition;
+        self.hand_tiles.clear();
+        self.tile_counts = [4; 34];
+        self.winning_tile = None;
+        self.open_melds.clear();
+        self.closed_kans.clear();
+        self.agari_type = AgariType::Ron;
+        self.bakaze = Kaze::Ton;
+        self.jikaze = Kaze::Ton;
+        self.is_riichi = false;
+        self.is_daburu_riichi = false;
+        self.is_ippatsu = false;
+        self.is_rinshan = false;
+        self.is_chankan = false;
+        self.is_haitei = false;
+        self.is_houtei = false;
+        self.is_tenhou = false;
+        self.is_chiihou = false;
+        self.is_renhou = false;
+        self.honba = 0;
+        self.num_akadora = 0;
+        self.dora_indicators.clear();
+        self.uradora_indicators.clear();
+        self.score_result = None;
+        self.show_rules = false;
     }
 }

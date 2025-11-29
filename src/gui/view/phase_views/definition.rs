@@ -1,4 +1,3 @@
-use crate::gui::components::get_tile_image_path;
 use crate::gui::messages::Message;
 use crate::gui::state::RiichiGui;
 use crate::gui::styles::ColoredButtonStyle;
@@ -17,21 +16,22 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
         })))
         .on_press(Message::ModifyHand);
 
+    // Winning Tile Section
     let winning_tile_section = column![
         text("Winning Tile:"),
         match &gui.winning_tile {
             Some(t) => {
                 {
-                    let e: Element<Message> = row![
-                        button(
-                            iced::widget::Image::<iced::widget::image::Handle>::new(
-                                get_tile_image_path(t)
-                            )
-                            .width(40)
-                        )
-                        .on_press(Message::StartSelectWinningTile)
-                        .style(theme::Button::Text)
-                    ]
+                    let e: Element<Message> = row![{
+                        let handle = gui
+                            .tile_images
+                            .get(t)
+                            .expect("Tile image not found")
+                            .clone();
+                        button(iced::widget::Image::new(handle).width(40))
+                            .on_press(Message::StartSelectWinningTile)
+                            .style(theme::Button::Text)
+                    }]
                     .spacing(10)
                     .align_items(iced::Alignment::Center)
                     .into();
@@ -53,8 +53,10 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
     .spacing(10)
     .align_items(iced::Alignment::Center);
 
+    // Melds Section
     let melds_section = column![
         text("Open Melds:"),
+        // Display existing open melds
         column(
             gui.open_melds
                 .iter()
@@ -64,11 +66,12 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                     let tile_images = row(tiles
                         .iter()
                         .map(|t| {
-                            iced::widget::Image::<iced::widget::image::Handle>::new(
-                                get_tile_image_path(t),
-                            )
-                            .width(40)
-                            .into()
+                            let handle = gui
+                                .tile_images
+                                .get(t)
+                                .expect("Tile image not found")
+                                .clone();
+                            iced::widget::Image::new(handle).width(40).into()
                         })
                         .collect::<Vec<Element<Message>>>())
                     .spacing(2);
@@ -86,6 +89,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
         )
         .align_items(iced::Alignment::Center)
         .spacing(10),
+        // Display existing closed kans
         column(
             gui.closed_kans
                 .iter()
@@ -95,11 +99,12 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                     let tile_images = row(tiles
                         .iter()
                         .map(|t| {
-                            iced::widget::Image::<iced::widget::image::Handle>::new(
-                                get_tile_image_path(t),
-                            )
-                            .width(40)
-                            .into()
+                            let handle = gui
+                                .tile_images
+                                .get(t)
+                                .expect("Tile image not found")
+                                .clone();
+                            iced::widget::Image::new(handle).width(40).into()
                         })
                         .collect::<Vec<Element<Message>>>())
                     .spacing(2);
@@ -126,6 +131,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                 .collect::<Vec<Element<Message>>>()
         )
         .spacing(10),
+        // Buttons to add new melds
         row![
             button(text("Add Pon"))
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
@@ -152,11 +158,13 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
     .spacing(10)
     .align_items(iced::Alignment::Center);
 
+    // Game Context Section
     let is_oya = gui.jikaze == Kaze::Ton;
     let is_ron = gui.agari_type == AgariType::Ron;
     let is_tsumo = gui.agari_type == AgariType::Tsumo;
     let is_menzen = gui.open_melds.is_empty();
 
+    // Incompatible yaku checkbox
     let checkbox_with_conflict = |label: &str,
                                   is_checked: bool,
                                   msg: fn(bool) -> Message,
@@ -262,6 +270,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
             .spacing(10),
         ]
         .spacing(5),
+        // Honba Counter
         row![
             text(format!("Honba: {}", gui.honba)),
             button(text("+"))
@@ -283,6 +292,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
         ]
         .spacing(10)
         .align_items(iced::Alignment::Center),
+        // Akadora Counter
         {
             let five_tile_count = gui.count_five_tiles();
 
@@ -318,6 +328,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                 row![]
             }
         },
+        // Dora Indicators
         column![
             text("Dora:"),
             row(gui
@@ -325,15 +336,15 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                 .iter()
                 .enumerate()
                 .map(|(i, t)| {
-                    button(
-                        iced::widget::Image::<iced::widget::image::Handle>::new(
-                            get_tile_image_path(t),
-                        )
-                        .width(30),
-                    )
-                    .on_press(Message::RemoveDora(i))
-                    .style(theme::Button::Text)
-                    .into()
+                    let handle = gui
+                        .tile_images
+                        .get(t)
+                        .expect("Tile image not found")
+                        .clone();
+                    button(iced::widget::Image::new(handle).width(30))
+                        .on_press(Message::RemoveDora(i))
+                        .style(theme::Button::Text)
+                        .into()
                 })
                 .collect::<Vec<Element<Message>>>())
             .spacing(5),
@@ -351,15 +362,15 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                         .iter()
                         .enumerate()
                         .map(|(i, t)| {
-                            button(
-                                iced::widget::Image::<iced::widget::image::Handle>::new(
-                                    get_tile_image_path(t),
-                                )
-                                .width(30),
-                            )
-                            .on_press(Message::RemoveUraDora(i))
-                            .style(theme::Button::Text)
-                            .into()
+                            let handle = gui
+                                .tile_images
+                                .get(t)
+                                .expect("Tile image not found")
+                                .clone();
+                            button(iced::widget::Image::new(handle).width(30))
+                                .on_press(Message::RemoveUraDora(i))
+                                .style(theme::Button::Text)
+                                .into()
                         })
                         .collect::<Vec<Element<Message>>>())
                     .spacing(5),
@@ -393,8 +404,10 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
     column![
         hand_preview,
         modify_btn,
+        iced::widget::rule::Rule::horizontal(30),
         winning_tile_section,
         melds_section,
+        iced::widget::rule::Rule::horizontal(30),
         context_section,
         calculate_btn
     ]

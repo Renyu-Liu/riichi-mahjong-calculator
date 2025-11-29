@@ -1,3 +1,5 @@
+// yakuman.rs: yakuman checkers
+
 use super::standard::check_chinitsu;
 use super::utils::*;
 use crate::implements::types::{

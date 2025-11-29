@@ -1,3 +1,5 @@
+// standard.rs: standard yaku checkers
+
 use super::utils::*;
 use crate::implements::types::{
     game::{AgariType, GameContext, PlayerContext},
@@ -15,7 +17,7 @@ pub fn find_standard_yaku(
 ) -> Vec<Yaku> {
     let mut yaku_list = Vec::new();
 
-    // State-based Yaku
+    // context-based Yaku
     if player.is_daburu_riichi {
         yaku_list.push(Yaku::DaburuRiichi);
     } else if player.is_riichi {
@@ -53,7 +55,7 @@ pub fn find_standard_yaku(
         yaku_list.push(Yaku::Tanyao);
     }
 
-    //  Sequence Yaku
+    // Sequence Yaku
     let shuntsu: Vec<&Mentsu> = hand
         .mentsu
         .iter()
@@ -77,7 +79,7 @@ pub fn find_standard_yaku(
         yaku_list.push(Yaku::Ittsu);
     }
 
-    //  Triplet Yaku
+    // Triplet Yaku
     let (koutsu, kantsu) = count_koutsu_kantsu(hand);
 
     if koutsu + kantsu == 4 {
@@ -101,7 +103,7 @@ pub fn find_standard_yaku(
         yaku_list.push(Yaku::Shousangen);
     }
 
-    //  Terminal/Honor Yaku
+    // Terminal/Honor Yaku
     let all_tiles = get_all_tiles(hand);
     let all_groups = get_all_groups(hand);
 
@@ -119,7 +121,7 @@ pub fn find_standard_yaku(
         }
     }
 
-    //  Color Yaku
+    // Color Yaku
     let (is_chinitsu, _) = check_chinitsu(&all_tiles);
     if is_chinitsu {
         yaku_list.push(Yaku::Chinitsu);
@@ -229,7 +231,6 @@ fn check_yakuhai(hand: &AgariHand, player: &PlayerContext, game: &GameContext) -
     if koutsu_tiles.contains(&jikaze_hai) && jikaze_hai != bakaze_hai {
         yaku.push(Yaku::YakuhaiJikaze);
     } else if koutsu_tiles.contains(&jikaze_hai) && jikaze_hai == bakaze_hai {
-        // This is correct, as it counts for 2 han.
         yaku.push(Yaku::YakuhaiJikaze);
     }
 
@@ -237,11 +238,11 @@ fn check_yakuhai(hand: &AgariHand, player: &PlayerContext, game: &GameContext) -
 }
 
 fn check_pinfu(hand: &AgariHand, player: &PlayerContext, game: &GameContext) -> bool {
-    // 1. Must be menzen
+    // menzen check
     if !player.is_menzen {
         return false;
     }
-    // 2. All 4 melds are Shuntsu
+    // Shuntsu check
     if !hand
         .mentsu
         .iter()
@@ -249,7 +250,7 @@ fn check_pinfu(hand: &AgariHand, player: &PlayerContext, game: &GameContext) -> 
     {
         return false;
     }
-    // 3. Atama is not a Yakuhai tile
+    // Yakuhai check
     if let Hai::Jihai(Jihai::Sangen(_)) = hand.atama.0 {
         return false;
     }
@@ -258,7 +259,7 @@ fn check_pinfu(hand: &AgariHand, player: &PlayerContext, game: &GameContext) -> 
             return false;
         }
     }
-    // 4. Must be a Ryanmen (two-sided) wait
+    // Ryanmen check
     if hand.machi != Machi::Ryanmen {
         return false;
     }
@@ -295,7 +296,7 @@ fn check_peikou<'a>(shuntsu: &[&'a Mentsu]) -> (bool, bool) {
             }
         }
     }
-
+    // (lipeikou, ryanpeikou)
     (identical_pairs == 1, identical_pairs == 2)
 }
 

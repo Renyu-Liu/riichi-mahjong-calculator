@@ -283,7 +283,7 @@ fn calculate_fu(
                     (false, true) => 32,  // Concealed terminal/honor quad
                 };
             }
-            MentsuType::Shuntsu => {} // Sequences are 0 fu
+            MentsuType::Shuntsu => {}
         }
     }
 
@@ -293,7 +293,7 @@ fn calculate_fu(
     // Wait
     match hand.machi {
         Machi::Kanchan | Machi::Penchan | Machi::Tanki => fu += 2,
-        _ => {} // Ryanmen and Shanpon are 0 fu
+        _ => {}
     }
 
     (((fu + 9) / 10) * 10) as u8
