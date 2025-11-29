@@ -35,7 +35,7 @@ Note: If you renamed "Riichi_Mahjong_Scoring_Calculator", `cd` goes with your re
     cargo run
 ```
 
-Note: Wait approx. 5 seconds for the program to launch. The program may freeze for a while when preloading images.
+Note: Wait a couple of seconds for the program to prepare.
 
 ## User Manual
 

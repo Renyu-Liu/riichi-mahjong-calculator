@@ -63,7 +63,7 @@ impl RiichiGui {
 
             // fast rendering
             if let Ok(img) = image::open(&path) {
-                let resized = img.resize(64, 64, image::imageops::FilterType::Triangle);
+                let resized = img.resize(256, 256, image::imageops::FilterType::Nearest);
                 let rgba = resized.to_rgba8();
                 let width = rgba.width();
                 let height = rgba.height();
