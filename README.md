@@ -1,29 +1,24 @@
 # Riichi Mahjong Scoring Calculator
-_Created by Thomas (@akakrabz), Karan (@Karan-Annam), and Renyu (@Renyu-Liu) as the final project for [CS 128H](https://honors.cs128.org)_
+_Created by Renyu (@Renyu-Liu), Thomas (@akakrabz), and Karan (@Karan-Annam) as the final project for [CS 128H](https://honors.cs128.org)_
 ## Introduction
 Riichi Mahjong has a complicated mechanism of scoring calculation. People often find it hard to calculate points manually. That's why we have introduced Riichi Mahjong Scoring Calculator. This is a Rust library that calculates the score of a winning Riichi Mahjong hand. It receives a complete input of the winning hand and game state and returns a detailed score breakdown, guiding players to redistribute their points.
 ## Installation
 ### Prerequisites
+* **[Rust](https://rust-lang.org/tools/install/)** (Required)
 
-#### Windows:
-* **C++ Build Tools**: Download [Microsoft C++ build tool](https://visualstudio.microsoft.com/downloads/?q=build+tools) and follow the instructions to configure your system. When asked which workloads to install, check **"Desktop development with C++"**. On the right side, select **"Windows 10 (or 11) SDK"** and **"MSVC v143 (or latest) ... build tools"**.
+* **[Visual Studio](https://visualstudio.microsoft.com/downloads/?q=build+tools)** (Windows)
+
+* **[XCode](https://developer.apple.com/xcode/)** (MacOS)
+
+* **[Git](https://git-scm.com)** and **[VSCode](https://code.visualstudio.com)** (Alternative)
   
-* **Rust**: Download [Rust](https://rust-lang.org/tools/install/) and follow the instructions to configure your system. You will see a command prompt window. Type **1** for the default installation. **Close any open command prompt or PowerShell windows to update PATH.**
+### Download & Run
 
-#### MacOS:
-* **XCode**: run `xcode-select --install` in terminal. Click Install.
+* Download and extract the ZIP file from [GitHub repo](https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator) or  run `git clone https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator.git` in terminal to clone the repository.
 
-* **Rust**: run `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh` in terminal. When prompted, type **1** for the default installation. Once the installation finishes, refresh your current terminal window and run `source "$HOME/.cargo/env"`.
-
-### Download and Run
-
-* Download and extract the ZIP file from [GitHub repo](https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator), or run `git clone https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator.git` in terminal to clone the repository. For Windows users without VSCode, download [git](https://git-scm.com) to clone the repository.
-
-* Run `cd .../Riichi_Mahjong_Scoring_Calculator` in terminal to enter program folder.
+* Run `cd .../Riichi_Mahjong_Scoring_Calculator(-main)` in terminal to enter program folder.
 
 * Run `cargo run` to launch the program. It will take a long time to compile for the initial run.
-
-**Important Note:** If you downloaded the repository through ZIP, the folder name will be `Riichi_Mahjong_Scoring_Calculator-main`. Make sure `cd` goes with the actual folder name. Regardless of the folder name, make sure the the folder directly contains `Cargo.toml` file (i.e. .../Riichi_Mahjong_Scoring_Calculator/Cargo.toml) so terminal can correctly identify the program location. Do not move `Cargo.toml` to other locations. 
 
 ## User Manual
 
