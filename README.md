@@ -24,45 +24,45 @@ Riichi Mahjong has a complicated mechanism of scoring calculation. People often 
 
 ### 1: Select Winning Hand
 
-<img width="778" height="664" alt="Composition_Phase" src="https://github.com/user-attachments/assets/e9055b58-ed2f-4f56-9e53-eaa1e299ee75" />
+<img width="996" height="595" alt="image" src="https://github.com/user-attachments/assets/18e23010-3482-4c5c-bd3e-2c1288be8ebb" />
 
-Click the tile in Tile Pool to add the tile into Hand Preview. Click the tile in Hand Preview to remove the tile.
+Tiles below button "Confirm Hand" is Tile Pool. Tiles above the button is Tile Preview. Click the tile in Tile Pool to add the tile into Hand Preview. Click the tile in Hand Preview to remove the tile.
 
 You have to select at least 14 tiles to continue to next phase. Click "Confirm Hand" to continue.
 
-<img width="960" height="161" alt="image" src="https://github.com/user-attachments/assets/cdbeea51-0a19-4676-83d9-1231a4ce9ad3" />
+<img width="953" height="159" alt="image" src="https://github.com/user-attachments/assets/dae13d06-b0ee-4f8a-bf8e-0edbe1edffc6" />
 
 Click "Modify Hand" to return to tile selecting phase.
 
 ### 2: Select Winning Tile
 
-<img width="980" height="121" alt="image" src="https://github.com/user-attachments/assets/63df3ce6-ea19-4462-aded-dbd4c9092134" />
+<img width="955" height="125" alt="image" src="https://github.com/user-attachments/assets/06307183-bb60-4d45-81bc-860162a3580b" />
 
 Click "Select" button under Winning Tile to select from your hand. You must select one winning tile to continue to next phase.
 
-<img width="1003" height="323" alt="image" src="https://github.com/user-attachments/assets/634e6f75-232c-406e-8fa3-77ba80162350" />
+<img width="959" height="316" alt="image" src="https://github.com/user-attachments/assets/50338ecd-cd3a-47aa-8f8a-093e6c954f3b" />
 
 Click the tile image to select the winning tile.
 
-<img width="943" height="144" alt="image" src="https://github.com/user-attachments/assets/5783abfc-737e-4876-82b4-01e9fd059248" />
+<img width="952" height="154" alt="image" src="https://github.com/user-attachments/assets/67725902-045a-44be-af48-591454d8fb2a" />
 
 Click the image of the winning tile to modify.
 
-### 3: Select Game Information
+### 3: Select Game Info
 
-<img width="948" height="105" alt="image" src="https://github.com/user-attachments/assets/e1e6b611-d399-4701-a34c-57922900cfc4" />
+<img width="957" height="139" alt="image" src="https://github.com/user-attachments/assets/ea25ca8a-b4eb-462f-85dc-6101bed07155" />
 
-Click "Add Pon/Chii/Kan" to add pon/chii/kan you made in your round. Click "Change" to modify the open meld. Click "Remove" to remove the open meld.
+Click "Add Pon/Chii/Kan" to add pon/chii/kan you made in your round. 
 
 <img width="997" height="216" alt="image" src="https://github.com/user-attachments/assets/93efbd4b-9976-44d7-8cd0-1b253a0a7b1b" />
 
 It will display all possible pon/chii/kan from your hand. Click the meld to select pon/chii/kan you made in your round. 
 
-<img width="974" height="183" alt="image" src="https://github.com/user-attachments/assets/d7a58a7c-829c-4a32-8194-11d00b2468bc" />
+<img width="958" height="206" alt="image" src="https://github.com/user-attachments/assets/0570d14b-a261-43c2-be55-f2d96fa47dc9" />
 
 Click the meld image to remove the selected open meld.
 
-<img width="976" height="685" alt="image" src="https://github.com/user-attachments/assets/630e3a28-b0fd-4d6a-91c8-2c41223f6da6" />
+<img width="961" height="651" alt="image" src="https://github.com/user-attachments/assets/2a96b04b-fe48-40a3-b0b0-52b6184728da" />
 
 You may check for seats, context-dependent yaku, and choose the number of honba and akadora in your round. Click "Add" to add a (ura)dora tile. Click the image of (ura)dora tile to remove it.
 
@@ -70,7 +70,7 @@ You may check for seats, context-dependent yaku, and choose the number of honba 
 
 Scroll down and click "Calculate Score" button to view the final score breakdown.
 
-<img width="1002" height="550" alt="image" src="https://github.com/user-attachments/assets/7735387c-4d12-4021-b814-8fc26149512f" />
+<img width="1015" height="753" alt="image" src="https://github.com/user-attachments/assets/1e8e95dc-9ea6-4f1c-8135-428179709e5a" />
 
 The score breakdown includes the total points, fu/han points, and yaku detected. It also guides players to redistribute their points. It will show "No Yaku Found" if no yaku is detected. 
 
