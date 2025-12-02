@@ -23,6 +23,7 @@ Riichi Mahjong has a complicated mechanism of scoring calculation. People often 
 ## User Manual
 
 ### 1: Select Winning Hand
+
 <img width="778" height="664" alt="Composition_Phase" src="https://github.com/user-attachments/assets/e9055b58-ed2f-4f56-9e53-eaa1e299ee75" />
 
 Click the tile in Tile Pool to add the tile into Hand Preview. Click the tile in Hand Preview to remove the tile.
@@ -77,7 +78,19 @@ To familiarize yourself with yaku and scoring rules, you may click "Rules" butto
 
 ## Technical Overview
 
-The flowchart below shows the logic flow of Riichi Mahjong Scoring Calculator:
+### Data Structure
+
+<img width="752" height="939" alt="Untitled Diagram drawio" src="https://github.com/user-attachments/assets/215981e1-450e-4c43-9f83-af0fa1036e3d" />
+
+* Tile works as the smallest unit and makes up all related objects.
+
+* Winning Hand and Game Info is the user input.
+
+* Score is displayed the output.
+
+* The program receives Winning Hand and Game Info and returns Score.
+
+### Work Flow
 
 <img width="964" height="1039" alt="flowchart" src="https://github.com/user-attachments/assets/b5991162-1413-4a28-9ac5-72704ff056c4" />
 
@@ -89,9 +102,9 @@ The flowchart below shows the logic flow of Riichi Mahjong Scoring Calculator:
 
 * Some rare yaku with complicated rules are not correctly detected. We are working on it.
 
-* We found that this program could not run on Windows system due to configuration problems. We are working on it.
+* We found that this app has problem running on Windows system due to configuration issues. We are working on it.
 
-## Reference
+## References
 
 Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://riichi.wiki/Japanese_mahjong_scoring_rules).
 
