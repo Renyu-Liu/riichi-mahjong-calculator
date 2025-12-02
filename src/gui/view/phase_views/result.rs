@@ -5,7 +5,7 @@ use crate::implements::game::AgariType;
 use crate::implements::scoring::{AgariResult, HandLimit};
 use crate::implements::yaku::Yaku;
 use iced::widget::{button, column, container, text};
-use iced::{Color, Element, theme};
+use iced::{Color, Element, Length, theme};
 
 pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
     let content = match &gui.score_result {
@@ -52,7 +52,12 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                 // Total Score
                 let score_text = text(format!("{} Points", total_payment))
                     .size(40)
-                    .style(Color::from_rgb(0.8, 0.2, 0.2));
+                    .style(Color::from_rgb(0.8, 0.2, 0.2))
+                    .font(iced::Font {
+                        weight: iced::font::Weight::Bold,
+                        family: iced::font::Family::Name("Arial"),
+                        ..Default::default()
+                    });
 
                 // Limit Name
                 let limit_str = if let Some(limit) = limit_name {
@@ -138,12 +143,19 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
 
                 let payment_section = container(text(payment_text).size(16)).padding(10);
 
-                // Build column conditionally with or without limit text
                 let mut result_column = column![header, score_text];
 
                 if let Some(limit) = limit_str {
-                    result_column = result_column
-                        .push(text(limit).size(24).style(Color::from_rgb(0.8, 0.0, 0.0)));
+                    result_column = result_column.push(
+                        text(limit)
+                            .size(24)
+                            .style(Color::from_rgb(0.8, 0.0, 0.0))
+                            .font(iced::Font {
+                                weight: iced::font::Weight::Bold,
+                                family: iced::font::Family::Name("Arial"),
+                                ..Default::default()
+                            }),
+                    );
                 }
 
                 result_column = result_column
@@ -174,7 +186,8 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                 background_color: Color::from_rgb(0.0, 0.6, 0.0),
                 text_color: Color::WHITE,
             })))
-            .on_press(Message::StartOver)
+            .on_press(Message::StartOver),
+        iced::widget::Space::with_height(Length::Fixed(50.0))
     ]
     .spacing(30)
     .align_items(iced::Alignment::Center)

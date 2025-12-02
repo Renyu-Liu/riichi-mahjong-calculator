@@ -18,7 +18,11 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
 
     // Winning Tile Section
     let winning_tile_section = column![
-        text("Winning Tile:").size(18),
+        text("Winning Tile").size(20).font(iced::Font {
+            weight: iced::font::Weight::Bold,
+            family: iced::font::Family::Name("Arial"),
+            ..Default::default()
+        }),
         match &gui.winning_tile {
             Some(t) => {
                 {
@@ -55,7 +59,11 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
 
     // Melds Section
     let melds_section = column![
-        text("Open Melds:").size(18),
+        text("Open Melds").size(20).font(iced::Font {
+            weight: iced::font::Weight::Bold,
+            family: iced::font::Family::Name("Arial"),
+            ..Default::default()
+        }),
         // Display existing open melds
         column(
             gui.open_melds
@@ -184,7 +192,11 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
     };
 
     let context_section = column![
-        text("Game Context:").size(18),
+        text("Game Info").size(20).font(iced::Font {
+            weight: iced::font::Weight::Bold,
+            family: iced::font::Family::Name("Arial"),
+            ..Default::default()
+        }),
         // Agari Type
         row![
             text("Win Type:"),
@@ -220,10 +232,36 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
             radio("North", Kaze::Pei, Some(gui.jikaze), Message::SetJikaze),
         ]
         .spacing(10),
+        // Honba Counter
+        row![
+            text(format!("Honba: {}", gui.honba)),
+            button(text("+"))
+                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                    text_color: Color::WHITE,
+                })))
+                .on_press(Message::IncrementHonba),
+            button(text("-"))
+                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                    text_color: Color::WHITE,
+                })))
+                .on_press_maybe(if gui.honba > 0 {
+                    Some(Message::DecrementHonba)
+                } else {
+                    None
+                }),
+        ]
+        .spacing(10)
+        .align_items(iced::Alignment::Center),
         iced::widget::rule::Rule::horizontal(30),
         // Special Yaku
         column![
-            text("Special Yaku:").size(18),
+            text("Special Yaku").size(20).font(iced::Font {
+                weight: iced::font::Weight::Bold,
+                family: iced::font::Family::Name("Arial"),
+                ..Default::default()
+            }),
             // Riichi & Status
             row![
                 checkbox_with_conflict("Riichi", gui.is_riichi, Message::ToggleRiichi, is_menzen),
@@ -273,64 +311,11 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
         ]
         .spacing(5)
         .align_items(iced::Alignment::Center),
-        // Honba Counter
-        row![
-            text(format!("Honba: {}", gui.honba)),
-            button(text("+"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::IncrementHonba),
-            button(text("-"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                    text_color: Color::WHITE,
-                })))
-                .on_press_maybe(if gui.honba > 0 {
-                    Some(Message::DecrementHonba)
-                } else {
-                    None
-                }),
-        ]
-        .spacing(10)
-        .align_items(iced::Alignment::Center),
-        // Akadora Counter
-        {
-            let five_tile_count = gui.count_five_tiles();
-
-            if five_tile_count > 0 {
-                row![
-                    text(format!("Akadora: {}", gui.num_akadora)),
-                    button(text("+"))
-                        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                            background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                            text_color: Color::WHITE,
-                        })))
-                        .on_press_maybe(
-                            if gui.num_akadora < five_tile_count && gui.num_akadora < 4 {
-                                Some(Message::IncrementAkadora)
-                            } else {
-                                None
-                            }
-                        ),
-                    button(text("-"))
-                        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                            background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                            text_color: Color::WHITE,
-                        })))
-                        .on_press_maybe(if gui.num_akadora > 0 {
-                            Some(Message::DecrementAkadora)
-                        } else {
-                            None
-                        }),
-                ]
-                .spacing(10)
-                .align_items(iced::Alignment::Center)
-            } else {
-                row![]
-            }
-        },
+        text("Dora").size(20).font(iced::Font {
+            weight: iced::font::Weight::Bold,
+            family: iced::font::Family::Name("Arial"),
+            ..Default::default()
+        }),
         // Dora Indicators
         column![
             text("Dora:"),
@@ -391,9 +376,45 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
             }
         ]
         .spacing(5)
-        .align_items(iced::Alignment::Center)
+        .align_items(iced::Alignment::Center),
+        // Akadora Counter
+        {
+            let five_tile_count = gui.count_five_tiles();
+
+            if five_tile_count > 0 {
+                row![
+                    text(format!("Akadora: {}", gui.num_akadora)),
+                    button(text("+"))
+                        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                            background_color: Color::from_rgb(0.0, 0.0, 0.6),
+                            text_color: Color::WHITE,
+                        })))
+                        .on_press_maybe(
+                            if gui.num_akadora < five_tile_count && gui.num_akadora < 4 {
+                                Some(Message::IncrementAkadora)
+                            } else {
+                                None
+                            }
+                        ),
+                    button(text("-"))
+                        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
+                            background_color: Color::from_rgb(0.6, 0.0, 0.0),
+                            text_color: Color::WHITE,
+                        })))
+                        .on_press_maybe(if gui.num_akadora > 0 {
+                            Some(Message::DecrementAkadora)
+                        } else {
+                            None
+                        }),
+                ]
+                .spacing(10)
+                .align_items(iced::Alignment::Center)
+            } else {
+                row![]
+            }
+        },
     ]
-    .spacing(10)
+    .spacing(15)
     .align_items(iced::Alignment::Center);
 
     let calculate_btn = button(text("Calculate Score"))
