@@ -70,7 +70,7 @@ You may check for seats, context-dependent yaku, and choose the number of honba 
 
 Scroll down and click "Calculate Score" button to view the final score breakdown.
 
-<img width="1015" height="753" alt="image" src="https://github.com/user-attachments/assets/1e8e95dc-9ea6-4f1c-8135-428179709e5a" />
+<img width="1012" height="759" alt="image" src="https://github.com/user-attachments/assets/94c3780c-ad71-4df6-8786-6efbc2487dd0" />
 
 The score breakdown includes the total points, fu/han points, and yaku detected. It also guides players to redistribute their points. It will show "No Yaku Found" if no yaku is detected. 
 
