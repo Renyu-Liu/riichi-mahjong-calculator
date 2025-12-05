@@ -42,7 +42,7 @@ pub fn get_tile_image_path(tile: &Hai) -> String {
             format!("{}.png", name)
         }
     };
-    format!("assets/{}", filename)
+    format!("assets/tiles/{}", filename)
 }
 
 pub fn create_grid(elements: Vec<Element<Message>>, columns: usize) -> Element<Message> {
