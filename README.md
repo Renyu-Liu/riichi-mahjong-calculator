@@ -1,13 +1,18 @@
 # Riichi Mahjong Scoring Calculator
 _Created by Renyu (@Renyu-Liu), Thomas (@akakrabz), and Karan (@Karan-Annam) as the final project for [CS 128H](https://honors.cs128.org)_
 ## Introduction
-Riichi Mahjong has a complicated mechanism of scoring calculation. People often find it hard to calculate points manually. That's why we have introduced Riichi Mahjong Scoring Calculator. This is a Rust library that calculates the score of a winning Riichi Mahjong hand. It receives a complete input of the winning hand and game info and returns a detailed score breakdown, guiding players to redistribute their points.
-## Installation
+Riichi Mahjong Scoring Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input to provide a detailed breakdown of points and payment distribution.
 
+### Features
+- **Graphical Interface**: for selecting tiles.
+- **Scoring Algorithm**: strictly follows standard Riichi Mahjong rules to calculate points.
+- **Game Information**: received to maximize calculation accuracy.
+- **Score Breakdown**: displayed points, fu/han, yaku, and payment distribution in details.
+
+## Installation
 See [RUN.md](RUN.md).
 
 ## User Manual
-
 ### 1: Select Winning Hand
 
 <img width="996" height="595" alt="image" src="https://github.com/user-attachments/assets/18e23010-3482-4c5c-bd3e-2c1288be8ebb" />
@@ -63,7 +68,6 @@ The score breakdown includes the total points, fu/han points, and yaku detected.
 To familiarize yourself with yaku and scoring rules, you may click "Rules" button at top right corner to view them at any time.
 
 ## Technical Overview
-
 ### Data Structure
 
 <img width="752" height="939" alt="Untitled Diagram drawio" src="https://github.com/user-attachments/assets/215981e1-450e-4c43-9f83-af0fa1036e3d" />

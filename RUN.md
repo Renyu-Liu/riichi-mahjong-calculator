@@ -23,11 +23,10 @@ cd Riichi_Mahjong_Scoring_Calculator
 ```
 
 **Or Download ZIP:**
-- Download the ZIP file from [GitHub](https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator)
-- Extract the files
-- Navigate to the extracted folder
+- Download and extract the ZIP file from [this GitHub repository](https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator)
+- Navigate to the extracted folder:
 ```bash
-cd Riichi_Mahjong_Scoring_Calculator-main
+cd .../Riichi_Mahjong_Scoring_Calculator-main
 ```
 
 ### 2. Run the Application
