@@ -19,10 +19,7 @@ pub fn build_composition_view(gui: &RiichiGui) -> Element<'_, Message> {
         .style(counter_color);
 
     let confirm_btn = button(text("Confirm Hand"))
-        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-            background_color: Color::from_rgb(0.0, 0.6, 0.0),
-            text_color: Color::WHITE,
-        })))
+        .style(theme::Button::Custom(Box::new(ColoredButtonStyle::PRIMARY)))
         .on_press_maybe(if tile_count >= 14 {
             Some(Message::ConfirmHand)
         } else {

@@ -22,7 +22,6 @@ mod recursive_parser {
             i += 1;
         }
         if i == 34 {
-            // Found a valid combination
             results.push(mentsu.clone());
             return;
         }

@@ -1,3 +1,4 @@
+use crate::gui::components::action_button;
 use crate::gui::messages::Message;
 use crate::gui::state::RiichiGui;
 use crate::gui::styles::ColoredButtonStyle;
@@ -9,12 +10,7 @@ use iced::{Color, Element, theme};
 
 pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
     let hand_preview = gui.view_hand_preview_locked();
-    let modify_btn = button(text("Modify Hand"))
-        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-            background_color: Color::from_rgb(0.0, 0.0, 0.6),
-            text_color: Color::WHITE,
-        })))
-        .on_press(Message::ModifyHand);
+    let modify_btn = action_button("Modify Hand", Message::ModifyHand, ColoredButtonStyle::INFO);
 
     // Winning Tile Section
     let winning_tile_section = column![
@@ -41,14 +37,11 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                     e
                 }
             }
-            None => row![
-                button(text("Select"))
-                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                        background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                        text_color: Color::WHITE,
-                    })))
-                    .on_press(Message::StartSelectWinningTile)
-            ]
+            None => row![action_button(
+                "Select",
+                Message::StartSelectWinningTile,
+                ColoredButtonStyle::INFO,
+            )]
             .align_items(iced::Alignment::Center)
             .into(),
         }
@@ -117,18 +110,11 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                     // remove?
                     row![
                         tile_images,
-                        button(text("Change"))
-                            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                                background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                                text_color: Color::WHITE,
-                            })))
-                            .on_press(Message::EditClosedKan(i)),
-                        button(text("Remove"))
-                            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                                background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                                text_color: Color::WHITE,
-                            })))
-                            .on_press(Message::RemoveClosedKan(i))
+                        action_button(
+                            "Remove",
+                            Message::RemoveClosedKan(i),
+                            ColoredButtonStyle::DANGER,
+                        )
                     ]
                     .spacing(10)
                     .align_items(iced::Alignment::Center)
@@ -139,24 +125,21 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
         .spacing(10),
         // Buttons to add new melds
         row![
-            button(text("Add Pon"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::SelectMeldType(MentsuType::Koutsu)),
-            button(text("Add Chii"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::SelectMeldType(MentsuType::Shuntsu)),
-            button(text("Add Kan"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::StartAddClosedKan)
+            action_button(
+                "Add Pon",
+                Message::SelectMeldType(MentsuType::Koutsu),
+                ColoredButtonStyle::INFO,
+            ),
+            action_button(
+                "Add Chii",
+                Message::SelectMeldType(MentsuType::Shuntsu),
+                ColoredButtonStyle::INFO,
+            ),
+            action_button(
+                "Add Kan",
+                Message::StartAddClosedKan,
+                ColoredButtonStyle::INFO,
+            )
         ]
         .spacing(10)
         .align_items(iced::Alignment::Center)
@@ -232,12 +215,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
         // Honba Counter
         row![
             text(format!("Honba: {}", gui.honba)),
-            button(text("+"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::IncrementHonba),
+            action_button("+", Message::IncrementHonba, ColoredButtonStyle::INFO,),
             button(text("-"))
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),
@@ -331,12 +309,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                 })
                 .collect::<Vec<Element<Message>>>())
             .spacing(5),
-            button(text("Add"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::StartAddDora),
+            action_button("Add", Message::StartAddDora, ColoredButtonStyle::INFO,),
             if gui.is_riichi {
                 column![
                     text("Ura Dora:"),
@@ -357,12 +330,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
                         })
                         .collect::<Vec<Element<Message>>>())
                     .spacing(5),
-                    button(text("Add"))
-                        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                            background_color: Color::from_rgb(0.0, 0.0, 0.6),
-                            text_color: Color::WHITE,
-                        })))
-                        .on_press(Message::StartAddUraDora),
+                    action_button("Add", Message::StartAddUraDora, ColoredButtonStyle::INFO,),
                 ]
                 .spacing(5)
                 .align_items(iced::Alignment::Center)
@@ -413,10 +381,7 @@ pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
     .align_items(iced::Alignment::Center);
 
     let calculate_btn = button(text("Calculate Score"))
-        .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-            background_color: Color::from_rgb(0.0, 0.6, 0.0),
-            text_color: Color::WHITE,
-        })))
+        .style(theme::Button::Custom(Box::new(ColoredButtonStyle::PRIMARY)))
         .on_press_maybe(if gui.winning_tile.is_some() {
             Some(Message::CalculateScore)
         } else {

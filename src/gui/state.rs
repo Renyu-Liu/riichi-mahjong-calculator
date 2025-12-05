@@ -8,8 +8,8 @@ pub enum Phase {
     Composition,
     Definition,
     SelectingWinningTile,
-    SelectingMeldTile(MentsuType, Option<usize>),
-    SelectingClosedKan { editing_index: Option<usize> },
+    SelectingMeldTile(MentsuType),
+    SelectingClosedKan,
     SelectingDora,
     SelectingUraDora,
     Result,
@@ -153,7 +153,7 @@ impl RiichiGui {
         tiles
     }
 
-    /// Counts number of 5-tiles for akadora
+    /// Counts akadora
     pub fn count_five_tiles(&self) -> u8 {
         let mut count = 0;
 
@@ -187,17 +187,14 @@ impl RiichiGui {
         count
     }
 
-    /// Checks if a meld can be formed
-    pub fn can_form_meld(&self, meld: &OpenMeldInput, editing_idx: Option<usize>) -> bool {
+    /// Checks for meld
+    pub fn can_form_meld(&self, meld: &OpenMeldInput) -> bool {
         let mut hand_counts = [0u8; 34];
         for tile in &self.hand_tiles {
             hand_counts[crate::implements::tiles::tile_to_index(tile)] += 1;
         }
 
-        for (i, existing_meld) in self.open_melds.iter().enumerate() {
-            if Some(i) == editing_idx {
-                continue;
-            }
+        for existing_meld in &self.open_melds {
             for tile in self.get_meld_tiles(existing_meld) {
                 let idx = crate::implements::tiles::tile_to_index(&tile);
                 if hand_counts[idx] > 0 {
@@ -220,17 +217,14 @@ impl RiichiGui {
         true
     }
 
-    /// Returns all possible Pon melds
-    pub fn get_all_possible_pons(&self, editing_idx: Option<usize>) -> Vec<OpenMeldInput> {
+    /// Returns all possible Pon
+    pub fn get_all_possible_pons(&self) -> Vec<OpenMeldInput> {
         let mut available_counts = [0u8; 34];
         for tile in &self.hand_tiles {
             available_counts[crate::implements::tiles::tile_to_index(tile)] += 1;
         }
 
-        for (i, existing_meld) in self.open_melds.iter().enumerate() {
-            if Some(i) == editing_idx {
-                continue;
-            }
+        for existing_meld in &self.open_melds {
             for tile in self.get_meld_tiles(existing_meld) {
                 let idx = crate::implements::tiles::tile_to_index(&tile);
                 if available_counts[idx] > 0 {
@@ -252,17 +246,14 @@ impl RiichiGui {
         pons
     }
 
-    /// Returns all possible Chii melds
-    pub fn get_all_possible_chiis(&self, editing_idx: Option<usize>) -> Vec<OpenMeldInput> {
+    /// Returns all possible Chii
+    pub fn get_all_possible_chiis(&self) -> Vec<OpenMeldInput> {
         let mut available_counts = [0u8; 34];
         for tile in &self.hand_tiles {
             available_counts[crate::implements::tiles::tile_to_index(tile)] += 1;
         }
 
-        for (i, existing_meld) in self.open_melds.iter().enumerate() {
-            if Some(i) == editing_idx {
-                continue;
-            }
+        for existing_meld in &self.open_melds {
             for tile in self.get_meld_tiles(existing_meld) {
                 let idx = crate::implements::tiles::tile_to_index(&tile);
                 if available_counts[idx] > 0 {
@@ -293,7 +284,7 @@ impl RiichiGui {
         chiis
     }
 
-    /// Returns all possible Kan melds
+    /// Returns all possible Kan
     pub fn get_all_possible_kans(&self) -> Vec<Hai> {
         let mut available_counts = [0u8; 34];
         for tile in &self.hand_tiles {

@@ -32,6 +32,38 @@ impl button::StyleSheet for ColoredButtonStyle {
     }
 }
 
+impl ColoredButtonStyle {
+    pub const PRIMARY: Self = Self {
+        background_color: Color::from_rgb(0.0, 0.6, 0.0),
+        text_color: Color::WHITE,
+    };
+
+    pub const INFO: Self = Self {
+        background_color: Color::from_rgb(0.0, 0.0, 0.6),
+        text_color: Color::WHITE,
+    };
+
+    pub const SECONDARY: Self = Self {
+        background_color: Color::from_rgb(0.6, 0.6, 0.6),
+        text_color: Color::WHITE,
+    };
+
+    pub const DANGER: Self = Self {
+        background_color: Color::from_rgb(0.6, 0.0, 0.0),
+        text_color: Color::WHITE,
+    };
+
+    pub const NEUTRAL: Self = Self {
+        background_color: Color::WHITE,
+        text_color: Color::BLACK,
+    };
+
+    pub const NEUTRAL_HOVER: Self = Self {
+        background_color: Color::from_rgb(0.95, 0.95, 0.95),
+        text_color: Color::BLACK,
+    };
+}
+
 pub struct OverlayStyle;
 
 impl iced::widget::container::StyleSheet for OverlayStyle {

@@ -2,13 +2,15 @@ mod composition;
 mod definition;
 mod result;
 
+use crate::gui::components::action_button;
+
 use super::super::messages::Message;
 use super::super::state::{Phase, RiichiGui};
 use super::View;
 use crate::gui::styles::ColoredButtonStyle;
 use crate::implements::hand::MentsuType;
 use iced::widget::{container, scrollable};
-use iced::{Color, Element, Length, theme};
+use iced::{Element, Length};
 
 impl View for RiichiGui {
     fn view(&self) -> Element<'_, Message> {
@@ -16,8 +18,8 @@ impl View for RiichiGui {
             Phase::Composition => composition::build_composition_view(self),
             Phase::Definition => definition::build_definition_view(self),
             Phase::SelectingWinningTile => self.view_selecting_winning_tile(),
-            Phase::SelectingMeldTile(m_type, _) => self.view_selecting_meld_tile(*m_type),
-            Phase::SelectingClosedKan { .. } => self.view_selecting_closed_kan(),
+            Phase::SelectingMeldTile(m_type) => self.view_selecting_meld_tile(*m_type),
+            Phase::SelectingClosedKan => self.view_selecting_closed_kan(),
             Phase::SelectingDora => self.view_selecting_dora(false),
             Phase::SelectingUraDora => self.view_selecting_dora(true),
             Phase::Result => result::build_result_view(self),
@@ -43,13 +45,7 @@ impl View for RiichiGui {
                 .padding(20)
         };
 
-        let help_button = iced::widget::button(iced::widget::text("Rules").size(20))
-            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                background_color: Color::from_rgb(0.6, 0.6, 0.6),
-                text_color: Color::WHITE,
-            })))
-            .on_press(Message::ShowRules)
-            .padding(10);
+        let help_button = action_button("Rules", Message::ShowRules, ColoredButtonStyle::SECONDARY);
 
         let main_view = container(iced::widget::column![
             iced::widget::row![iced::widget::horizontal_space(), help_button].padding(10),

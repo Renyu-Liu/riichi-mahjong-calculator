@@ -19,7 +19,7 @@ pub enum Message {
     SelectCompleteMeld(OpenMeldInput),
     StartAddClosedKan,
     SelectClosedKan(Hai),
-    EditClosedKan(usize),
+    // EditClosedKan(usize) - Removed
     RemoveOpenMeld(usize),
     RemoveClosedKan(usize),
     IncrementAkadora,

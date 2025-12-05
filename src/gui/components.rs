@@ -1,7 +1,9 @@
 use super::messages::Message;
+use super::styles::ColoredButtonStyle;
 use crate::implements::tiles::{Hai, Jihai, Kaze, Sangenpai, Suhai, Suit};
 use iced::Element;
-use iced::widget::{button, column, row};
+use iced::theme;
+use iced::widget::{button, column, row, text};
 
 #[allow(dead_code)]
 pub trait OnPressMaybe {
@@ -42,7 +44,6 @@ pub fn get_tile_image_path(tile: &Hai) -> String {
     format!("assets/{}", filename)
 }
 
-/// Creates tile grid layout
 pub fn create_grid(elements: Vec<Element<Message>>, columns: usize) -> Element<Message> {
     let mut rows = column![].spacing(10);
     let mut current_row = row![].spacing(10);
@@ -88,4 +89,35 @@ pub fn sort_tiles_by_type(tile: &Hai) -> (u8, u8) {
         Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => (4, 1),
         Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)) => (4, 2),
     }
+}
+
+pub fn tile_button<'a>(
+    content: Element<'a, Message>,
+    msg: Message,
+    style: ColoredButtonStyle,
+) -> Element<'a, Message> {
+    button(content)
+        .style(theme::Button::Custom(Box::new(style)))
+        .on_press(msg)
+        .padding(5)
+        .into()
+}
+
+pub fn action_button<'a>(
+    label: &str,
+    msg: Message,
+    style: ColoredButtonStyle,
+) -> Element<'a, Message> {
+    button(text(label))
+        .style(theme::Button::Custom(Box::new(style)))
+        .on_press(msg)
+        .into()
+}
+
+pub fn cancel_button<'a>() -> Element<'a, Message> {
+    action_button(
+        "Cancel",
+        Message::CancelSelection,
+        ColoredButtonStyle::DANGER,
+    )
 }

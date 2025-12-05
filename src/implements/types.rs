@@ -169,7 +169,7 @@ pub mod hand {
     pub enum HandOrganization {
         YonmentsuIchiatama(AgariHand), // 四面子一頭 (4 Melds, 1 Pair)
         Irregular {
-            // 非標準手 (Irregular Hand)
+            // Irregular Hand
             counts: [u8; 34],
             agari_hai: Hai,
         },
@@ -206,14 +206,14 @@ pub mod game {
     use super::tiles::{Hai, Kaze};
 
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-    // the way the hand was won
+    // win type
     pub enum AgariType {
         Tsumo, // 自摸 (Self-draw)
         Ron,   // 栄和 (Win off discard)
     }
 
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-    // Context for winning the hand
+    // Context winning hand
     pub struct PlayerContext {
         pub jikaze: Kaze,           // 自風 (Seat Wind)
         pub is_oya: bool,           // 親 (dealer)
@@ -224,14 +224,14 @@ pub mod game {
     }
 
     #[derive(Debug, Clone)]
-    // Context for the current round
+    // Context current round
     pub struct GameContext {
         pub bakaze: Kaze,                 // 場風 (Prevalent Wind)
         pub honba: u8,                    // 本場 (Honba counter)
         pub dora_indicators: Vec<Hai>,    // ドラ表示牌 (Dora indicators)
         pub uradora_indicators: Vec<Hai>, // 裏ドラ表示牌 (Ura Dora indicators)
         pub num_akadora: u8,              // 赤ドラ (Red Dora)
-        // Special win condition flags
+        // Special yaku flags
         pub is_tenhou: bool,  // 天和 (Blessing of Heaven)
         pub is_chiihou: bool, // 地和 (Blessing of Earth)
         pub is_renhou: bool,  // 人和 (Blessing of Man)
@@ -243,11 +243,9 @@ pub mod game {
 }
 
 pub mod yaku {
-    use std::fmt;
-
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum Yaku {
-        // 1 Han Yaku
+        // 1 Han
         Riichi,           // 立直 (Riichi)
         Ippatsu,          // 一発 (Ippatsu)
         MenzenTsumo,      // 門前清自摸和 (Fully Concealed Hand)
@@ -262,7 +260,7 @@ pub mod yaku {
         YakuhaiBakaze,    // 役牌: 場風 (Prevalent Wind)
         YakuhaiSangenpai, // 役牌: 三元牌 (Dragon)
 
-        // 2 Han Yaku
+        // 2 Han
         DaburuRiichi,   // ダブル立直 (Double Riichi)
         Chiitoitsu,     // 七対子 (Seven Pairs)
         SanshokuDoujun, // 三色同順 (Mixed Triple Sequence) kuisagari
@@ -275,12 +273,12 @@ pub mod yaku {
         Shousangen,     // 小三元 (Little Three Dragons)
         Honroutou,      // 混老頭 (All Terminals and Honors)
 
-        // 3 Han Yaku
+        // 3 Han
         Ryanpeikou, // 二盃口 (Twice Pure Double Sequence)
         Junchan,    // 純全帯么 (Fully Outside Hand) kuisagari
         Honitsu,    // 混一色 (Half Flush) kuisagari
 
-        // 6 Han Yaku
+        // 6 Han
         Chinitsu, // 清一色 (Full Flush) kuisagari
 
         // Yakuman (13 Han)
@@ -306,22 +304,14 @@ pub mod yaku {
         UraDora, // 裏ドラ (Ura Dora)
         AkaDora, // 赤ドラ (Red Five Dora)
     }
-
-    // terminal version of Display for Yaku. Not used in GUI
-    impl fmt::Display for Yaku {
-        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            write!(f, "{:?}", self)
-        }
-    }
 }
 
 pub mod scoring {
     use super::game::AgariType;
     use super::yaku::Yaku;
-    use std::fmt;
 
     #[derive(Debug, Clone, PartialEq, Eq)]
-    // named point limits
+    // point limits
     pub enum HandLimit {
         Mangan,    // 満貫
         Haneman,   // 跳満
@@ -330,15 +320,8 @@ pub mod scoring {
         Yakuman,   // 役満 (13han+)
     }
 
-    // terminal version of Display for HandLimit. Not used in GUI
-    impl fmt::Display for HandLimit {
-        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            write!(f, "{:?}", self)
-        }
-    }
-
     #[derive(Debug, Clone)]
-    // complete scoring result for a winning hand
+    // result for a winning hand
     pub struct AgariResult {
         pub han: u8,              // 飜 (Han count)
         pub fu: u8,               // 符 (Fu count)
@@ -364,7 +347,7 @@ pub mod input {
         // type of meld
         pub mentsu_type: MentsuType,
 
-        // single tile that uniquely identifies the meld
+        // single tile that uniquely represents the meld
         pub representative_tile: Hai,
     }
 

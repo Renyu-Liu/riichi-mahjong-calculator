@@ -1,12 +1,12 @@
 use super::super::messages::Message;
 
+use super::super::components::action_button;
 use super::super::state::RiichiGui;
 use super::super::styles::ColoredButtonStyle;
 use iced::widget::{button, column, container, image, row, text};
 use iced::{Color, Element, Length, theme};
 
 impl RiichiGui {
-    /// Renders hand preview
     pub fn view_hand_preview(&self) -> Element<'_, Message> {
         let tiles: Vec<Element<Message>> = self
             .hand_tiles
@@ -19,10 +19,7 @@ impl RiichiGui {
                     .expect("Tile image not found")
                     .clone();
                 button(iced::widget::Image::new(handle).width(40))
-                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                        background_color: Color::WHITE,
-                        text_color: Color::BLACK,
-                    })))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL)))
                     .on_press(Message::RemoveTile(i))
                     .padding(0)
                     .into()
@@ -35,7 +32,6 @@ impl RiichiGui {
             .into()
     }
 
-    /// Renders locked hand preview
     pub fn view_hand_preview_locked(&self) -> Element<'_, Message> {
         let tiles: Vec<Element<Message>> = self
             .hand_tiles
@@ -49,10 +45,7 @@ impl RiichiGui {
                     .clone();
 
                 let btn = button(iced::widget::Image::new(handle).width(40))
-                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                        background_color: Color::WHITE,
-                        text_color: Color::BLACK,
-                    })))
+                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL)))
                     .padding(0);
 
                 btn.into()
@@ -62,7 +55,6 @@ impl RiichiGui {
         row(tiles).spacing(5).into()
     }
 
-    /// Renders tile pool
     pub fn view_tile_pool(&self) -> Element<'_, Message> {
         let mut tiles = Vec::new();
 
@@ -108,7 +100,6 @@ impl RiichiGui {
         super::super::components::create_grid(tiles, 9)
     }
 
-    /// Renders rules overlay
     pub fn view_rules_overlay(&self) -> Element<'_, Message> {
         let rules_image = if let Some(handle) = &self.rules_image {
             iced::widget::scrollable(
@@ -128,13 +119,7 @@ impl RiichiGui {
             .width(Length::Fill)
         };
 
-        let close_button = button(text("Close").size(20))
-            .on_press(Message::HideRules)
-            .padding(10)
-            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                text_color: Color::WHITE,
-            })));
+        let close_button = action_button("Close", Message::HideRules, ColoredButtonStyle::DANGER);
 
         container(
             column![

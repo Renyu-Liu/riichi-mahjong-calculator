@@ -9,7 +9,6 @@ use super::types::{
     yaku::Yaku,
 };
 
-// will be called by gui.rs
 pub fn calculate_score(
     yaku_result: YakuResult,
     player: &PlayerContext,
@@ -21,7 +20,7 @@ pub fn calculate_score(
     let yaku_list = yaku_result.yaku_list;
     let num_akadora = yaku_result.num_akadora;
 
-    // Check for Yakuman
+    // Check Yakuman
     let num_yakuman = count_yakuman(&yaku_list);
 
     if num_yakuman > 0 {
@@ -71,7 +70,7 @@ pub fn calculate_score(
         };
     }
 
-    // Regular Hand Path
+    // Regular Hand
     let han = calculate_han(&yaku_list, player.is_menzen);
     let fu = calculate_fu(
         &yaku_result.hand_structure,
@@ -83,7 +82,6 @@ pub fn calculate_score(
 
     let (basic_points, limit_name) = calculate_basic_points(han, fu);
 
-    // Calculate Final Payments
     let (oya_payment, ko_payment, total_payment) = match (player.is_oya, agari_type) {
         // Oya Tsumo
         (true, AgariType::Tsumo) => {
@@ -316,23 +314,18 @@ fn get_pair_fu(tile: &Hai, player: &PlayerContext, game: &GameContext) -> u32 {
 }
 
 fn calculate_basic_points(han: u8, fu: u8) -> (u32, Option<HandLimit>) {
-    // Kazoe Yakuman
     if han >= 13 {
         return (8000, Some(HandLimit::Yakuman));
     }
-    // Sanbaiman
     if han >= 11 {
         return (6000, Some(HandLimit::Sanbaiman));
     }
-    // Baiman
     if han >= 8 {
         return (4000, Some(HandLimit::Baiman));
     }
-    // Haneman
     if han >= 6 {
         return (3000, Some(HandLimit::Haneman));
     }
-    // Mangan
     if han == 5 {
         return (2000, Some(HandLimit::Mangan));
     }

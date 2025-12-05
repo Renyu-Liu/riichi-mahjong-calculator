@@ -1,14 +1,13 @@
-use super::super::components::create_grid;
+use super::super::components::{cancel_button, create_grid, tile_button};
 use super::super::messages::Message;
 use super::super::state::RiichiGui;
 use super::super::styles::ColoredButtonStyle;
 use crate::implements::hand::MentsuType;
 use crate::implements::tiles::Hai;
-use iced::widget::{button, column, container, row, text};
-use iced::{Color, Element, theme};
+use iced::widget::{column, container, row, text};
+use iced::{Element, theme};
 
 impl RiichiGui {
-    /// Renders selecting winning tile view
     pub fn view_selecting_winning_tile(&self) -> Element<'_, Message> {
         let mut unique_tiles: Vec<Hai> = self.hand_tiles.iter().map(|t| *t).collect();
         unique_tiles.sort();
@@ -22,45 +21,30 @@ impl RiichiGui {
                     .get(tile)
                     .expect("Tile image not found")
                     .clone();
-                button(iced::widget::Image::new(handle).width(50))
-                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                        background_color: Color::WHITE,
-                        text_color: Color::BLACK,
-                    })))
-                    .on_press(Message::SelectWinningTile(*tile))
-                    .padding(5)
-                    .into()
+                tile_button(
+                    iced::widget::Image::new(handle).width(50).into(),
+                    Message::SelectWinningTile(*tile),
+                    ColoredButtonStyle::NEUTRAL,
+                )
             })
             .collect();
 
         column![
             text("Select Winning Tile").size(24),
             create_grid(tiles, 10),
-            button(text("Cancel"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::CancelSelection)
+            cancel_button()
         ]
         .spacing(20)
         .align_items(iced::Alignment::Center)
         .into()
     }
 
-    /// Renders selecting meld view
     pub fn view_selecting_meld_tile(&self, m_type: MentsuType) -> Element<'_, Message> {
-        use super::super::state::Phase;
-
-        let editing_idx = if let Phase::SelectingMeldTile(_, idx) = &self.phase {
-            *idx
-        } else {
-            None
-        };
+        // use super::super::state::Phase; // Phase import might be unused now if we remove the check
 
         let possible_melds = match m_type {
-            MentsuType::Koutsu => self.get_all_possible_pons(editing_idx),
-            MentsuType::Shuntsu => self.get_all_possible_chiis(editing_idx),
+            MentsuType::Koutsu => self.get_all_possible_pons(),
+            MentsuType::Shuntsu => self.get_all_possible_chiis(),
             MentsuType::Kantsu => {
                 vec![]
             }
@@ -69,12 +53,7 @@ impl RiichiGui {
         if possible_melds.is_empty() {
             return column![
                 text(format!("No valid {:?} available", m_type)).size(24),
-                button(text("Cancel"))
-                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                        background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                        text_color: Color::WHITE,
-                    })))
-                    .on_press(Message::CancelSelection)
+                cancel_button()
             ]
             .spacing(20)
             .align_items(iced::Alignment::Center)
@@ -98,54 +77,36 @@ impl RiichiGui {
                     .collect::<Vec<Element<Message>>>())
                 .spacing(2);
 
-                let meld_button = button(
+                tile_button(
                     container(tile_images)
                         .padding(5)
-                        .style(theme::Container::Box),
+                        .style(theme::Container::Box)
+                        .into(),
+                    Message::SelectCompleteMeld(meld.clone()),
+                    ColoredButtonStyle::NEUTRAL_HOVER,
                 )
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.95, 0.95, 0.95),
-                    text_color: Color::BLACK,
-                })))
-                .on_press(Message::SelectCompleteMeld(meld.clone()))
-                .padding(3);
-
-                meld_button.into()
+                .into()
             })
             .collect();
 
         column![
             text(format!("Select {:?}", m_type)).size(24),
             create_grid(meld_buttons, 5),
-            button(text("Cancel"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::CancelSelection)
+            cancel_button()
         ]
         .spacing(20)
         .align_items(iced::Alignment::Center)
         .into()
     }
 
-    /// Renders selecting closed Kan view
     pub fn view_selecting_closed_kan(&self) -> Element<'_, Message> {
         let possible_kans = self.get_all_possible_kans();
 
         if possible_kans.is_empty() {
-            return column![
-                text("No valid Kantsu available").size(24),
-                button(text("Cancel"))
-                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                        background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                        text_color: Color::WHITE,
-                    })))
-                    .on_press(Message::CancelSelection)
-            ]
-            .spacing(20)
-            .align_items(iced::Alignment::Center)
-            .into();
+            return column![text("No valid Kantsu available").size(24), cancel_button()]
+                .spacing(20)
+                .align_items(iced::Alignment::Center)
+                .into();
         }
 
         let kan_buttons: Vec<Element<Message>> = possible_kans
@@ -165,38 +126,28 @@ impl RiichiGui {
                     .collect::<Vec<Element<Message>>>())
                 .spacing(2);
 
-                let kan_button = button(
+                tile_button(
                     container(tile_images)
                         .padding(5)
-                        .style(theme::Container::Box),
+                        .style(theme::Container::Box)
+                        .into(),
+                    Message::SelectClosedKan(*tile),
+                    ColoredButtonStyle::NEUTRAL_HOVER,
                 )
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.95, 0.95, 0.95),
-                    text_color: Color::BLACK,
-                })))
-                .on_press(Message::SelectClosedKan(*tile))
-                .padding(3);
-
-                kan_button.into()
+                .into()
             })
             .collect();
 
         column![
             text("Select Kantsu").size(24),
             create_grid(kan_buttons, 5),
-            button(text("Cancel"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::CancelSelection)
+            cancel_button()
         ]
         .spacing(20)
         .align_items(iced::Alignment::Center)
         .into()
     }
 
-    /// Renders selecting Dora view
     pub fn view_selecting_dora(&self, is_ura: bool) -> Element<'_, Message> {
         let mut tiles = Vec::new();
 
@@ -208,18 +159,15 @@ impl RiichiGui {
                 .expect("Tile image not found")
                 .clone();
 
-            let btn = button(iced::widget::Image::new(handle).width(40))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::WHITE,
-                    text_color: Color::BLACK,
-                })))
-                .on_press(if is_ura {
+            let btn = tile_button(
+                iced::widget::Image::new(handle).width(40).into(),
+                if is_ura {
                     Message::SelectUraDora(tile)
                 } else {
                     Message::SelectDora(tile)
-                })
-                .padding(5)
-                .into();
+                },
+                ColoredButtonStyle::NEUTRAL,
+            );
 
             tiles.push(btn);
         }
@@ -227,12 +175,7 @@ impl RiichiGui {
         column![
             text("Select").size(24),
             create_grid(tiles, 9),
-            button(text("Cancel"))
-                .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                    background_color: Color::from_rgb(0.6, 0.0, 0.0),
-                    text_color: Color::WHITE,
-                })))
-                .on_press(Message::CancelSelection)
+            cancel_button()
         ]
         .spacing(20)
         .align_items(iced::Alignment::Center)

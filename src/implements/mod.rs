@@ -11,21 +11,17 @@ use crate::implements::input::UserInput;
 use crate::implements::scoring::AgariResult;
 
 pub fn calculate_agari(input: &UserInput) -> Result<AgariResult, &'static str> {
-    // Get input
     let player = &input.player_context;
     let game = &input.game_context;
     let agari_type = input.agari_type;
 
-    // Organize Hand
     let organizations = organize_hand(input)?;
 
     let mut best_result: Option<AgariResult> = None;
     let mut best_payment = 0;
 
     for organization in organizations {
-        // Check Yaku
         if let Ok(yaku_result) = check_all_yaku(organization, player, game, agari_type) {
-            // Calculate Final Score
             let final_score = calculate_score(yaku_result, player, game, agari_type);
 
             if final_score.total_payment >= best_payment {

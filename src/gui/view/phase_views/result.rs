@@ -195,10 +195,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
     column![
         content,
         button(text("Start Over"))
-            .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
-                background_color: Color::from_rgb(0.0, 0.6, 0.0),
-                text_color: Color::WHITE,
-            })))
+            .style(theme::Button::Custom(Box::new(ColoredButtonStyle::PRIMARY)))
             .on_press(Message::StartOver),
         iced::widget::Space::with_height(Length::Fixed(50.0))
     ]

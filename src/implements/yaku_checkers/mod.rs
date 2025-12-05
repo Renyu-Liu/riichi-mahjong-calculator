@@ -96,7 +96,7 @@ pub fn check_all_yaku(
     })
 }
 
-// unwrap result from raw_hand_organizer.rs
+// unwrap raw_hand_organizer.rs
 fn resolve_hand_structure(
     org: HandOrganization,
     player: &PlayerContext,
