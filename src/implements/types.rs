@@ -2,7 +2,7 @@
 
 pub mod tiles {
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
-    pub enum Suhai {
+    pub enum Suit {
         // 数牌 (Number)
         Manzu, // 萬子 (Characters)
         Pinzu, // 筒子 (Circles)
@@ -34,17 +34,23 @@ pub mod tiles {
     }
 
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
+    pub struct Suhai {
+        pub number: u8,
+        pub suit: Suit,
+    }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
     pub enum Hai {
         // 牌 (Tile)
-        Suhai(u8, Suhai), // 数牌 (Number, 1-9)
-        Jihai(Jihai),     // 字牌 (Honor)
+        Suhai(Suhai), // 数牌 (Number, 1-9)
+        Jihai(Jihai), // 字牌 (Honor)
     }
 
     impl Hai {
         // simple (2-8)
         pub fn is_simple(&self) -> bool {
             match self {
-                Hai::Suhai(n, _) => *n >= 2 && *n <= 8,
+                Hai::Suhai(Suhai { number: n, .. }) => *n >= 2 && *n <= 8,
                 Hai::Jihai(_) => false,
             }
         }
@@ -52,7 +58,7 @@ pub mod tiles {
         // terminal (1 or 9)
         pub fn is_terminal(&self) -> bool {
             match self {
-                Hai::Suhai(n, _) => *n == 1 || *n == 9,
+                Hai::Suhai(Suhai { number: n, .. }) => *n == 1 || *n == 9,
                 Hai::Jihai(_) => false,
             }
         }
@@ -70,9 +76,18 @@ pub mod tiles {
 
     pub fn tile_to_index(tile: &Hai) -> usize {
         match tile {
-            Hai::Suhai(n, Suhai::Manzu) => (*n - 1) as usize, // 0-8
-            Hai::Suhai(n, Suhai::Pinzu) => (*n - 1) as usize + 9, // 9-17
-            Hai::Suhai(n, Suhai::Souzu) => (*n - 1) as usize + 18, // 18-26
+            Hai::Suhai(Suhai {
+                number: n,
+                suit: Suit::Manzu,
+            }) => (*n - 1) as usize, // 0-8
+            Hai::Suhai(Suhai {
+                number: n,
+                suit: Suit::Pinzu,
+            }) => (*n - 1) as usize + 9, // 9-17
+            Hai::Suhai(Suhai {
+                number: n,
+                suit: Suit::Souzu,
+            }) => (*n - 1) as usize + 18, // 18-26
             Hai::Jihai(Jihai::Kaze(Kaze::Ton)) => 27,
             Hai::Jihai(Jihai::Kaze(Kaze::Nan)) => 28,
             Hai::Jihai(Jihai::Kaze(Kaze::Shaa)) => 29,
@@ -85,9 +100,18 @@ pub mod tiles {
 
     pub fn index_to_tile(index: usize) -> Hai {
         match index {
-            0..=8 => Hai::Suhai((index + 1) as u8, Suhai::Manzu),
-            9..=17 => Hai::Suhai(((index - 9) + 1) as u8, Suhai::Pinzu),
-            18..=26 => Hai::Suhai(((index - 18) + 1) as u8, Suhai::Souzu),
+            0..=8 => Hai::Suhai(Suhai {
+                number: (index + 1) as u8,
+                suit: Suit::Manzu,
+            }),
+            9..=17 => Hai::Suhai(Suhai {
+                number: ((index - 9) + 1) as u8,
+                suit: Suit::Pinzu,
+            }),
+            18..=26 => Hai::Suhai(Suhai {
+                number: ((index - 18) + 1) as u8,
+                suit: Suit::Souzu,
+            }),
             27 => Hai::Jihai(Jihai::Kaze(Kaze::Ton)),
             28 => Hai::Jihai(Jihai::Kaze(Kaze::Nan)),
             29 => Hai::Jihai(Jihai::Kaze(Kaze::Shaa)),
@@ -327,117 +351,6 @@ pub mod scoring {
         pub honba: u8,
         pub agari_type: AgariType,
         pub is_oya: bool,
-    }
-
-    // terminal version of Display for AgariResult. No longer used
-    impl fmt::Display for AgariResult {
-        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            writeln!(f, "========== Score Result ==========")?;
-
-            // 1. Total Score
-            writeln!(f, "Total Payment: {}", self.total_payment)?;
-
-            // 2. Han / Fu & 4. Limit Name
-            if let Some(limit) = &self.limit_name {
-                if limit == &HandLimit::Yakuman {
-                    let num_yakuman = self.han / 13;
-                    if num_yakuman > 1 {
-                        writeln!(f, "\n{} x{}", limit, num_yakuman)?;
-                    } else {
-                        writeln!(f, "\n{}", limit)?;
-                    }
-                } else {
-                    writeln!(f, "\n{} ({} Fu, {} Han)", limit, self.fu, self.han)?;
-                }
-            } else {
-                writeln!(f, "\n{} Fu, {} Han", self.fu, self.han)?;
-            }
-
-            // 3. Yaku List
-            writeln!(f, "\n--- Yaku List ---")?;
-            let mut dora_count = 0;
-            let mut uradora_count = 0;
-            let mut akadora_count = 0;
-
-            if self.yaku_list.is_empty() {
-                writeln!(f, "(No yaku)")?;
-            }
-
-            for yaku in &self.yaku_list {
-                match yaku {
-                    Yaku::Dora => dora_count += 1,
-                    Yaku::UraDora => uradora_count += 1,
-                    Yaku::AkaDora => akadora_count += 1,
-                    _ => writeln!(f, "- {}", yaku)?,
-                }
-            }
-            if dora_count > 0 {
-                writeln!(f, "- Dora {}", dora_count)?;
-            }
-            if uradora_count > 0 {
-                writeln!(f, "- UraDora {}", uradora_count)?;
-            }
-            if akadora_count > 0 {
-                writeln!(f, "- AkaDora {}", akadora_count)?;
-            }
-
-            // 5. Payment Breakdown
-            writeln!(f, "\n--- Payment Breakdown ---")?;
-            let tsumo_bonus = self.honba as u32 * 100;
-            let ron_bonus = self.honba as u32 * 300;
-
-            match (self.is_oya, self.agari_type) {
-                // Oya Tsumo
-                (true, AgariType::Tsumo) => {
-                    let payment_per_player = self.oya_payment + tsumo_bonus;
-                    writeln!(f, "Oya Tsumo win:")?;
-                    writeln!(
-                        f,
-                        "  Each Non-Dealer pays: {} ({} base + {} honba)",
-                        payment_per_player, self.oya_payment, tsumo_bonus
-                    )?;
-                }
-                // Ko Tsumo
-                (false, AgariType::Tsumo) => {
-                    let oya_pay = self.oya_payment + tsumo_bonus;
-                    let ko_pay = self.ko_payment + tsumo_bonus;
-                    writeln!(f, "Ko Tsumo win:")?;
-                    writeln!(
-                        f,
-                        "  Oya (Dealer) pays: {} ({} base + {} honba)",
-                        oya_pay, self.oya_payment, tsumo_bonus
-                    )?;
-                    writeln!(
-                        f,
-                        "  Other Non-Dealers pay: {} ({} base + {} honba)",
-                        ko_pay, self.ko_payment, tsumo_bonus
-                    )?;
-                }
-                // Oya Ron
-                (true, AgariType::Ron) => {
-                    let base_payment = self.total_payment - ron_bonus;
-                    writeln!(f, "Oya Ron win:")?;
-                    writeln!(
-                        f,
-                        "  Discarder pays: {} ({} base + {} honba)",
-                        self.total_payment, base_payment, ron_bonus
-                    )?;
-                }
-                // Ko Ron
-                (false, AgariType::Ron) => {
-                    let base_payment = self.total_payment - ron_bonus;
-                    writeln!(f, "Ko Ron win:")?;
-                    writeln!(
-                        f,
-                        "  Discarder pays: {} ({} base + {} honba)",
-                        self.total_payment, base_payment, ron_bonus
-                    )?;
-                }
-            }
-
-            writeln!(f, "==================================")?;
-            Ok(())
-        }
     }
 }
 

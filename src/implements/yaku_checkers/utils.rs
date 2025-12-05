@@ -3,7 +3,7 @@
 use crate::implements::types::{
     game::AgariType,
     hand::{AgariHand, HandStructure, Machi, Mentsu, MentsuType},
-    tiles::{Hai, Jihai, Kaze, Sangenpai, Suhai, index_to_tile},
+    tiles::{Hai, Jihai, Kaze, Sangenpai, Suhai, Suit, index_to_tile},
 };
 
 pub fn check_chiitoitsu(counts: &[u8; 34], agari_hai: Hai) -> Option<HandStructure> {
@@ -53,11 +53,17 @@ pub fn count_dora(all_tiles: &[Hai], indicators: &[Hai]) -> u8 {
 
 pub fn get_dora_tile(indicator: &Hai) -> Hai {
     match indicator {
-        Hai::Suhai(n, s) => {
+        Hai::Suhai(Suhai { number: n, suit: s }) => {
             if *n == 9 {
-                Hai::Suhai(1, *s)
+                Hai::Suhai(Suhai {
+                    number: 1,
+                    suit: *s,
+                })
             } else {
-                Hai::Suhai(n + 1, *s)
+                Hai::Suhai(Suhai {
+                    number: n + 1,
+                    suit: *s,
+                })
             }
         }
         Hai::Jihai(Jihai::Kaze(k)) => Hai::Jihai(Jihai::Kaze(match k {
@@ -162,7 +168,10 @@ pub fn is_koutsu_or_kantsu(mentsu: &Mentsu) -> bool {
 
 pub fn is_green_tile(tile: &Hai) -> bool {
     match tile {
-        Hai::Suhai(n, Suhai::Souzu) => *n == 2 || *n == 3 || *n == 4 || *n == 6 || *n == 8,
+        Hai::Suhai(Suhai {
+            number: n,
+            suit: Suit::Souzu,
+        }) => *n == 2 || *n == 3 || *n == 4 || *n == 6 || *n == 8,
         Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => true,
         _ => false,
     }

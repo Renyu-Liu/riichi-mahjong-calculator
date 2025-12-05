@@ -1,7 +1,7 @@
 use crate::implements::game::AgariType;
 use crate::implements::hand::MentsuType;
 use crate::implements::input::OpenMeldInput;
-use crate::implements::tiles::{Hai, Kaze};
+use crate::implements::tiles::{Hai, Kaze, Suhai};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Phase {
@@ -158,13 +158,13 @@ impl RiichiGui {
         let mut count = 0;
 
         for tile in &self.hand_tiles {
-            if matches!(tile, Hai::Suhai(5, _)) {
+            if matches!(tile, Hai::Suhai(Suhai { number: 5, .. })) {
                 count += 1;
             }
         }
 
         if let Some(tile) = &self.winning_tile {
-            if matches!(tile, Hai::Suhai(5, _)) {
+            if matches!(tile, Hai::Suhai(Suhai { number: 5, .. })) {
                 count += 1;
             }
         }
@@ -172,14 +172,14 @@ impl RiichiGui {
         for meld in &self.open_melds {
             let tiles = self.get_meld_tiles(meld);
             for tile in tiles {
-                if matches!(tile, Hai::Suhai(5, _)) {
+                if matches!(tile, Hai::Suhai(Suhai { number: 5, .. })) {
                     count += 1;
                 }
             }
         }
 
         for tile in &self.closed_kans {
-            if matches!(tile, Hai::Suhai(5, _)) {
+            if matches!(tile, Hai::Suhai(Suhai { number: 5, .. })) {
                 count += 4;
             }
         }

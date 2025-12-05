@@ -180,9 +180,21 @@ impl Update for RiichiGui {
             Message::ToggleChankan(val) => self.is_chankan = val,
             Message::ToggleHaitei(val) => self.is_haitei = val,
             Message::ToggleHoutei(val) => self.is_houtei = val,
-            Message::ToggleTenhou(val) => self.is_tenhou = val,
-            Message::ToggleChiihou(val) => self.is_chiihou = val,
-            Message::ToggleRenhou(val) => self.is_renhou = val,
+            Message::ToggleTenhou(val) => {
+                if self.open_melds.is_empty() {
+                    self.is_tenhou = val;
+                }
+            }
+            Message::ToggleChiihou(val) => {
+                if self.open_melds.is_empty() {
+                    self.is_chiihou = val;
+                }
+            }
+            Message::ToggleRenhou(val) => {
+                if self.open_melds.is_empty() {
+                    self.is_renhou = val;
+                }
+            }
             Message::IncrementHonba => self.honba += 1,
             Message::DecrementHonba => {
                 if self.honba > 0 {

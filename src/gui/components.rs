@@ -1,5 +1,5 @@
 use super::messages::Message;
-use crate::implements::tiles::{Hai, Jihai, Kaze, Sangenpai, Suhai};
+use crate::implements::tiles::{Hai, Jihai, Kaze, Sangenpai, Suhai, Suit};
 use iced::Element;
 use iced::widget::{button, column, row};
 
@@ -19,9 +19,18 @@ impl<'a> OnPressMaybe for button::Button<'a, Message> {
 
 pub fn get_tile_image_path(tile: &Hai) -> String {
     let filename = match tile {
-        Hai::Suhai(n, Suhai::Manzu) => format!("Man{}.png", n),
-        Hai::Suhai(n, Suhai::Pinzu) => format!("Pin{}.png", n),
-        Hai::Suhai(n, Suhai::Souzu) => format!("Sou{}.png", n),
+        Hai::Suhai(Suhai {
+            number: n,
+            suit: Suit::Manzu,
+        }) => format!("Man{}.png", n),
+        Hai::Suhai(Suhai {
+            number: n,
+            suit: Suit::Pinzu,
+        }) => format!("Pin{}.png", n),
+        Hai::Suhai(Suhai {
+            number: n,
+            suit: Suit::Souzu,
+        }) => format!("Sou{}.png", n),
         Hai::Jihai(Jihai::Kaze(Kaze::Ton)) => "Ton.png".to_string(),
         Hai::Jihai(Jihai::Kaze(Kaze::Nan)) => "Nan.png".to_string(),
         Hai::Jihai(Jihai::Kaze(Kaze::Shaa)) => "Shaa.png".to_string(),
@@ -59,9 +68,18 @@ pub fn create_grid(elements: Vec<Element<Message>>, columns: usize) -> Element<M
 
 pub fn sort_tiles_by_type(tile: &Hai) -> (u8, u8) {
     match tile {
-        Hai::Suhai(n, Suhai::Manzu) => (0, *n),
-        Hai::Suhai(n, Suhai::Pinzu) => (1, *n),
-        Hai::Suhai(n, Suhai::Souzu) => (2, *n),
+        Hai::Suhai(Suhai {
+            number: n,
+            suit: Suit::Manzu,
+        }) => (0, *n),
+        Hai::Suhai(Suhai {
+            number: n,
+            suit: Suit::Pinzu,
+        }) => (1, *n),
+        Hai::Suhai(Suhai {
+            number: n,
+            suit: Suit::Souzu,
+        }) => (2, *n),
         Hai::Jihai(Jihai::Kaze(Kaze::Ton)) => (3, 0),
         Hai::Jihai(Jihai::Kaze(Kaze::Nan)) => (3, 1),
         Hai::Jihai(Jihai::Kaze(Kaze::Shaa)) => (3, 2),

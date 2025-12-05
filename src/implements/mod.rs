@@ -17,13 +17,26 @@ pub fn calculate_agari(input: &UserInput) -> Result<AgariResult, &'static str> {
     let agari_type = input.agari_type;
 
     // Organize Hand
-    let organization = organize_hand(input)?;
+    let organizations = organize_hand(input)?;
 
-    // Check Yaku
-    let yaku_result = check_all_yaku(organization, player, game, agari_type)?;
+    let mut best_result: Option<AgariResult> = None;
+    let mut best_payment = 0;
 
-    // Calculate Final Score
-    let final_score = calculate_score(yaku_result, player, game, agari_type);
+    for organization in organizations {
+        // Check Yaku
+        if let Ok(yaku_result) = check_all_yaku(organization, player, game, agari_type) {
+            // Calculate Final Score
+            let final_score = calculate_score(yaku_result, player, game, agari_type);
 
-    Ok(final_score)
+            if final_score.total_payment >= best_payment {
+                best_payment = final_score.total_payment;
+                best_result = Some(final_score);
+            }
+        }
+    }
+
+    match best_result {
+        Some(res) => Ok(res),
+        None => Err("No valid Yaku found"),
+    }
 }

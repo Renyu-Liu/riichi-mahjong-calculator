@@ -5,7 +5,7 @@ use super::utils::*;
 use crate::implements::types::{
     game::{AgariType, GameContext, PlayerContext},
     hand::{AgariHand, HandStructure, Machi},
-    tiles::{Hai, Jihai, index_to_tile, tile_to_index},
+    tiles::{Hai, Jihai, Suhai, index_to_tile, tile_to_index},
     yaku::Yaku,
 };
 
@@ -221,7 +221,7 @@ fn check_chuuren(hand: &AgariHand) -> Option<bool> {
 
     let mut counts = [0u8; 9];
     for tile in &all_tiles {
-        if let Hai::Suhai(n, s) = tile {
+        if let Hai::Suhai(Suhai { number: n, suit: s }) = tile {
             if *s == suit {
                 counts[(n - 1) as usize] += 1;
             }
@@ -252,7 +252,7 @@ fn check_chuuren(hand: &AgariHand) -> Option<bool> {
     if !has_extra {
         return None;
     }
-    if let Hai::Suhai(n, s) = hand.agari_hai {
+    if let Hai::Suhai(Suhai { number: n, suit: s }) = hand.agari_hai {
         if s == suit && n as usize == extra_tile_num {
             return Some(true);
         }

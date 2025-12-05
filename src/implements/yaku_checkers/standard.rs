@@ -4,7 +4,7 @@ use super::utils::*;
 use crate::implements::types::{
     game::{AgariType, GameContext, PlayerContext},
     hand::{AgariHand, Machi, Mentsu, MentsuType},
-    tiles::{Hai, Jihai, Sangenpai, Suhai},
+    tiles::{Hai, Jihai, Sangenpai, Suhai, Suit},
     yaku::Yaku,
 };
 use std::collections::{HashMap, HashSet};
@@ -300,20 +300,20 @@ fn check_peikou<'a>(shuntsu: &[&'a Mentsu]) -> (bool, bool) {
     (identical_pairs == 1, identical_pairs == 2)
 }
 
-fn check_sanshoku_doujun<'a>(shuntsu: &[&'a Mentsu]) -> bool {
-    if shuntsu.len() < 3 {
+fn check_sanshoku_generic(mentsu_list: &[&Mentsu]) -> bool {
+    if mentsu_list.len() < 3 {
         return false;
     }
 
     let mut starters: HashMap<u8, (bool, bool, bool)> = HashMap::new();
 
-    for m in shuntsu {
-        if let Hai::Suhai(n, s) = m.tiles[0] {
+    for m in mentsu_list {
+        if let Hai::Suhai(Suhai { number: n, suit: s }) = m.tiles[0] {
             let entry = starters.entry(n).or_insert((false, false, false));
             match s {
-                Suhai::Manzu => entry.0 = true,
-                Suhai::Pinzu => entry.1 = true,
-                Suhai::Souzu => entry.2 = true,
+                Suit::Manzu => entry.0 = true,
+                Suit::Pinzu => entry.1 = true,
+                Suit::Souzu => entry.2 = true,
             }
         }
     }
@@ -321,15 +321,19 @@ fn check_sanshoku_doujun<'a>(shuntsu: &[&'a Mentsu]) -> bool {
     starters.values().any(|&(m, p, s)| m && p && s)
 }
 
+fn check_sanshoku_doujun<'a>(shuntsu: &[&'a Mentsu]) -> bool {
+    check_sanshoku_generic(shuntsu)
+}
+
 fn check_ittsu<'a>(shuntsu: &[&'a Mentsu]) -> bool {
     if shuntsu.len() < 3 {
         return false;
     }
 
-    let mut suits: HashMap<Suhai, HashSet<u8>> = HashMap::new();
+    let mut suits: HashMap<Suit, HashSet<u8>> = HashMap::new();
 
     for m in shuntsu {
-        if let Hai::Suhai(n, s) = m.tiles[0] {
+        if let Hai::Suhai(Suhai { number: n, suit: s }) = m.tiles[0] {
             suits.entry(s).or_default().insert(n);
         }
     }
@@ -349,24 +353,7 @@ fn check_sanshoku_doukou(hand: &AgariHand) -> bool {
         .filter(|m| is_koutsu_or_kantsu(m))
         .collect();
 
-    if koutsu.len() < 3 {
-        return false;
-    }
-
-    let mut numbers: HashMap<u8, (bool, bool, bool)> = HashMap::new();
-
-    for m in koutsu {
-        if let Hai::Suhai(n, s) = m.tiles[0] {
-            let entry = numbers.entry(n).or_insert((false, false, false));
-            match s {
-                Suhai::Manzu => entry.0 = true,
-                Suhai::Pinzu => entry.1 = true,
-                Suhai::Souzu => entry.2 = true,
-            }
-        }
-    }
-
-    numbers.values().any(|&(m, p, s)| m && p && s)
+    check_sanshoku_generic(&koutsu)
 }
 
 fn check_shousangen(hand: &AgariHand) -> bool {
@@ -419,7 +406,7 @@ fn check_chanta_junchan(groups: &[Vec<Hai>]) -> (bool, bool) {
     (is_chanta, is_junchan && is_chanta)
 }
 
-fn check_color(all_tiles: &[Hai]) -> (bool, bool, Option<Suhai>) {
+fn check_color(all_tiles: &[Hai]) -> (bool, bool, Option<Suit>) {
     let mut suit = None;
     let mut has_jihai = false;
     let mut is_honitsu = true;
@@ -427,7 +414,7 @@ fn check_color(all_tiles: &[Hai]) -> (bool, bool, Option<Suhai>) {
 
     for tile in all_tiles {
         match tile {
-            Hai::Suhai(_n, s) => {
+            Hai::Suhai(Suhai { suit: s, .. }) => {
                 if suit.is_none() {
                     suit = Some(*s);
                 } else if suit != Some(*s) {
@@ -455,12 +442,12 @@ fn check_color(all_tiles: &[Hai]) -> (bool, bool, Option<Suhai>) {
     (is_honitsu, is_chinitsu, suit)
 }
 
-pub fn check_honitsu(all_tiles: &[Hai]) -> (bool, Option<Suhai>) {
+pub fn check_honitsu(all_tiles: &[Hai]) -> (bool, Option<Suit>) {
     let (hon, _chin, suit) = check_color(all_tiles);
     (hon, suit)
 }
 
-pub fn check_chinitsu(all_tiles: &[Hai]) -> (bool, Option<Suhai>) {
+pub fn check_chinitsu(all_tiles: &[Hai]) -> (bool, Option<Suit>) {
     let (_hon, chin, suit) = check_color(all_tiles);
     (chin, suit)
 }
