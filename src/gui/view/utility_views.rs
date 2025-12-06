@@ -1,6 +1,6 @@
 use super::super::messages::Message;
 
-use super::super::components::action_button;
+use super::super::components::{action_button, tile_image, tile_image_button};
 use super::super::state::RiichiGui;
 use super::super::styles::ColoredButtonStyle;
 use iced::widget::{button, column, container, image, row, text};
@@ -18,11 +18,12 @@ impl RiichiGui {
                     .get(tile)
                     .expect("Tile image not found")
                     .clone();
-                button(iced::widget::Image::new(handle).width(40))
-                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL)))
-                    .on_press(Message::RemoveTile(i))
-                    .padding(0)
-                    .into()
+                tile_image_button(
+                    handle,
+                    40,
+                    Message::RemoveTile(i),
+                    theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL)),
+                )
             })
             .collect();
 
@@ -43,12 +44,7 @@ impl RiichiGui {
                     .get(tile)
                     .expect("Tile image not found")
                     .clone();
-
-                let btn = button(iced::widget::Image::new(handle).width(40))
-                    .style(theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL)))
-                    .padding(0);
-
-                btn.into()
+                tile_image(handle, 40)
             })
             .collect();
 

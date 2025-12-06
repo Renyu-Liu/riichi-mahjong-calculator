@@ -18,6 +18,12 @@ pub mod tiles {
         Pei,  // 北 (North)
     }
 
+    impl Default for Kaze {
+        fn default() -> Self {
+            Kaze::Ton
+        }
+    }
+
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
     pub enum Sangenpai {
         // 三元牌 (Dragon)
@@ -210,6 +216,12 @@ pub mod game {
     pub enum AgariType {
         Tsumo, // 自摸 (Self-draw)
         Ron,   // 栄和 (Win off discard)
+    }
+
+    impl Default for AgariType {
+        fn default() -> Self {
+            AgariType::Ron
+        }
     }
 
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]

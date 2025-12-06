@@ -1,11 +1,14 @@
-// yakuman.rs: yakuman checkers
+pub mod chuuren;
+pub mod kokushi;
 
-use super::standard::check_chinitsu;
+use self::chuuren::check_chuuren;
+pub use self::kokushi::check_kokushi;
+
 use super::utils::*;
 use crate::implements::types::{
     game::{AgariType, GameContext, PlayerContext},
     hand::{AgariHand, HandStructure, Machi},
-    tiles::{Hai, Jihai, Suhai, index_to_tile, tile_to_index},
+    tiles::{Hai, Jihai},
     yaku::Yaku,
 };
 
@@ -123,71 +126,6 @@ pub fn check_standard_yakuman(
     (yakuman, chuuren_flag)
 }
 
-/// Kokushi Musou
-pub fn check_kokushi(counts: &[u8; 34], agari_hai: Hai) -> Option<(HandStructure, Yaku)> {
-    let mut has_pair = false;
-    let mut tiles = Vec::new();
-    let mut atama_tile = None;
-
-    for (idx, &count) in counts.iter().enumerate() {
-        let tile = index_to_tile(idx);
-        if !tile.is_yaochuu() {
-            if count > 0 {
-                return None;
-            }
-            continue;
-        }
-
-        match count {
-            1 => {
-                tiles.push(tile);
-            }
-            2 => {
-                if has_pair {
-                    return None;
-                }
-                has_pair = true;
-                atama_tile = Some(tile);
-                tiles.push(tile);
-            }
-            0 => {}
-            _ => return None,
-        }
-    }
-
-    if !has_pair {
-        return None;
-    }
-
-    let agari_hai_index = tile_to_index(&agari_hai);
-    if counts[agari_hai_index] == 0 {
-        return None;
-    }
-
-    let atama = (atama_tile.unwrap(), atama_tile.unwrap());
-
-    // 13-sided wait
-    let mut yaku = Yaku::KokushiMusou;
-    let mut final_machi = Machi::KokushiIchimen;
-
-    if atama.0 == agari_hai {
-        if tiles.len() == 13 {
-            yaku = Yaku::KokushiMusouJusanmen;
-            final_machi = Machi::KokushiJusanmen;
-        }
-    }
-
-    Some((
-        HandStructure::KokushiMusou {
-            tiles: tiles.try_into().ok()?,
-            atama,
-            _agari_hai: agari_hai,
-            _machi: final_machi,
-        },
-        yaku,
-    ))
-}
-
 /// Tsuuiisou
 pub fn check_chiitoitsu_yakuman(hand: &HandStructure) -> Vec<Yaku> {
     if let HandStructure::Chiitoitsu { pairs, .. } = hand {
@@ -203,62 +141,6 @@ pub fn check_chiitoitsu_yakuman(hand: &HandStructure) -> Vec<Yaku> {
         }
     }
     vec![]
-}
-
-/// Chuuren Poutou
-fn check_chuuren(hand: &AgariHand) -> Option<bool> {
-    let all_tiles = get_all_tiles(hand);
-
-    let (is_chinitsu, suit) = check_chinitsu(&all_tiles);
-    if !is_chinitsu {
-        return None;
-    }
-    let suit = suit.unwrap();
-
-    if !hand.mentsu.iter().all(|m| !m.is_minchou) {
-        return None;
-    }
-
-    let mut counts = [0u8; 9];
-    for tile in &all_tiles {
-        if let Hai::Suhai(Suhai { number: n, suit: s }) = tile {
-            if *s == suit {
-                counts[(n - 1) as usize] += 1;
-            }
-        }
-    }
-
-    let mut has_extra = false;
-    let mut extra_tile_num = 0;
-
-    for (i, &count) in counts.iter().enumerate() {
-        let num = i + 1;
-        let required_count = if num == 1 || num == 9 { 3 } else { 1 };
-
-        if count < required_count {
-            return None;
-        }
-        if count == required_count + 1 {
-            if has_extra {
-                return None;
-            }
-            has_extra = true;
-            extra_tile_num = num;
-        } else if count > required_count + 1 {
-            return None;
-        }
-    }
-
-    if !has_extra {
-        return None;
-    }
-    if let Hai::Suhai(Suhai { number: n, suit: s }) = hand.agari_hai {
-        if s == suit && n as usize == extra_tile_num {
-            return Some(true);
-        }
-    }
-
-    Some(false)
 }
 
 /// Double Yakuman overrides

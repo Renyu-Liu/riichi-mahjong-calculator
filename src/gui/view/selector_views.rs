@@ -40,8 +40,6 @@ impl RiichiGui {
     }
 
     pub fn view_selecting_meld_tile(&self, m_type: MentsuType) -> Element<'_, Message> {
-        // use super::super::state::Phase; // Phase import might be unused now if we remove the check
-
         let possible_melds = match m_type {
             MentsuType::Koutsu => self.get_all_possible_pons(),
             MentsuType::Shuntsu => self.get_all_possible_chiis(),

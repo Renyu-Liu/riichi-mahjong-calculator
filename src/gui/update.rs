@@ -1,10 +1,10 @@
-use super::components::sort_tiles_by_type;
+use super::components::{insert_tile_sorted, sort_tiles_by_type};
 use super::messages::Message;
 use super::state::{Phase, RiichiGui};
 use crate::implements::calculate_agari;
 use crate::implements::game::{AgariType, GameContext, PlayerContext};
-use crate::implements::input::{OpenMeldInput, UserInput};
-use crate::implements::tiles::{Hai, Kaze};
+use crate::implements::input::UserInput;
+use crate::implements::tiles::Kaze;
 
 pub trait Update {
     fn update(&mut self, message: Message);
@@ -15,13 +15,11 @@ impl Update for RiichiGui {
         match message {
             // --- Composition Phase ---
             Message::AddTile(tile) => {
-                // Add tile
                 if self.hand_tiles.len() < 18 {
                     let idx = crate::implements::tiles::tile_to_index(&tile);
                     if self.tile_counts[idx] > 0 {
                         self.tile_counts[idx] -= 1;
-                        self.hand_tiles.push(tile);
-                        self.hand_tiles.sort_by_key(sort_tiles_by_type);
+                        insert_tile_sorted(&mut self.hand_tiles, tile);
                     }
                 }
             }
@@ -120,7 +118,6 @@ impl Update for RiichiGui {
                     for tile in self.get_meld_tiles(&meld) {
                         // Return to Hand
                         self.hand_tiles.push(tile);
-                        // Update counts for composition (legacy but kept for safety)
                         let t_idx = crate::implements::tiles::tile_to_index(&tile);
                         self.tile_counts[t_idx] += 1;
                     }
@@ -245,14 +242,10 @@ impl Update for RiichiGui {
                         }
                     }
 
-                    let final_hand_tiles: Vec<Hai> = hand_tiles;
-                    let final_open_melds: Vec<OpenMeldInput> = self.open_melds.clone();
-                    let final_closed_kans: Vec<Hai> = self.closed_kans.clone();
-
                     let input = UserInput {
-                        hand_tiles: final_hand_tiles,
-                        open_melds: final_open_melds,
-                        closed_kans: final_closed_kans,
+                        hand_tiles,
+                        open_melds: self.open_melds.clone(),
+                        closed_kans: self.closed_kans.clone(),
                         winning_tile,
                         agari_type: self.agari_type,
                         player_context: PlayerContext {
@@ -279,14 +272,10 @@ impl Update for RiichiGui {
                         },
                     };
 
-                    match calculate_agari(&input) {
-                        Ok(result) => {
-                            self.score_result = Some(Ok(result));
-                        }
-                        Err(e) => {
-                            self.score_result = Some(Err(format!("Error: {}", e)));
-                        }
-                    }
+                    self.score_result = match calculate_agari(&input) {
+                        Ok(result) => Some(Ok(result)),
+                        Err(e) => Some(Err(format!("Error: {}", e))),
+                    };
                     self.phase = Phase::Result;
                 }
             }

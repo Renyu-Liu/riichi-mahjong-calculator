@@ -92,6 +92,14 @@ pub fn sort_tiles_by_type(tile: &Hai) -> (u8, u8) {
     }
 }
 
+pub fn insert_tile_sorted(tiles: &mut Vec<Hai>, tile: Hai) {
+    let key = sort_tiles_by_type(&tile);
+    let pos = tiles
+        .binary_search_by_key(&key, sort_tiles_by_type)
+        .unwrap_or_else(|pos| pos);
+    tiles.insert(pos, tile);
+}
+
 pub fn tile_button<'a>(
     content: Element<'a, Message>,
     msg: Message,
@@ -121,4 +129,21 @@ pub fn cancel_button<'a>() -> Element<'a, Message> {
         Message::CancelSelection,
         ColoredButtonStyle::DANGER,
     )
+}
+
+pub fn tile_image_button<'a>(
+    handle: iced::widget::image::Handle,
+    width: u16,
+    msg: Message,
+    style: theme::Button,
+) -> Element<'a, Message> {
+    button(iced::widget::Image::new(handle).width(width))
+        .on_press(msg)
+        .style(style)
+        .padding(0)
+        .into()
+}
+
+pub fn tile_image<'a>(handle: iced::widget::image::Handle, width: u16) -> Element<'a, Message> {
+    iced::widget::Image::new(handle).width(width).into()
 }

@@ -15,6 +15,41 @@ pub enum Phase {
     Result,
 }
 
+impl Default for Phase {
+    fn default() -> Self {
+        Phase::Composition
+    }
+}
+
+/// Default values for resettable game state (excludes preloaded assets)
+#[derive(Default)]
+struct GameStateDefaults {
+    phase: Phase,
+    hand_tiles: Vec<Hai>,
+    winning_tile: Option<Hai>,
+    open_melds: Vec<OpenMeldInput>,
+    closed_kans: Vec<Hai>,
+    agari_type: AgariType,
+    bakaze: Kaze,
+    jikaze: Kaze,
+    is_riichi: bool,
+    is_daburu_riichi: bool,
+    is_ippatsu: bool,
+    is_rinshan: bool,
+    is_chankan: bool,
+    is_haitei: bool,
+    is_houtei: bool,
+    is_tenhou: bool,
+    is_chiihou: bool,
+    is_renhou: bool,
+    honba: u8,
+    num_akadora: u8,
+    dora_indicators: Vec<Hai>,
+    uradora_indicators: Vec<Hai>,
+    score_result: Option<Result<crate::implements::scoring::AgariResult, String>>,
+    show_rules: bool,
+}
+
 pub struct RiichiGui {
     pub phase: Phase,
 
@@ -89,32 +124,34 @@ impl RiichiGui {
             None
         };
 
+        let defaults = GameStateDefaults::default();
+
         Self {
-            phase: Phase::Composition,
-            hand_tiles: Vec::new(),
+            phase: defaults.phase,
+            hand_tiles: defaults.hand_tiles,
             tile_counts: [4; 34],
-            winning_tile: None,
-            open_melds: Vec::new(),
-            closed_kans: Vec::new(),
-            agari_type: AgariType::Ron,
-            bakaze: Kaze::Ton,
-            jikaze: Kaze::Ton,
-            is_riichi: false,
-            is_daburu_riichi: false,
-            is_ippatsu: false,
-            is_rinshan: false,
-            is_chankan: false,
-            is_haitei: false,
-            is_houtei: false,
-            is_tenhou: false,
-            is_chiihou: false,
-            is_renhou: false,
-            honba: 0,
-            num_akadora: 0,
-            dora_indicators: Vec::new(),
-            uradora_indicators: Vec::new(),
-            score_result: None,
-            show_rules: false,
+            winning_tile: defaults.winning_tile,
+            open_melds: defaults.open_melds,
+            closed_kans: defaults.closed_kans,
+            agari_type: defaults.agari_type,
+            bakaze: defaults.bakaze,
+            jikaze: defaults.jikaze,
+            is_riichi: defaults.is_riichi,
+            is_daburu_riichi: defaults.is_daburu_riichi,
+            is_ippatsu: defaults.is_ippatsu,
+            is_rinshan: defaults.is_rinshan,
+            is_chankan: defaults.is_chankan,
+            is_haitei: defaults.is_haitei,
+            is_houtei: defaults.is_houtei,
+            is_tenhou: defaults.is_tenhou,
+            is_chiihou: defaults.is_chiihou,
+            is_renhou: defaults.is_renhou,
+            honba: defaults.honba,
+            num_akadora: defaults.num_akadora,
+            dora_indicators: defaults.dora_indicators,
+            uradora_indicators: defaults.uradora_indicators,
+            score_result: defaults.score_result,
+            show_rules: defaults.show_rules,
             tile_images,
             rules_image,
         }
@@ -307,30 +344,31 @@ impl RiichiGui {
     }
 
     pub fn reset(&mut self) {
-        self.phase = Phase::Composition;
-        self.hand_tiles.clear();
+        let defaults = GameStateDefaults::default();
+        self.phase = defaults.phase;
+        self.hand_tiles = defaults.hand_tiles;
         self.tile_counts = [4; 34];
-        self.winning_tile = None;
-        self.open_melds.clear();
-        self.closed_kans.clear();
-        self.agari_type = AgariType::Ron;
-        self.bakaze = Kaze::Ton;
-        self.jikaze = Kaze::Ton;
-        self.is_riichi = false;
-        self.is_daburu_riichi = false;
-        self.is_ippatsu = false;
-        self.is_rinshan = false;
-        self.is_chankan = false;
-        self.is_haitei = false;
-        self.is_houtei = false;
-        self.is_tenhou = false;
-        self.is_chiihou = false;
-        self.is_renhou = false;
-        self.honba = 0;
-        self.num_akadora = 0;
-        self.dora_indicators.clear();
-        self.uradora_indicators.clear();
-        self.score_result = None;
-        self.show_rules = false;
+        self.winning_tile = defaults.winning_tile;
+        self.open_melds = defaults.open_melds;
+        self.closed_kans = defaults.closed_kans;
+        self.agari_type = defaults.agari_type;
+        self.bakaze = defaults.bakaze;
+        self.jikaze = defaults.jikaze;
+        self.is_riichi = defaults.is_riichi;
+        self.is_daburu_riichi = defaults.is_daburu_riichi;
+        self.is_ippatsu = defaults.is_ippatsu;
+        self.is_rinshan = defaults.is_rinshan;
+        self.is_chankan = defaults.is_chankan;
+        self.is_haitei = defaults.is_haitei;
+        self.is_houtei = defaults.is_houtei;
+        self.is_tenhou = defaults.is_tenhou;
+        self.is_chiihou = defaults.is_chiihou;
+        self.is_renhou = defaults.is_renhou;
+        self.honba = defaults.honba;
+        self.num_akadora = defaults.num_akadora;
+        self.dora_indicators = defaults.dora_indicators;
+        self.uradora_indicators = defaults.uradora_indicators;
+        self.score_result = defaults.score_result;
+        self.show_rules = defaults.show_rules;
     }
 }
