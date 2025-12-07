@@ -22,7 +22,9 @@ fn get_han_value(yaku: &Yaku, is_menzen: bool) -> u8 {
         Yaku::Tanyao => 1,
         Yaku::YakuhaiJikaze => 1,
         Yaku::YakuhaiBakaze => 1,
-        Yaku::YakuhaiSangenpai => 1,
+        Yaku::YakuhaiHaku => 1,
+        Yaku::YakuhaiHatsu => 1,
+        Yaku::YakuhaiChun => 1,
 
         // 2 Han
         Yaku::DaburuRiichi => 2,

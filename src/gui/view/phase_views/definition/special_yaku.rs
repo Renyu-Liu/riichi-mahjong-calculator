@@ -20,13 +20,13 @@ pub fn build_special_yaku_section(gui: &RiichiGui) -> Element<'_, Message> {
                 "Double Riichi",
                 gui.is_daburu_riichi,
                 Message::ToggleDoubleRiichi,
-                is_menzen
+                gui.is_riichi
             ),
             checkbox_with_conflict(
                 "Ippatsu",
                 gui.is_ippatsu,
                 Message::ToggleIppatsu,
-                gui.is_riichi || gui.is_daburu_riichi
+                gui.is_riichi
             ),
         ]
         .spacing(10),

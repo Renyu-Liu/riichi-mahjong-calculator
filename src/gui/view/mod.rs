@@ -25,9 +25,6 @@ pub trait View {
     fn view_selecting_meld_tile(&self, m_type: MentsuType) -> Element<'_, Message>;
 
     #[allow(dead_code)]
-    fn view_selecting_closed_kan(&self) -> Element<'_, Message>;
-
-    #[allow(dead_code)]
     fn view_selecting_dora(&self, is_ura: bool) -> Element<'_, Message>;
 
     #[allow(dead_code)]

@@ -37,12 +37,12 @@ struct GameStateDefaults {
 impl RiichiGui {
     pub fn new() -> Self {
         use rayon::prelude::*;
-        
+
         // Parallelize image loading and resizing
-        let tile_images: std::collections::HashMap<
-            crate::implements::types::tiles::Hai,
-            iced::widget::image::Handle,
-        > = (0..34)
+        let (tile_images, tile_images_sideways): (
+            std::collections::HashMap<Hai, iced::widget::image::Handle>,
+            std::collections::HashMap<Hai, iced::widget::image::Handle>,
+        ) = (0..34)
             .into_par_iter()
             .map(|i| {
                 let tile = crate::implements::types::tiles::index_to_tile(i);
@@ -56,15 +56,29 @@ impl RiichiGui {
                     let height = rgba.height();
                     let pixels = rgba.into_raw();
 
-                    let handle = iced::widget::image::Handle::from_pixels(width, height, pixels);
-                    Some((tile, handle))
+                    let handle =
+                        iced::widget::image::Handle::from_pixels(width, height, pixels.clone());
+
+                    // Generate rotated image (sideways)
+                    let rotated = resized.rotate270();
+                    let rgba_rotated = rotated.to_rgba8();
+                    let width_rotated = rgba_rotated.width();
+                    let height_rotated = rgba_rotated.height();
+                    let pixels_rotated = rgba_rotated.into_raw();
+                    let handle_sideways = iced::widget::image::Handle::from_pixels(
+                        width_rotated,
+                        height_rotated,
+                        pixels_rotated,
+                    );
+
+                    Some(((tile, handle), (tile, handle_sideways)))
                 } else {
                     eprintln!("Failed to load image: {}", path);
                     None
                 }
             })
             .filter_map(|x| x)
-            .collect();
+            .unzip();
 
         let rules_image = if let Ok(img) = image::open("assets/riichi_rule.png") {
             let rgba = img.to_rgba8();
@@ -76,6 +90,20 @@ impl RiichiGui {
             ))
         } else {
             eprintln!("Failed to load rules image");
+            None
+        };
+
+        let tile_back_image = if let Ok(img) = image::open("assets/tiles/Back.png") {
+            let resized = img.resize(256, 256, image::imageops::FilterType::Nearest);
+            let rgba = resized.to_rgba8();
+            let width = rgba.width();
+            let height = rgba.height();
+            let pixels = rgba.into_raw();
+            Some(iced::widget::image::Handle::from_pixels(
+                width, height, pixels,
+            ))
+        } else {
+            eprintln!("Failed to load tile back image");
             None
         };
 
@@ -108,6 +136,8 @@ impl RiichiGui {
             score_result: defaults.score_result,
             show_rules: defaults.show_rules,
             tile_images,
+            tile_images_sideways,
+            tile_back_image,
             rules_image,
         }
     }

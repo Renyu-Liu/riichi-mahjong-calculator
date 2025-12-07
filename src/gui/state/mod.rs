@@ -43,5 +43,7 @@ pub struct RiichiGui {
     pub score_result: Option<Result<crate::implements::types::scoring::AgariResult, String>>,
     pub show_rules: bool,
     pub tile_images: std::collections::HashMap<Hai, iced::widget::image::Handle>,
+    pub tile_images_sideways: std::collections::HashMap<Hai, iced::widget::image::Handle>,
+    pub tile_back_image: Option<iced::widget::image::Handle>,
     pub rules_image: Option<iced::widget::image::Handle>,
 }

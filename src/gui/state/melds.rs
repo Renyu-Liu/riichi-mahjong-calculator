@@ -87,6 +87,7 @@ impl RiichiGui {
                 pons.push(OpenMeldInput {
                     mentsu_type: MentsuType::Koutsu,
                     representative_tile: tile,
+                    is_added_kan: false,
                 });
             }
         }
@@ -123,6 +124,7 @@ impl RiichiGui {
                     chiis.push(OpenMeldInput {
                         mentsu_type: MentsuType::Shuntsu,
                         representative_tile: tile,
+                        is_added_kan: false,
                     });
                 }
             }
@@ -134,6 +136,24 @@ impl RiichiGui {
         let mut available_counts = [0u8; 34];
         for tile in &self.hand_tiles {
             available_counts[crate::implements::types::tiles::tile_to_index(tile)] += 1;
+        }
+
+        for existing_meld in &self.open_melds {
+            for tile in self.get_meld_tiles(existing_meld) {
+                let idx = crate::implements::types::tiles::tile_to_index(&tile);
+                if available_counts[idx] > 0 {
+                    available_counts[idx] -= 1;
+                }
+            }
+        }
+
+        for rep_tile in &self.closed_kans {
+            let idx = crate::implements::types::tiles::tile_to_index(rep_tile);
+            if available_counts[idx] >= 4 {
+                available_counts[idx] -= 4;
+            } else {
+                available_counts[idx] = 0;
+            }
         }
 
         let mut kans = Vec::new();

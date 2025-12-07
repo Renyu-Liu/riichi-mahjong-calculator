@@ -1,5 +1,5 @@
 [package]
-name = "Riichi_Mahjong_Scoring_Calculator"
+name = "riichi-mahjong-calculator"
 version = "0.1.0"
 edition = "2024"
 

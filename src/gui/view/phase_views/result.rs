@@ -65,7 +65,15 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                         HandLimit::Haneman => "Haneman",
                         HandLimit::Baiman => "Baiman",
                         HandLimit::Sanbaiman => "Sanbaiman",
-                        HandLimit::Yakuman => "YAKUMAN!",
+                        HandLimit::Yakuman => {
+                            if *han >= 39 {
+                                "MULTIPLE YAKUMAN!!!"
+                            } else if *han >= 26 {
+                                "DOUBLE YAKUMAN!!"
+                            } else {
+                                "YAKUMAN!"
+                            }
+                        }
                     })
                 } else {
                     None
@@ -108,7 +116,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                         yaku_col.push(text(format!("• Ura Dora x{}", uradora_count)).size(18));
                 }
                 if *num_akadora > 0 {
-                    yaku_col = yaku_col.push(text(format!("• Aka Dora x{}", num_akadora)).size(18));
+                    yaku_col = yaku_col.push(text(format!("• Red Dora x{}", num_akadora)).size(18));
                 }
 
                 // Payment Detail Breakdown
@@ -194,12 +202,15 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
 
     column![
         content,
+        button(text("Back"))
+            .style(theme::Button::Custom(Box::new(ColoredButtonStyle::INFO)))
+            .on_press(Message::ReturnToDefinition),
         button(text("Start Over"))
             .style(theme::Button::Custom(Box::new(ColoredButtonStyle::PRIMARY)))
             .on_press(Message::StartOver),
         iced::widget::Space::with_height(Length::Fixed(50.0))
     ]
-    .spacing(30)
+    .spacing(15)
     .align_items(iced::Alignment::Center)
     .into()
 }

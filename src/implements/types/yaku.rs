@@ -1,19 +1,21 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Yaku {
     // 1 Han
-    Riichi,           // 立直 (Riichi)
-    Ippatsu,          // 一発 (Ippatsu)
-    MenzenTsumo,      // 門前清自摸和 (Fully Concealed Hand)
-    Pinfu,            // 平和 (No-Points Hand)
-    Iipeikou,         // 一盃口 (Pure Double Sequence)
-    HaiteiRaoyue,     // 海底撈月 (Under the Sea)
-    HouteiRaoyui,     // 河底撈魚 (Under the River)
-    RinshanKaihou,    // 嶺上開花 (After a Kan)
-    Chankan,          // 搶槓 (Robbing a Kan)
-    Tanyao,           // 断幺九 (All Simples)
-    YakuhaiJikaze,    // 役牌: 自風 (Seat Wind)
-    YakuhaiBakaze,    // 役牌: 場風 (Prevalent Wind)
-    YakuhaiSangenpai, // 役牌: 三元牌 (Dragon)
+    Riichi,        // 立直 (Riichi)
+    Ippatsu,       // 一発 (Ippatsu)
+    MenzenTsumo,   // 門前清自摸和 (Fully Concealed Hand)
+    Pinfu,         // 平和 (No-Points Hand)
+    Iipeikou,      // 一盃口 (Pure Double Sequence)
+    HaiteiRaoyue,  // 海底撈月 (Under the Sea)
+    HouteiRaoyui,  // 河底撈魚 (Under the River)
+    RinshanKaihou, // 嶺上開花 (After a Kan)
+    Chankan,       // 搶槓 (Robbing a Kan)
+    Tanyao,        // 断幺九 (All Simples)
+    YakuhaiJikaze, // 役牌: 自風 (Seat Wind)
+    YakuhaiBakaze, // 役牌: 場風 (Prevalent Wind)
+    YakuhaiHaku,   // 役牌: 白 (White Dragon)
+    YakuhaiHatsu,  // 役牌: 發 (Green Dragon)
+    YakuhaiChun,   // 役牌: 中 (Red Dragon)
 
     // 2 Han
     DaburuRiichi,   // ダブル立直 (Double Riichi)
@@ -75,7 +77,9 @@ impl std::fmt::Display for Yaku {
             Yaku::Tanyao => "Tanyao",
             Yaku::YakuhaiJikaze => "Yakuhai: Jikaze",
             Yaku::YakuhaiBakaze => "Yakuhai: Bakaze",
-            Yaku::YakuhaiSangenpai => "Yakuhai: Sangenpai",
+            Yaku::YakuhaiHaku => "Yakuhai: White",
+            Yaku::YakuhaiHatsu => "Yakuhai: Green",
+            Yaku::YakuhaiChun => "Yakuhai: Red",
             Yaku::DaburuRiichi => "Double Riichi",
             Yaku::Chiitoitsu => "Chiitoitsu",
             Yaku::SanshokuDoujun => "Sanshoku Doujun",

@@ -21,13 +21,13 @@ pub fn check_yakuhai(hand: &AgariHand, player: &PlayerContext, game: &GameContex
 
     // Dragons
     if koutsu_tiles.contains(&Hai::Jihai(Jihai::Sangen(Sangenpai::Haku))) {
-        yaku.push(Yaku::YakuhaiSangenpai);
+        yaku.push(Yaku::YakuhaiHaku);
     }
     if koutsu_tiles.contains(&Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu))) {
-        yaku.push(Yaku::YakuhaiSangenpai);
+        yaku.push(Yaku::YakuhaiHatsu);
     }
     if koutsu_tiles.contains(&Hai::Jihai(Jihai::Sangen(Sangenpai::Chun))) {
-        yaku.push(Yaku::YakuhaiSangenpai);
+        yaku.push(Yaku::YakuhaiChun);
     }
 
     // Winds

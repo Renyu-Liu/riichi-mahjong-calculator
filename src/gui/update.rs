@@ -3,7 +3,8 @@ use super::messages::Message;
 use super::state::{Phase, RiichiGui};
 use crate::implements::calculate_agari;
 use crate::implements::game::{AgariType, GameContext, PlayerContext};
-use crate::implements::input::UserInput;
+use crate::implements::hand::MentsuType;
+use crate::implements::input::{OpenMeldInput, UserInput};
 use crate::implements::tiles::Kaze;
 
 pub trait Update {
@@ -82,11 +83,47 @@ impl Update for RiichiGui {
                 }
                 self.phase = Phase::Definition;
             }
-            Message::StartAddClosedKan => {
+            Message::StartAddKan => {
+                self.phase = Phase::SelectingKanType;
+            }
+            Message::StartSelectingClosedKan => {
                 self.phase = Phase::SelectingClosedKan;
             }
             Message::SelectClosedKan(tile) => {
                 self.closed_kans.push(tile);
+                self.phase = Phase::Definition;
+            }
+            Message::StartSelectingAddedKan => {
+                self.phase = Phase::SelectingAddedKan;
+            }
+            Message::SelectAddedKan(index) => {
+                if let Some(meld) = self.open_melds.get_mut(index) {
+                    meld.mentsu_type = MentsuType::Kantsu;
+                    meld.is_added_kan = true;
+                }
+                self.phase = Phase::Definition;
+            }
+            Message::StartAddOpenKan => {
+                self.phase = Phase::SelectingOpenKan;
+            }
+            Message::SelectOpenKan(tile) => {
+                let meld = OpenMeldInput {
+                    mentsu_type: MentsuType::Kantsu,
+                    representative_tile: tile,
+                    is_added_kan: false,
+                };
+                self.open_melds.push(meld);
+
+                // Reset if open hand
+                if !self.open_melds.is_empty() {
+                    self.is_riichi = false;
+                    self.is_daburu_riichi = false;
+                    self.is_ippatsu = false;
+                    self.is_tenhou = false;
+                    self.is_chiihou = false;
+                    self.is_renhou = false;
+                }
+
                 self.phase = Phase::Definition;
             }
 
@@ -228,7 +265,7 @@ impl Update for RiichiGui {
                     }
 
                     let input = UserInput {
-                        hand_tiles,
+                        hand_tiles: hand_tiles.clone(),
                         open_melds: self.open_melds.clone(),
                         closed_kans: self.closed_kans.clone(),
                         winning_tile,
@@ -257,12 +294,54 @@ impl Update for RiichiGui {
                         },
                     };
 
-                    self.score_result = match calculate_agari(&input) {
+                    let mut best_result = calculate_agari(&input);
+
+                    // Winning Tile in Open Meld
+                    if best_result.is_err() {
+                        let base_open_melds = self.open_melds.clone();
+
+                        for (i, meld) in base_open_melds.iter().enumerate() {
+                            let meld_tiles = self.get_meld_tiles(meld);
+                            if meld_tiles.contains(&winning_tile) {
+                                let mut alt_hand_tiles = hand_tiles.clone();
+                                alt_hand_tiles.extend(meld_tiles.iter());
+
+                                if let Some(pos) =
+                                    alt_hand_tiles.iter().position(|x| *x == winning_tile)
+                                {
+                                    alt_hand_tiles.remove(pos);
+                                }
+
+                                let mut alt_open_melds = base_open_melds.clone();
+                                alt_open_melds.remove(i);
+
+                                let alt_input = UserInput {
+                                    hand_tiles: alt_hand_tiles,
+                                    open_melds: alt_open_melds,
+                                    winning_tile,
+                                    closed_kans: self.closed_kans.clone(),
+                                    agari_type: self.agari_type,
+                                    player_context: input.player_context.clone(),
+                                    game_context: input.game_context.clone(),
+                                };
+
+                                if let Ok(res) = calculate_agari(&alt_input) {
+                                    best_result = Ok(res);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    self.score_result = match best_result {
                         Ok(result) => Some(Ok(result)),
                         Err(e) => Some(Err(format!("Error: {}", e))),
                     };
                     self.phase = Phase::Result;
                 }
+            }
+            Message::ReturnToDefinition => {
+                self.phase = Phase::Definition;
             }
             Message::StartOver => {
                 self.reset();

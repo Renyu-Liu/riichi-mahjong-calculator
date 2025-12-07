@@ -17,8 +17,13 @@ pub enum Message {
     SelectWinningTile(Hai),
     SelectMeldType(MentsuType),
     SelectCompleteMeld(OpenMeldInput),
-    StartAddClosedKan,
+    StartAddKan,
+    StartSelectingClosedKan,
+    StartSelectingAddedKan,
     SelectClosedKan(Hai),
+    SelectAddedKan(usize),
+    StartAddOpenKan,
+    SelectOpenKan(Hai),
     RemoveOpenMeld(usize),
     RemoveClosedKan(usize),
     IncrementAkadora,
@@ -47,6 +52,7 @@ pub enum Message {
     CalculateScore,
 
     // --- Result Phase ---
+    ReturnToDefinition,
     StartOver,
     ShowRules,
     HideRules,

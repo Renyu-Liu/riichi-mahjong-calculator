@@ -68,7 +68,7 @@ pub fn build_dora_section(gui: &RiichiGui) -> Element<'_, Message> {
 
             if max_akadora > 0 {
                 row![
-                    text(format!("Akadora: {}", gui.num_akadora)),
+                    text(format!("Red Dora: {}", gui.num_akadora)),
                     button(text("+"))
                         .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                             background_color: Color::from_rgb(0.0, 0.0, 0.6),

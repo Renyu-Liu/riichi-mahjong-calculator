@@ -19,7 +19,10 @@ impl View for RiichiGui {
             Phase::Definition => definition::build_definition_view(self),
             Phase::SelectingWinningTile => self.view_selecting_winning_tile(),
             Phase::SelectingMeldTile(m_type) => self.view_selecting_meld_tile(*m_type),
+            Phase::SelectingKanType => self.view_selecting_kan_type(),
+            Phase::SelectingOpenKan => self.view_selecting_open_kan(),
             Phase::SelectingClosedKan => self.view_selecting_closed_kan(),
+            Phase::SelectingAddedKan => self.view_selecting_added_kan(),
             Phase::SelectingDora => self.view_selecting_dora(false),
             Phase::SelectingUraDora => self.view_selecting_dora(true),
             Phase::Result => result::build_result_view(self),
@@ -79,10 +82,6 @@ impl View for RiichiGui {
 
     fn view_selecting_meld_tile(&self, m_type: MentsuType) -> Element<'_, Message> {
         self.view_selecting_meld_tile(m_type)
-    }
-
-    fn view_selecting_closed_kan(&self) -> Element<'_, Message> {
-        self.view_selecting_closed_kan()
     }
 
     fn view_selecting_dora(&self, is_ura: bool) -> Element<'_, Message> {

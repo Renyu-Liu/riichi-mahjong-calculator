@@ -9,6 +9,7 @@ pub struct OpenMeldInput {
 
     // single tile that uniquely represents the meld
     pub representative_tile: Hai,
+    pub is_added_kan: bool,
 }
 
 #[derive(Debug, Clone)]

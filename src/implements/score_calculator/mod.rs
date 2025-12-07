@@ -29,9 +29,16 @@ pub fn calculate_score(
     // Check Yakuman
     let num_yakuman = count_yakuman(&yaku_list);
 
+    let fu = calculate_fu(
+        &yaku_result.hand_structure,
+        &yaku_list,
+        player,
+        game,
+        agari_type,
+    );
+
     if num_yakuman > 0 {
         let han = 13 * num_yakuman as u8;
-        let fu = 0;
         let limit_name = Some(HandLimit::Yakuman);
         let base_yakuman_points = (8000 * num_yakuman) as u32;
 
@@ -78,13 +85,6 @@ pub fn calculate_score(
 
     // Regular Hand
     let han = calculate_han(&yaku_list, player.is_menzen);
-    let fu = calculate_fu(
-        &yaku_result.hand_structure,
-        &yaku_list,
-        player,
-        game,
-        agari_type,
-    );
 
     let (basic_points, limit_name) = calculate_basic_points(han, fu);
 

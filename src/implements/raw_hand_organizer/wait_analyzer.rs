@@ -12,19 +12,22 @@ fn mentsu_contains_tile(mentsu: &Mentsu, tile: &Hai) -> bool {
     }
 }
 
-pub fn determine_wait_type(mentsu: &[Mentsu; 4], atama: (Hai, Hai), agari_hai: Hai) -> Vec<Machi> {
+pub fn determine_wait_type(
+    mentsu: &[Mentsu; 4],
+    atama: (Hai, Hai),
+    agari_hai: Hai,
+) -> Vec<(Machi, usize)> {
     let mut possible_waits = Vec::new();
 
     if agari_hai == atama.0 {
-        possible_waits.push(Machi::Tanki);
+        possible_waits.push((Machi::Tanki, 4));
     }
 
-    let winning_melds: Vec<&Mentsu> = mentsu
-        .iter()
-        .filter(|m| mentsu_contains_tile(m, &agari_hai))
-        .collect();
+    for (i, winning_meld) in mentsu.iter().enumerate() {
+        if !mentsu_contains_tile(winning_meld, &agari_hai) {
+            continue;
+        }
 
-    for winning_meld in winning_melds {
         let machi = match winning_meld.mentsu_type {
             MentsuType::Koutsu | MentsuType::Kantsu => Machi::Shanpon,
             MentsuType::Shuntsu => {
@@ -51,7 +54,7 @@ pub fn determine_wait_type(mentsu: &[Mentsu; 4], atama: (Hai, Hai), agari_hai: H
                 }
             }
         };
-        possible_waits.push(machi);
+        possible_waits.push((machi, i));
     }
     possible_waits
 }

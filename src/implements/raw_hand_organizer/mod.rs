@@ -131,9 +131,18 @@ pub fn organize_hand(input: &UserInput) -> Result<Vec<HandOrganization>, &'stati
 
                         let possible_waits = determine_wait_type(&mentsu_array, atama, agari_hai);
 
-                        for machi in possible_waits {
+                        for (machi, index) in possible_waits {
+                            let mut final_mentsu = mentsu_array;
+
+                            if input.agari_type == AgariType::Ron {
+                                if index < 4 {
+                                    // Minchou
+                                    final_mentsu[index].is_minchou = true;
+                                }
+                            }
+
                             let agari_hand = AgariHand {
-                                mentsu: mentsu_array,
+                                mentsu: final_mentsu,
                                 atama,
                                 agari_hai,
                                 machi,
