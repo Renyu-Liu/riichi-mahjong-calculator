@@ -152,7 +152,9 @@ pub fn build_melds_section(gui: &RiichiGui) -> Element<'_, Message> {
                     row![
                         button(tile_images)
                             .on_press(Message::RemoveClosedKan(i))
-                            .style(theme::Button::Text)
+                            .style(theme::Button::Custom(Box::new(
+                                ColoredButtonStyle::NEUTRAL_HOVER
+                            )))
                     ]
                     .align_items(iced::Alignment::Center)
                     .into()

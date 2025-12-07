@@ -100,14 +100,21 @@ To familiarize yourself with yaku and scoring rules, you may click "Rules" butto
 
 ## References
 
-Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://riichi.wiki/Japanese_mahjong_scoring_rules).
+### Rules
 
-Yaku checker is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
+* Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://riichi.wiki/Japanese_mahjong_scoring_rules).
 
-Note: red dora varies in different versions. We use 1 5-man, 2 5-pin, 1 5-sou as the red dora.
+* Yaku checker is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
 
-Images of tiles are from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles).
+* The rule used by the program is **standard 4-player East**. Nukidora and kita yaku are not supported. 
 
-Image of Riichi Mahjong scoring rule is from [scoring rules sheet](https://www.reddit.com/r/Mahjong/comments/l5b221/riichi_mahjong_cheat_sheet_1_page_pdf_or_images/).
+* Red dora varies in different versions. We use **5-man, 5-pin, 5-pin, 5-sou** as the red dora. 
 
-Font: [Arimo](https://fonts.google.com/specimen/Arimo)
+### Images
+
+* Images of tiles are from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles).
+
+* Image of Riichi Mahjong scoring rule is from [scoring rules sheet](https://www.reddit.com/r/Mahjong/comments/l5b221/riichi_mahjong_cheat_sheet_1_page_pdf_or_images/).
+
+### Font 
+* [Arimo](https://fonts.google.com/specimen/Arimo)

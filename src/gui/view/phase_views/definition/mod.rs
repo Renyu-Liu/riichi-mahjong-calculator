@@ -18,7 +18,7 @@ use iced::{Color, Element, theme};
 
 pub fn build_definition_view(gui: &RiichiGui) -> Element<'_, Message> {
     let hand_preview = gui.view_hand_preview_locked();
-    let modify_btn = action_button("Modify Hand", Message::ModifyHand, ColoredButtonStyle::INFO);
+    let modify_btn = action_button("Modify", Message::ModifyHand, ColoredButtonStyle::INFO);
 
     let calculate_btn = button(text("Calculate Score"))
         .style(theme::Button::Custom(Box::new(ColoredButtonStyle::PRIMARY)))

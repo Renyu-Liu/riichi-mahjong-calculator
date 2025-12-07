@@ -67,7 +67,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                         HandLimit::Sanbaiman => "Sanbaiman",
                         HandLimit::Yakuman => {
                             if *han >= 39 {
-                                "MULTIPLE YAKUMAN!!!"
+                                "TRIPLE YAKUMAN!!!"
                             } else if *han >= 26 {
                                 "DOUBLE YAKUMAN!!"
                             } else {

@@ -43,9 +43,7 @@ impl RiichiGui {
         let possible_melds = match m_type {
             MentsuType::Koutsu => self.get_all_possible_pons(),
             MentsuType::Shuntsu => self.get_all_possible_chiis(),
-            MentsuType::Kantsu => {
-                vec![]
-            }
+            MentsuType::Kantsu => unreachable!(""),
         };
 
         if possible_melds.is_empty() {
@@ -53,7 +51,7 @@ impl RiichiGui {
                 match m_type {
                     MentsuType::Koutsu => text("No valid Triplet available").size(24),
                     MentsuType::Shuntsu => text("No valid Sequence available").size(24),
-                    MentsuType::Kantsu => text("No valid Kan available").size(24),
+                    MentsuType::Kantsu => unreachable!(""),
                 },
                 cancel_button()
             ]
@@ -92,7 +90,11 @@ impl RiichiGui {
             .collect();
 
         column![
-            text(format!("Select {:?}", m_type)).size(24),
+            match m_type {
+                MentsuType::Koutsu => text("Select Triplet").size(24),
+                MentsuType::Shuntsu => text("Select Sequence").size(24),
+                MentsuType::Kantsu => unreachable!(""),
+            },
             create_grid(meld_buttons, 5),
             cancel_button()
         ]
@@ -158,7 +160,7 @@ impl RiichiGui {
                                 .get(t)
                                 .expect("Tile image not found")
                                 .clone();
-                            // Sideways tile: width 50 relative to original height -> height 50
+                            // Sideways tile
                             iced::widget::Image::new(handle).height(50).into()
                         } else {
                             let handle = self
@@ -314,7 +316,7 @@ impl RiichiGui {
                 let tile_images = if tiles.len() == 4 {
                     let first = tiles[0];
                     let stack_bottom = tiles[1];
-                    let stack_top = tiles[3]; // The added tile is usually put on top
+                    let stack_top = tiles[3];
                     let last = tiles[2];
 
                     let img_first = iced::widget::Image::new(
@@ -325,7 +327,7 @@ impl RiichiGui {
                     )
                     .width(50);
 
-                    // Stacked tiles are sideways
+                    // Stacked sideways tiles
                     let img_stack_bottom = iced::widget::Image::new(
                         self.tile_images_sideways
                             .get(&stack_bottom)
@@ -350,7 +352,7 @@ impl RiichiGui {
                     )
                     .width(50);
 
-                    // Layout: First, Stack(Top, Bottom), Last
+                    // 1 Up, 2 Stack(Top, Bottom), 1 Down
                     row![
                         img_first,
                         column![img_stack_top, img_stack_bottom]

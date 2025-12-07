@@ -100,11 +100,11 @@ pub fn find_standard_yaku(
 
     if koutsu + kantsu == 4 {
         yaku_list.push(Yaku::Toitoi);
-    } else {
-        let concealed_koutsu = count_concealed_koutsu(hand, agari_type);
-        if concealed_koutsu == 3 {
-            yaku_list.push(Yaku::Sanankou);
-        }
+    }
+
+    let concealed_koutsu = count_concealed_koutsu(hand, agari_type);
+    if concealed_koutsu == 3 {
+        yaku_list.push(Yaku::Sanankou);
     }
 
     if kantsu == 3 {

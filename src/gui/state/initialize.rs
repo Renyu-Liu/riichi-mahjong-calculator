@@ -38,7 +38,7 @@ impl RiichiGui {
     pub fn new() -> Self {
         use rayon::prelude::*;
 
-        // Parallelize image loading and resizing
+        // image loading and resizing
         let (tile_images, tile_images_sideways): (
             std::collections::HashMap<Hai, iced::widget::image::Handle>,
             std::collections::HashMap<Hai, iced::widget::image::Handle>,
@@ -48,7 +48,7 @@ impl RiichiGui {
                 let tile = crate::implements::types::tiles::index_to_tile(i);
                 let path = crate::gui::components::get_tile_image_path(&tile);
 
-                // fast rendering
+                // fast render
                 if let Ok(img) = image::open(&path) {
                     let resized = img.resize(256, 256, image::imageops::FilterType::Nearest);
                     let rgba = resized.to_rgba8();
@@ -59,7 +59,7 @@ impl RiichiGui {
                     let handle =
                         iced::widget::image::Handle::from_pixels(width, height, pixels.clone());
 
-                    // Generate rotated image (sideways)
+                    // sideways image
                     let rotated = resized.rotate270();
                     let rgba_rotated = rotated.to_rgba8();
                     let width_rotated = rgba_rotated.width();
