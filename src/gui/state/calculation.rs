@@ -1,7 +1,114 @@
 use super::RiichiGui;
-use crate::implements::types::tiles::{Hai, Suhai};
+use crate::implements::calculate_agari;
+use crate::implements::types::game::{AgariType, GameContext, PlayerContext};
+use crate::implements::types::input::UserInput;
+use crate::implements::types::tiles::{Hai, Kaze, Suhai};
 
 impl RiichiGui {
+    pub fn calculate_score_result(&mut self) {
+        if let Some(winning_tile) = self.winning_tile {
+            let mut hand_tiles = self.hand_tiles.clone();
+
+            // Filter out Open Melds
+            for meld in &self.open_melds {
+                for tile in self.get_meld_tiles(meld) {
+                    if let Some(pos) = hand_tiles.iter().position(|x| *x == tile) {
+                        hand_tiles.remove(pos);
+                    }
+                }
+            }
+
+            // Filter out Closed Kans
+            for tile in &self.closed_kans {
+                for _ in 0..4 {
+                    if let Some(pos) = hand_tiles.iter().position(|x| *x == *tile) {
+                        hand_tiles.remove(pos);
+                    }
+                }
+            }
+
+            // Remove winning tile if Ron
+            if self.agari_type == AgariType::Ron {
+                if let Some(pos) = hand_tiles.iter().position(|x| *x == winning_tile) {
+                    hand_tiles.remove(pos);
+                }
+            }
+
+            let input = UserInput {
+                hand_tiles: hand_tiles.clone(),
+                open_melds: self.open_melds.clone(),
+                closed_kans: self.closed_kans.clone(),
+                winning_tile,
+                agari_type: self.agari_type,
+                player_context: PlayerContext {
+                    jikaze: self.jikaze,
+                    is_oya: self.jikaze == Kaze::Ton,
+                    is_riichi: self.is_riichi,
+                    is_daburu_riichi: self.is_daburu_riichi,
+                    is_ippatsu: self.is_ippatsu,
+                    is_menzen: self.open_melds.is_empty(),
+                },
+                game_context: GameContext {
+                    bakaze: self.bakaze,
+                    honba: self.honba,
+                    dora_indicators: self.dora_indicators.clone(),
+                    uradora_indicators: self.uradora_indicators.clone(),
+                    num_akadora: self.num_akadora,
+                    is_tenhou: self.is_tenhou,
+                    is_chiihou: self.is_chiihou,
+                    is_renhou: self.is_renhou,
+                    is_haitei: self.is_haitei,
+                    is_houtei: self.is_houtei,
+                    is_rinshan: self.is_rinshan,
+                    is_chankan: self.is_chankan,
+                },
+            };
+
+            let mut best_result = calculate_agari(&input);
+
+            // Winning Tile in Open Meld
+            if best_result.is_err() {
+                let base_open_melds = self.open_melds.clone();
+
+                for (i, meld) in base_open_melds.iter().enumerate() {
+                    let meld_tiles = self.get_meld_tiles(meld);
+                    if meld_tiles.contains(&winning_tile) {
+                        let mut alt_hand_tiles = hand_tiles.clone();
+                        alt_hand_tiles.extend(meld_tiles.iter());
+
+                        if let Some(pos) = alt_hand_tiles.iter().position(|x| *x == winning_tile) {
+                            alt_hand_tiles.remove(pos);
+                        }
+
+                        let mut alt_open_melds = base_open_melds.clone();
+                        alt_open_melds.remove(i);
+
+                        let alt_input = UserInput {
+                            hand_tiles: alt_hand_tiles,
+                            open_melds: alt_open_melds,
+                            winning_tile,
+                            closed_kans: self.closed_kans.clone(),
+                            agari_type: self.agari_type,
+                            player_context: input.player_context.clone(),
+                            game_context: input.game_context.clone(),
+                        };
+
+                        if let Ok(res) = calculate_agari(&alt_input) {
+                            best_result = Ok(res);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            self.score_result = match best_result {
+                Ok(result) => Some(Ok(result)),
+                Err(e) => Some(Err(format!("Error: {}", e))),
+            };
+            self.phase = super::Phase::Result;
+        }
+    }
+
     pub fn get_max_akadora_count(&self) -> u8 {
         let mut count_5m = 0;
         let mut count_5p = 0;
