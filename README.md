@@ -1,5 +1,5 @@
 # Riichi Mahjong Scoring Calculator
-_Created by Renyu (@Renyu-Liu), Thomas (@akakrabz), and Karan (@Karan-Annam) as the final project for [CS 128H](https://honors.cs128.org)_
+_Created by Renyu (@Renyu-Liu) and Thomas (@akakrabz) as the final project for [CS 128H](https://honors.cs128.org)_
 ## Introduction
 Riichi Mahjong Scoring Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input to provide a detailed breakdown of points and payment distribution.
 
@@ -90,9 +90,13 @@ To familiarize yourself with yaku and scoring rules, you may click "Rules" butto
 
 ## Challenges
 
-* Some rare yaku with complicated rules are not correctly detected. We are working on it.
-
-* We found that this app has problem running on Windows and Linux due to configuration issues. We are working on it.
+### Future Improvement Plan: 
+* Aesthetically improve the UI layout. 
+* Design functions to store history of input hands. 
+* Add light and dark theme. 
+* Add multiple language support (English, Chinese, Japanese). 
+* Add input hand file format support to save and read hand locally. 
+* Add settings to choose different version of Mahjong scoring rules (e.g. Sichuan Mahjong, Shanghai Mahjong, etc.).
 
 ## References
 

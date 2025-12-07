@@ -59,3 +59,58 @@ pub enum Yaku {
     UraDora, // 裏ドラ (Ura Dora)
     AkaDora, // 赤ドラ (Red Five Dora)
 }
+
+impl std::fmt::Display for Yaku {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let name = match self {
+            Yaku::Riichi => "Riichi",
+            Yaku::Ippatsu => "Ippatsu",
+            Yaku::MenzenTsumo => "Menzenchin Tsumohou",
+            Yaku::Pinfu => "Pinfu",
+            Yaku::Iipeikou => "Iipeikou",
+            Yaku::HaiteiRaoyue => "Haitei Raoyue",
+            Yaku::HouteiRaoyui => "Houtei Raoyui",
+            Yaku::RinshanKaihou => "Rinshan Kaihou",
+            Yaku::Chankan => "Chankan",
+            Yaku::Tanyao => "Tanyao",
+            Yaku::YakuhaiJikaze => "Yakuhai: Jikaze",
+            Yaku::YakuhaiBakaze => "Yakuhai: Bakaze",
+            Yaku::YakuhaiSangenpai => "Yakuhai: Sangenpai",
+            Yaku::DaburuRiichi => "Double Riichi",
+            Yaku::Chiitoitsu => "Chiitoitsu",
+            Yaku::SanshokuDoujun => "Sanshoku Doujun",
+            Yaku::Ittsu => "Ittsu",
+            Yaku::Chanta => "Chanta",
+            Yaku::Toitoi => "Toitoi",
+            Yaku::Sanankou => "Sanankou",
+            Yaku::SanshokuDoukou => "Sanshoku Doukou",
+            Yaku::Sankantsu => "Sankantsu",
+            Yaku::Shousangen => "Shousangen",
+            Yaku::Honroutou => "Honroutou",
+            Yaku::Ryanpeikou => "Ryanpeikou",
+            Yaku::Junchan => "Junchan",
+            Yaku::Honitsu => "Honitsu",
+            Yaku::Chinitsu => "Chinitsu",
+            Yaku::Tenhou => "Tenhou",
+            Yaku::Chiihou => "Chiihou",
+            Yaku::Renhou => "Renhou",
+            Yaku::Daisangen => "Daisangen",
+            Yaku::Suuankou => "Suuankou",
+            Yaku::Daisuushi => "Daisuushi",
+            Yaku::Shousuushi => "Shousuushi",
+            Yaku::Chinroutou => "Chinroutou",
+            Yaku::Ryuuiisou => "Ryuuiisou",
+            Yaku::Tsuuiisou => "Tsuuiisou",
+            Yaku::Suukantsu => "Suukantsu",
+            Yaku::KokushiMusou => "Kokushi Musou",
+            Yaku::ChuurenPoutou => "Chuuren Poutou",
+            Yaku::SuuankouTanki => "Suuankou Tanki",
+            Yaku::KokushiMusouJusanmen => "Kokushi Musou 13-Wait",
+            Yaku::JunseiChuurenPoutou => "Junsei Chuuren Poutou",
+            Yaku::Dora => "Dora",
+            Yaku::UraDora => "Ura Dora",
+            Yaku::AkaDora => "Aka Dora",
+        };
+        write!(f, "{}", name)
+    }
+}

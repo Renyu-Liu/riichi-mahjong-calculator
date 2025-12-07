@@ -65,7 +65,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                         HandLimit::Haneman => "Haneman",
                         HandLimit::Baiman => "Baiman",
                         HandLimit::Sanbaiman => "Sanbaiman",
-                        HandLimit::Yakuman => "Yakuman",
+                        HandLimit::Yakuman => "YAKUMAN!",
                     })
                 } else {
                     None
@@ -89,7 +89,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                         Yaku::UraDora => uradora_count += 1,
                         Yaku::AkaDora => {}
                         _ => {
-                            yaku_col = yaku_col.push(text(format!("• {:?}", yaku)).size(18).font(
+                            yaku_col = yaku_col.push(text(format!("• {}", yaku)).size(18).font(
                                 iced::Font {
                                     weight: iced::font::Weight::Bold,
                                     ..iced::Font::with_name("Arimo")
