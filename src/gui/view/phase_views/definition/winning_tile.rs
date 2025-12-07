@@ -20,7 +20,7 @@ pub fn build_winning_tile_section(gui: &RiichiGui) -> Element<'_, Message> {
                     handle,
                     40,
                     Message::StartSelectWinningTile,
-                    theme::Button::Text,
+                    theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL_HOVER)),
                 )]
                 .spacing(10)
                 .align_items(iced::Alignment::Center)

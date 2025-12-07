@@ -140,7 +140,7 @@ pub fn tile_image_button<'a>(
     button(iced::widget::Image::new(handle).width(width))
         .on_press(msg)
         .style(style)
-        .padding(0)
+        .padding(5)
         .into()
 }
 

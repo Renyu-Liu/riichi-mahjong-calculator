@@ -36,28 +36,35 @@ struct GameStateDefaults {
 
 impl RiichiGui {
     pub fn new() -> Self {
-        let mut tile_images: std::collections::HashMap<
+        use rayon::prelude::*;
+        
+        // Parallelize image loading and resizing
+        let tile_images: std::collections::HashMap<
             crate::implements::types::tiles::Hai,
             iced::widget::image::Handle,
-        > = std::collections::HashMap::new();
-        for i in 0..34 {
-            let tile = crate::implements::types::tiles::index_to_tile(i);
-            let path = crate::gui::components::get_tile_image_path(&tile);
+        > = (0..34)
+            .into_par_iter()
+            .map(|i| {
+                let tile = crate::implements::types::tiles::index_to_tile(i);
+                let path = crate::gui::components::get_tile_image_path(&tile);
 
-            // fast rendering
-            if let Ok(img) = image::open(&path) {
-                let resized = img.resize(256, 256, image::imageops::FilterType::Nearest);
-                let rgba = resized.to_rgba8();
-                let width = rgba.width();
-                let height = rgba.height();
-                let pixels = rgba.into_raw();
+                // fast rendering
+                if let Ok(img) = image::open(&path) {
+                    let resized = img.resize(256, 256, image::imageops::FilterType::Nearest);
+                    let rgba = resized.to_rgba8();
+                    let width = rgba.width();
+                    let height = rgba.height();
+                    let pixels = rgba.into_raw();
 
-                let handle = iced::widget::image::Handle::from_pixels(width, height, pixels);
-                tile_images.insert(tile, handle);
-            } else {
-                eprintln!("Failed to load image: {}", path);
-            }
-        }
+                    let handle = iced::widget::image::Handle::from_pixels(width, height, pixels);
+                    Some((tile, handle))
+                } else {
+                    eprintln!("Failed to load image: {}", path);
+                    None
+                }
+            })
+            .filter_map(|x| x)
+            .collect();
 
         let rules_image = if let Ok(img) = image::open("assets/riichi_rule.png") {
             let rgba = img.to_rgba8();

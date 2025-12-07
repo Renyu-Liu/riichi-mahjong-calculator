@@ -31,6 +31,7 @@ cd .../Riichi_Mahjong_Scoring_Calculator-main
 
 ### 2. Run the Application
 ```bash
+cargo build
 cargo run
 ```
-
+Note: Wait ~5 seconds for the app to launch.

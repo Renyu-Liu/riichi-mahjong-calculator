@@ -22,7 +22,7 @@ impl RiichiGui {
                     handle,
                     40,
                     Message::RemoveTile(i),
-                    theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL)),
+                    theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL_HOVER)),
                 )
             })
             .collect();
@@ -81,6 +81,11 @@ impl RiichiGui {
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                     background_color: button_bg_color,
                     text_color: Color::BLACK,
+                    hover_color: if count > 0 {
+                        Some(Color::from_rgb(0.8, 0.8, 0.8))
+                    } else {
+                        None
+                    },
                 })))
                 .on_press_maybe(if count > 0 {
                     Some(Message::AddTile(tile))

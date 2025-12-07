@@ -24,7 +24,7 @@ impl RiichiGui {
                 tile_button(
                     iced::widget::Image::new(handle).width(50).into(),
                     Message::SelectWinningTile(*tile),
-                    ColoredButtonStyle::NEUTRAL,
+                    ColoredButtonStyle::NEUTRAL_HOVER,
                 )
             })
             .collect();
@@ -164,7 +164,7 @@ impl RiichiGui {
                 } else {
                     Message::SelectDora(tile)
                 },
-                ColoredButtonStyle::NEUTRAL,
+                ColoredButtonStyle::NEUTRAL_HOVER,
             );
 
             tiles.push(btn);

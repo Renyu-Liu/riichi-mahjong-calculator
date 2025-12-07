@@ -50,6 +50,7 @@ pub fn build_game_info_section(gui: &RiichiGui) -> Element<'_, Message> {
                 .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                     background_color: Color::from_rgb(0.6, 0.0, 0.0),
                     text_color: Color::WHITE,
+                    hover_color: None,
                 })))
                 .on_press_maybe(if gui.honba > 0 {
                     Some(Message::DecrementHonba)

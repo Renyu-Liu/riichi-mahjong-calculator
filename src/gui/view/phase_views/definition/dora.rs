@@ -21,7 +21,12 @@ pub fn build_dora_section(gui: &RiichiGui) -> Element<'_, Message> {
                         .get(t)
                         .expect("Tile image not found")
                         .clone();
-                    tile_image_button(handle, 30, Message::RemoveDora(i), theme::Button::Text)
+                    tile_image_button(
+                        handle,
+                        30,
+                        Message::RemoveDora(i),
+                        theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL_HOVER)),
+                    )
                 })
                 .collect::<Vec<Element<Message>>>())
             .spacing(5),
@@ -43,7 +48,7 @@ pub fn build_dora_section(gui: &RiichiGui) -> Element<'_, Message> {
                                 handle,
                                 30,
                                 Message::RemoveUraDora(i),
-                                theme::Button::Text,
+                                theme::Button::Custom(Box::new(ColoredButtonStyle::NEUTRAL_HOVER)),
                             )
                         })
                         .collect::<Vec<Element<Message>>>())
@@ -68,6 +73,7 @@ pub fn build_dora_section(gui: &RiichiGui) -> Element<'_, Message> {
                         .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                             background_color: Color::from_rgb(0.0, 0.0, 0.6),
                             text_color: Color::WHITE,
+                            hover_color: None,
                         })))
                         .on_press_maybe(if gui.num_akadora < max_akadora && gui.num_akadora < 4 {
                             Some(Message::IncrementAkadora)
@@ -78,6 +84,7 @@ pub fn build_dora_section(gui: &RiichiGui) -> Element<'_, Message> {
                         .style(theme::Button::Custom(Box::new(ColoredButtonStyle {
                             background_color: Color::from_rgb(0.6, 0.0, 0.0),
                             text_color: Color::WHITE,
+                            hover_color: None,
                         })))
                         .on_press_maybe(if gui.num_akadora > 0 {
                             Some(Message::DecrementAkadora)
