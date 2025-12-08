@@ -115,10 +115,12 @@ Other examples:
 ## Challenges
 
 ### Current Issues
+* The program still finds it hard to handle some edge cases. For instance, a hand can be organized into multiple distinct 4-meld-1-pair structures that lead to different yaku, and the program doesn't know which one to choose. We are working to design a better yaku detection logic.
 * The launching speed of this app is slow due to the time to load images. We are working to improve the loading speed.
 * It's hard for common users to install this app. We are working to create executable object or application file for convenient access.
 
 ### Future Improvement Plan
+* Fix all current issues.
 * Develop mobile version.
 * Improve the UI layout aesthetics. 
 * Design functions to store history of input hands. 
