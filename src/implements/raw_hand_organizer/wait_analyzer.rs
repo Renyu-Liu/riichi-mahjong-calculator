@@ -1,6 +1,6 @@
 use crate::implements::types::{
     hand::{Machi, Mentsu, MentsuType},
-    tiles::{Hai, TILES_PER_SUIT, tile_to_index},
+    tiles::{Hai, TILES_PER_SUHAI, tile_to_index},
 };
 
 fn mentsu_contains_tile(mentsu: &Mentsu, tile: &Hai) -> bool {
@@ -38,13 +38,13 @@ pub fn determine_wait_type(
                 if agari_hai == t2 {
                     Machi::Kanchan
                 } else if agari_hai == t1 {
-                    if tile_to_index(&t3) % TILES_PER_SUIT == 8 {
+                    if tile_to_index(&t3) % TILES_PER_SUHAI == 8 {
                         Machi::Penchan
                     } else {
                         Machi::Ryanmen
                     }
                 } else if agari_hai == t3 {
-                    if tile_to_index(&t1) % TILES_PER_SUIT == 0 {
+                    if tile_to_index(&t1) % TILES_PER_SUHAI == 0 {
                         Machi::Penchan
                     } else {
                         Machi::Ryanmen

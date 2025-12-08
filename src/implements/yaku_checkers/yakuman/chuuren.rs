@@ -1,5 +1,5 @@
 use crate::implements::types::hand::AgariHand;
-use crate::implements::types::tiles::{Hai, Suhai, TILES_PER_SUIT};
+use crate::implements::types::tiles::{Hai, Suhai, TILES_PER_SUHAI};
 use crate::implements::yaku_checkers::standard::color::check_chinitsu;
 use crate::implements::yaku_checkers::utils::get_all_tiles;
 
@@ -19,7 +19,7 @@ pub fn check_chuuren(hand: &AgariHand) -> Option<bool> {
     }
 
     // count check
-    let mut counts = [0u8; TILES_PER_SUIT];
+    let mut counts = [0u8; TILES_PER_SUHAI];
     for tile in &all_tiles {
         if let Hai::Suhai(Suhai { number: n, suit: s }) = tile {
             if *s == suit {

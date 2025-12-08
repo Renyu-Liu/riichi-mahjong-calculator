@@ -8,9 +8,9 @@ pub enum Suit {
 
 // tile number
 pub const TILE_COUNT: usize = 34;
-pub const SUIT_TILES_COUNT: usize = 27;
-pub const TILES_PER_SUIT: usize = 9;
-pub const MAX_SEQUENCE_START: usize = 7;
+pub const SUHAI_TILES_COUNT: usize = 27;
+pub const TILES_PER_SUHAI: usize = 9;
+pub const MAX_SHUNTSU_START: usize = 7;
 pub const CHIITOITSU_PAIR_COUNT: usize = 7;
 pub const STANDARD_HAND_SIZE: usize = 14;
 
@@ -94,18 +94,18 @@ pub fn tile_to_index(tile: &Hai) -> usize {
         Hai::Suhai(Suhai {
             number: n,
             suit: Suit::Pinzu,
-        }) => (*n - 1) as usize + TILES_PER_SUIT, // 9-17
+        }) => (*n - 1) as usize + TILES_PER_SUHAI, // 9-17
         Hai::Suhai(Suhai {
             number: n,
             suit: Suit::Souzu,
-        }) => (*n - 1) as usize + TILES_PER_SUIT * 2, // 18-26
-        Hai::Jihai(Jihai::Kaze(Kaze::Ton)) => SUIT_TILES_COUNT,
-        Hai::Jihai(Jihai::Kaze(Kaze::Nan)) => SUIT_TILES_COUNT + 1,
-        Hai::Jihai(Jihai::Kaze(Kaze::Shaa)) => SUIT_TILES_COUNT + 2,
-        Hai::Jihai(Jihai::Kaze(Kaze::Pei)) => SUIT_TILES_COUNT + 3,
-        Hai::Jihai(Jihai::Sangen(Sangenpai::Haku)) => SUIT_TILES_COUNT + 4,
-        Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => SUIT_TILES_COUNT + 5,
-        Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)) => SUIT_TILES_COUNT + 6,
+        }) => (*n - 1) as usize + TILES_PER_SUHAI * 2, // 18-26
+        Hai::Jihai(Jihai::Kaze(Kaze::Ton)) => SUHAI_TILES_COUNT,
+        Hai::Jihai(Jihai::Kaze(Kaze::Nan)) => SUHAI_TILES_COUNT + 1,
+        Hai::Jihai(Jihai::Kaze(Kaze::Shaa)) => SUHAI_TILES_COUNT + 2,
+        Hai::Jihai(Jihai::Kaze(Kaze::Pei)) => SUHAI_TILES_COUNT + 3,
+        Hai::Jihai(Jihai::Sangen(Sangenpai::Haku)) => SUHAI_TILES_COUNT + 4,
+        Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => SUHAI_TILES_COUNT + 5,
+        Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)) => SUHAI_TILES_COUNT + 6,
     }
 }
 
@@ -116,11 +116,11 @@ pub fn index_to_tile(index: usize) -> Hai {
             suit: Suit::Manzu,
         }),
         9..=17 => Hai::Suhai(Suhai {
-            number: ((index - TILES_PER_SUIT) + 1) as u8,
+            number: ((index - TILES_PER_SUHAI) + 1) as u8,
             suit: Suit::Pinzu,
         }),
         18..=26 => Hai::Suhai(Suhai {
-            number: ((index - TILES_PER_SUIT * 2) + 1) as u8,
+            number: ((index - TILES_PER_SUHAI * 2) + 1) as u8,
             suit: Suit::Souzu,
         }),
         27 => Hai::Jihai(Jihai::Kaze(Kaze::Ton)),

@@ -1,6 +1,6 @@
 use crate::implements::types::{
     hand::{Mentsu, MentsuType},
-    tiles::{MAX_SEQUENCE_START, SUIT_TILES_COUNT, TILE_COUNT, TILES_PER_SUIT, index_to_tile},
+    tiles::{MAX_SHUNTSU_START, SUHAI_TILES_COUNT, TILE_COUNT, TILES_PER_SUHAI, index_to_tile},
 };
 
 pub fn find_all_mentsu_recursive<F>(
@@ -36,8 +36,8 @@ pub fn find_all_mentsu_recursive<F>(
     }
 
     // Find sequences
-    if i < SUIT_TILES_COUNT
-        && (i % TILES_PER_SUIT) < MAX_SEQUENCE_START
+    if i < SUHAI_TILES_COUNT
+        && (i % TILES_PER_SUHAI) < MAX_SHUNTSU_START
         && counts[i] > 0
         && counts[i + 1] > 0
         && counts[i + 2] > 0

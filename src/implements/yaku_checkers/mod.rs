@@ -37,43 +37,6 @@ pub fn check_all_yaku(
 
     yakuman_list.extend(hand_yakuman);
 
-    if !yakuman_list.is_empty() {
-        if player.is_daburu_riichi {
-            yakuman_list.push(Yaku::DaburuRiichi);
-        } else if player.is_riichi {
-            yakuman_list.push(Yaku::Riichi);
-        }
-
-        if player.is_ippatsu {
-            yakuman_list.push(Yaku::Ippatsu);
-        }
-
-        if player.is_menzen && agari_type == AgariType::Tsumo {
-            yakuman_list.push(Yaku::MenzenTsumo);
-        }
-
-        if game.is_haitei {
-            yakuman_list.push(Yaku::HaiteiRaoyue);
-        }
-        if game.is_houtei {
-            yakuman_list.push(Yaku::HouteiRaoyui);
-        }
-        if game.is_rinshan {
-            yakuman_list.push(Yaku::RinshanKaihou);
-        }
-        if game.is_chankan {
-            yakuman_list.push(Yaku::Chankan);
-        }
-
-        let final_yakuman = post_process_yakuman(yakuman_list);
-
-        return Ok(YakuResult {
-            hand_structure,
-            yaku_list: final_yakuman,
-            num_akadora: 0,
-        });
-    }
-
     // regular yaku
     let mut regular_yaku: Vec<Yaku> = match &hand_structure {
         HandStructure::YonmentsuIchiatama(agari_hand) => {
@@ -86,6 +49,12 @@ pub fn check_all_yaku(
         } => find_chiitoitsu_yaku(pairs, agari_hai, machi, player, game, agari_type),
         _ => vec![],
     };
+
+    // Merge Yakuman
+    if !yakuman_list.is_empty() {
+        let final_yakuman = post_process_yakuman(yakuman_list);
+        regular_yaku.extend(final_yakuman);
+    }
 
     // Dora
     let has_yaku = !regular_yaku.is_empty() || player.is_riichi || player.is_daburu_riichi;

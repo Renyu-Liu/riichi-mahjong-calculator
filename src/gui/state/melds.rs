@@ -3,7 +3,7 @@ use crate::implements::types::{
     hand::MentsuType,
     input::OpenMeldInput,
     tiles::{
-        Hai, MAX_SEQUENCE_START, SUIT_TILES_COUNT, TILE_COUNT, TILES_PER_SUIT, index_to_tile,
+        Hai, MAX_SHUNTSU_START, SUHAI_TILES_COUNT, TILE_COUNT, TILES_PER_SUHAI, index_to_tile,
         tile_to_index,
     },
 };
@@ -14,12 +14,12 @@ impl RiichiGui {
         match meld.mentsu_type {
             MentsuType::Shuntsu => {
                 let start_idx = tile_to_index(&meld.representative_tile);
-                if start_idx < SUIT_TILES_COUNT {
-                    let suit_base = (start_idx / TILES_PER_SUIT) * TILES_PER_SUIT;
+                if start_idx < SUHAI_TILES_COUNT {
+                    let suit_base = (start_idx / TILES_PER_SUHAI) * TILES_PER_SUHAI;
 
                     for i in 0..3 {
                         let idx = start_idx + i;
-                        if idx < suit_base + TILES_PER_SUIT {
+                        if idx < suit_base + TILES_PER_SUHAI {
                             tiles.push(index_to_tile(idx));
                         }
                     }
@@ -79,8 +79,8 @@ impl RiichiGui {
         let available_counts = self.get_active_hand_counts();
 
         let mut chiis = Vec::new();
-        for suit_offset in [0, TILES_PER_SUIT, TILES_PER_SUIT * 2] {
-            for start_num in 0..MAX_SEQUENCE_START {
+        for suit_offset in [0, TILES_PER_SUHAI, TILES_PER_SUHAI * 2] {
+            for start_num in 0..MAX_SHUNTSU_START {
                 let idx1 = suit_offset + start_num;
                 let idx2 = idx1 + 1;
                 let idx3 = idx1 + 2;
