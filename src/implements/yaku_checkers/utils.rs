@@ -16,11 +16,6 @@ pub fn check_chiitoitsu(counts: &[u8; 34], agari_hai: Hai) -> Option<HandStructu
                 pair_count += 1;
                 let tile = index_to_tile(idx);
                 pairs.push((tile, tile));
-            } else if count == 4 {
-                pair_count += 2;
-                let tile = index_to_tile(idx);
-                pairs.push((tile, tile));
-                pairs.push((tile, tile));
             } else {
                 return None;
             }
@@ -174,5 +169,47 @@ pub fn is_green_tile(tile: &Hai) -> bool {
         }) => *n == 2 || *n == 3 || *n == 4 || *n == 6 || *n == 8,
         Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => true,
         _ => false,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::implements::types::tiles::{Hai, Suhai, Suit};
+
+    #[test]
+    fn test_chiitoitsu_strict_pairs() {
+        let mut counts = [0u8; 34];
+        // 5 distinct pairs
+        counts[0] = 2; // 1m
+        counts[1] = 2; // 2m
+        counts[2] = 2; // 3m
+        counts[3] = 2; // 4m
+        counts[4] = 2; // 5m
+
+        // 1 quad (4 identical tiles)
+        counts[5] = 4; // 6m
+
+        // Dummy agari_hai
+        let agari_hai = Hai::Suhai(Suhai {
+            number: 1,
+            suit: Suit::Manzu,
+        });
+
+        // Should be rejected
+        assert!(
+            check_chiitoitsu(&counts, agari_hai).is_none(),
+            "Should reject 4 identical tiles as 2 pairs"
+        );
+
+        // Valid chiitoitsu
+        let mut valid_counts = [0u8; 34];
+        for i in 0..7 {
+            valid_counts[i] = 2;
+        }
+        assert!(
+            check_chiitoitsu(&valid_counts, agari_hai).is_some(),
+            "Should accept 7 distinct pairs"
+        );
     }
 }

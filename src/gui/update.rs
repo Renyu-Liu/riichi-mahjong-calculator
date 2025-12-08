@@ -43,15 +43,34 @@ impl Update for RiichiGui {
 
             // --- Definition Phase ---
             Message::ModifyHand => {
-                self.open_melds.clear();
-                self.closed_kans.clear();
+                self.phase = Phase::Composition;
                 self.hand_tiles.sort_by_key(sort_tiles_by_type);
 
-                self.phase = Phase::Composition;
+                // Reset everything
                 self.winning_tile = None;
                 self.open_melds.clear();
                 self.closed_kans.clear();
+
+                self.agari_type = AgariType::Ron;
+                self.bakaze = Kaze::Ton;
+                self.jikaze = Kaze::Ton;
+                self.honba = 0;
                 self.num_akadora = 0;
+
+                self.is_riichi = false;
+                self.is_daburu_riichi = false;
+                self.is_ippatsu = false;
+                self.is_rinshan = false;
+                self.is_chankan = false;
+                self.is_haitei = false;
+                self.is_houtei = false;
+                self.is_tenhou = false;
+                self.is_chiihou = false;
+                self.is_renhou = false;
+
+                self.dora_indicators.clear();
+                self.uradora_indicators.clear();
+                self.score_result = None;
             }
             Message::StartSelectWinningTile => {
                 self.phase = Phase::SelectingWinningTile;
@@ -96,11 +115,17 @@ impl Update for RiichiGui {
                 self.phase = Phase::SelectingAddedKan;
             }
             Message::SelectAddedKan(index) => {
-                if let Some(meld) = self.open_melds.get_mut(index) {
-                    meld.mentsu_type = MentsuType::Kantsu;
-                    meld.is_added_kan = true;
+                if index < self.open_melds.len() {
+                    let tile = self.open_melds[index].representative_tile;
+                    let count = self.hand_tiles.iter().filter(|&&t| t == tile).count();
+                    if count >= 4 {
+                        if let Some(meld) = self.open_melds.get_mut(index) {
+                            meld.mentsu_type = MentsuType::Kantsu;
+                            meld.is_added_kan = true;
+                        }
+                        self.phase = Phase::Definition;
+                    }
                 }
-                self.phase = Phase::Definition;
             }
             Message::StartAddOpenKan => {
                 self.phase = Phase::SelectingOpenKan;

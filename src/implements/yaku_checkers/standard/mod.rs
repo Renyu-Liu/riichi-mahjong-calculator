@@ -148,12 +148,6 @@ pub fn find_standard_yaku(
         }
     }
 
-    if yaku_list.contains(&Yaku::Pinfu) {
-        if yaku_list.contains(&Yaku::RinshanKaihou) || yaku_list.contains(&Yaku::Chankan) {
-            yaku_list.retain(|&y| y != Yaku::Pinfu);
-        }
-    }
-
     yaku_list
 }
 

@@ -49,8 +49,8 @@ impl RiichiGui {
         if possible_melds.is_empty() {
             return column![
                 match m_type {
-                    MentsuType::Koutsu => text("No valid Triplet available").size(24),
-                    MentsuType::Shuntsu => text("No valid Sequence available").size(24),
+                    MentsuType::Koutsu => text("No Triplet available").size(24),
+                    MentsuType::Shuntsu => text("No Sequence available").size(24),
                     MentsuType::Kantsu => unreachable!(""),
                 },
                 cancel_button()
@@ -140,7 +140,7 @@ impl RiichiGui {
         let possible_kans = self.get_all_possible_kans();
 
         if possible_kans.is_empty() {
-            return column![text("No valid Kan available").size(24), cancel_button()]
+            return column![text("No Open Kan available").size(24), cancel_button()]
                 .spacing(20)
                 .align_items(iced::Alignment::Center)
                 .into();
@@ -229,13 +229,10 @@ impl RiichiGui {
         let possible_kans = self.get_all_possible_kans();
 
         if possible_kans.is_empty() {
-            return column![
-                text("No valid Closed Kan available").size(24),
-                cancel_button()
-            ]
-            .spacing(20)
-            .align_items(iced::Alignment::Center)
-            .into();
+            return column![text("No Closed Kan available").size(24), cancel_button()]
+                .spacing(20)
+                .align_items(iced::Alignment::Center)
+                .into();
         }
 
         let kan_buttons: Vec<Element<Message>> = possible_kans
@@ -287,17 +284,41 @@ impl RiichiGui {
     }
 
     pub fn view_selecting_added_kan(&self) -> Element<'_, Message> {
-        // Find open Pons
+        // check pons
+        let has_pon = self
+            .open_melds
+            .iter()
+            .any(|m| m.mentsu_type == MentsuType::Koutsu);
+
+        if !has_pon {
+            return column![
+                text("Select a Pon before you select an added Kan.").size(24),
+                cancel_button()
+            ]
+            .spacing(20)
+            .align_items(iced::Alignment::Center)
+            .into();
+        }
+
+        // check addable pons
         let pons: Vec<(usize, &crate::implements::input::OpenMeldInput)> = self
             .open_melds
             .iter()
             .enumerate()
-            .filter(|(_, m)| m.mentsu_type == MentsuType::Koutsu)
+            .filter(|(_, m)| {
+                m.mentsu_type == MentsuType::Koutsu
+                    && self
+                        .hand_tiles
+                        .iter()
+                        .filter(|&&t| t == m.representative_tile)
+                        .count()
+                        >= 4
+            })
             .collect();
 
         if pons.is_empty() {
             return column![
-                text("Select a Pon before you select an added Kan.").size(24),
+                text("No available tiles to form an added Kan.").size(24),
                 cancel_button()
             ]
             .spacing(20)

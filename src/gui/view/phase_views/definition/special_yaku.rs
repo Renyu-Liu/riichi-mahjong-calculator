@@ -12,6 +12,9 @@ pub fn build_special_yaku_section(gui: &RiichiGui) -> Element<'_, Message> {
     let is_tsumo = gui.agari_type == AgariType::Tsumo;
     let is_menzen = gui.open_melds.is_empty();
 
+    let is_first_turn_yaku = gui.is_tenhou || gui.is_chiihou || gui.is_renhou;
+    let is_situational_yaku = gui.is_haitei || gui.is_houtei || gui.is_rinshan || gui.is_chankan;
+
     column![
         section_header("Special Yaku"),
         column![
@@ -41,19 +44,19 @@ pub fn build_special_yaku_section(gui: &RiichiGui) -> Element<'_, Message> {
                     "Tenhou",
                     gui.is_tenhou,
                     Message::ToggleTenhou,
-                    is_tsumo && is_oya && is_menzen
+                    is_tsumo && is_oya && is_menzen && !is_situational_yaku
                 )),
                 cell(checkbox_with_conflict(
                     "Chiihou",
                     gui.is_chiihou,
                     Message::ToggleChiihou,
-                    is_tsumo && !is_oya && is_menzen
+                    is_tsumo && !is_oya && is_menzen && !is_situational_yaku
                 )),
                 cell(checkbox_with_conflict(
                     "Renhou",
                     gui.is_renhou,
                     Message::ToggleRenhou,
-                    is_ron && is_menzen
+                    is_ron && is_menzen && !is_oya && !is_situational_yaku
                 )),
             ]
             .spacing(40),
@@ -62,13 +65,13 @@ pub fn build_special_yaku_section(gui: &RiichiGui) -> Element<'_, Message> {
                     "Haitei",
                     gui.is_haitei,
                     Message::ToggleHaitei,
-                    is_tsumo
+                    is_tsumo && !is_first_turn_yaku && !gui.is_rinshan
                 )),
                 cell(checkbox_with_conflict(
                     "Houtei",
                     gui.is_houtei,
                     Message::ToggleHoutei,
-                    is_ron
+                    is_ron && !is_first_turn_yaku && !gui.is_chankan
                 )),
             ]
             .spacing(40),
@@ -77,13 +80,13 @@ pub fn build_special_yaku_section(gui: &RiichiGui) -> Element<'_, Message> {
                     "Rinshan",
                     gui.is_rinshan,
                     Message::ToggleRinshan,
-                    is_tsumo
+                    is_tsumo && !is_first_turn_yaku && !gui.is_haitei
                 )),
                 cell(checkbox_with_conflict(
                     "Chankan",
                     gui.is_chankan,
                     Message::ToggleChankan,
-                    is_ron
+                    is_ron && !is_first_turn_yaku && !gui.is_houtei
                 ))
             ]
             .spacing(40),
