@@ -1,7 +1,7 @@
 # Riichi Mahjong Calculator
-_Created by Renyu Liu (Github: @Renyu-Liu, NetID: renyul2) and Thomas Jablecki (Github: @akakrabz, NetID: tj29) of group "group-12" for the final project of [CS 128H].(https://honors.cs128.org)_
+_Created by Renyu Liu (Github: @Renyu-Liu, NetID: renyul2) and Thomas Jablecki (Github: @akakrabz, NetID: tj29) of group "group-12" for the final project of [CS 128H](https://honors.cs128.org)_
 ## Introduction
-In an actual mahjong game, players often find it hard to calculate points by hand due to complicated mahjong scoring rules. This is why we created this app. Riichi Mahjong Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input and provides a detailed breakdown of points and payment distribution. 
+In a mahjong game, players often find it hard to calculate points by hand due to complicated mahjong scoring rules. This is why we created this app. Riichi Mahjong Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input and provides a detailed breakdown of points and payment distribution. 
 
 ### Features
 * **Graphical Interface**: No keyboard needed.
@@ -9,6 +9,7 @@ In an actual mahjong game, players often find it hard to calculate points by han
 * **Intuitive Operation**: Only buttons and checkboxes.
 * **Players Friendly**: Rule sheet included.
 * **Fast Cycle**: Short time to generate results.
+
 ## Installation
 See [RUN.md](RUN.md).
 
@@ -135,20 +136,17 @@ Other examples:
 ## References
 
 ### Rules
-
 * Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://riichi.wiki/Japanese_mahjong_scoring_rules).
 * Yaku checker is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
 * The rule used by the program is **standard 4-player East**. Nukidora and kita yaku are not supported. 
 * Red dora varies in different versions. We use **5-man, 5-pin, 5-pin, 5-sou** as the red dora.
 * For any disputes about yaku we use in our program, please counsel [yaku variations](https://riichi.wiki/Yaku_variations#Chiitoitsu).
 
-### Images
-
+### Materials
 * Images of tiles are from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles).
 * Image of Riichi Mahjong scoring rule sheet is from [scoring rules sheet](https://www.reddit.com/r/Mahjong/comments/l5b221/riichi_mahjong_cheat_sheet_1_page_pdf_or_images/).
-
-### Font 
-* [Arimo](https://fonts.google.com/specimen/Arimo)
+* GUI package: [iced](https://iced.rs)
+* Font: [Arimo](https://fonts.google.com/specimen/Arimo)
 
 ### Inspiration
 The initial inspiration of this program is the video game [Mahjong Soul](https://en.wikipedia.org/wiki/Mahjong_Soul) by Yostar. It is a popular and interesting digital Riichi Mahjong game, and we enjoy it. Mahjong Soul provides a good example of how to perform calculation under rigorous rules. During the development stage, we studied calculation algorithms used by Mahjong Soul and built the foundation of this program. During the testing stage, we took Mahjong Soul players' score screenshots they shared on social media as test cases, and compared the result from our program with the exact scores from Mahjong Soul to improve the performance. Thanks to this great game, we can combine our interests with our dedicated commitment to this project.
