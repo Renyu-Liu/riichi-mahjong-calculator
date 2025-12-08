@@ -1,7 +1,7 @@
-# Riichi Mahjong Scoring Calculator
+# Riichi Mahjong Calculator
 _Created by Renyu (@Renyu-Liu) and Thomas (@akakrabz) as the final project for [CS 128H](https://honors.cs128.org)_
 ## Introduction
-Riichi Mahjong Scoring Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input to provide a detailed breakdown of points and payment distribution.
+Riichi Mahjong Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input to provide a detailed breakdown of points and payment distribution.
 ## Installation
 See [RUN.md](RUN.md).
 

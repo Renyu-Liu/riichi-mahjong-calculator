@@ -1,16 +1,11 @@
-# Run Riichi Mahjong Scoring Calculator
+# Run Riichi Mahjong Calculator
 
 ## Prerequisites
 
 - **[Rust](https://rust-lang.org/tools/install/)**
-- **[Git](https://git-scm.com)** (optional, for cloning the repository)
-
-### macOS
-- **Xcode Command Line Tools** - Install with: `xcode-select --install`
-
-### Windows
-- **Visual Studio Build Tools** - Download from [Visual Studio](https://visualstudio.microsoft.com/downloads/)
-- Select the "Desktop development with C++" workload during installation
+- **[Git](https://git-scm.com)** (only for cloning the repository)
+- **Xcode Command Line Tools** (MacOS): Run `xcode-select --install`
+- **Visual Studio Build Tools** (Windows): Download from [Visual Studio](https://visualstudio.microsoft.com/downloads/). Install "Desktop development with C++".
 
 ## Installation
 
@@ -31,7 +26,6 @@ cd .../Riichi_Mahjong_Scoring_Calculator-main
 
 ### 2. Run the Application
 ```bash
-cargo build
 cargo run
 ```
 Note: Wait ~5 seconds for the app to launch.
