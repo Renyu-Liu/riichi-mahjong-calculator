@@ -1,7 +1,14 @@
 # Riichi Mahjong Calculator
 _Created by Renyu (@Renyu-Liu) and Thomas (@akakrabz) as the final project for [CS 128H](https://honors.cs128.org)_
 ## Introduction
-Riichi Mahjong Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input to provide a detailed breakdown of points and payment distribution.
+In an actual mahjong game, players often find it hard to calculate points by hand due to complicated mahjong scoring rules. This is why we created this app. Riichi Mahjong Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input and provides a detailed breakdown of points and payment distribution. 
+
+### Features
+* **Graphical Interface**: No keyboard needed.
+* **Image Button**: No heavy texts.
+* **Intuitive Operation**: Only buttons and checkboxes.
+* **Players Friendly**: Rule sheet included.
+* **Fast Cycle**: Short time to generate results.
 ## Installation
 See [RUN.md](RUN.md).
 
@@ -97,20 +104,16 @@ Other examples:
 <img width="752" height="939" alt="Untitled Diagram drawio" src="https://github.com/user-attachments/assets/215981e1-450e-4c43-9f83-af0fa1036e3d" />
 
 * Tile works as the smallest unit and makes up all related objects.
-
 * Winning Hand and Game Info is the user input.
-
 * Score is displayed the output.
-
 * The program receives Winning Hand and Game Info and returns Score.
 
 ### Work Flow
 
 <img width="964" height="1039" alt="flowchart" src="https://github.com/user-attachments/assets/b5991162-1413-4a28-9ac5-72704ff056c4" />
 
-* Frontend Logic: The program directly handles all possible input conflicts according to Riichi Mahjong rules and guides users to correct their inputs. It ensures the input that sent to backend is recognizable.
-
-* Backend Logic: The program involves multiple decision routes in the backend to detect all yaku, regular and irregular. Based on Riichi Mahjong scoring rules, there must be at least 1 yaku to calculate the score. Key crossroads include the check for hand structure and type of yaku. The final result is calculated based on the number of yaku and fu/han points.
+* **Frontend Logic**: The program directly handles all possible input conflicts according to Riichi Mahjong rules and guides users to correct their inputs. It ensures the input that sent to backend is recognizable.
+* **Backend Logic**: The program involves multiple decision routes in the backend to detect all yaku, regular and irregular. Based on Riichi Mahjong scoring rules, there must be at least 1 yaku to calculate the score. Key crossroads include the check for hand structure and type of yaku. The final result is calculated based on the number of yaku and fu/han points.
 
 ## Challenges
 
@@ -134,19 +137,14 @@ Other examples:
 ### Rules
 
 * Scoring calculation is based on [standard Riichi Mahjong scoring rules](https://riichi.wiki/Japanese_mahjong_scoring_rules).
-
 * Yaku checker is based on [standard Riichi Mahjong yaku lists](https://riichi.wiki/List_of_yaku).
-
 * The rule used by the program is **standard 4-player East**. Nukidora and kita yaku are not supported. 
-
 * Red dora varies in different versions. We use **5-man, 5-pin, 5-pin, 5-sou** as the red dora.
-
 * For any disputes about yaku we use in our program, please counsel [yaku variations](https://riichi.wiki/Yaku_variations#Chiitoitsu).
 
 ### Images
 
 * Images of tiles are from [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles).
-
 * Image of Riichi Mahjong scoring rule is from [scoring rules sheet](https://www.reddit.com/r/Mahjong/comments/l5b221/riichi_mahjong_cheat_sheet_1_page_pdf_or_images/).
 
 ### Font 
@@ -154,7 +152,7 @@ Other examples:
 
 ## Acknowledgment
 
-The initial inpiration of this program is the video game [Mahjong Soul](https://mahjongsoul.yo-star.com) by Yostar. It is a popular and interesting digital Riichi Mahjong game, and we enjoy it. One advantage of digital Mahjong is that the system helps players calculate points, but in an actual mahjong game, players find it hard to calculate points by hand, due to complicated scoring rules. This is why we created this app. 
+The initial inspiration of this program is the video game [Mahjong Soul](https://mahjongsoul.yo-star.com) by Yostar. It is a popular and interesting digital Riichi Mahjong game, and we enjoy it. 
 
 Mahjong Soul provides a good example of how to perform calculation under rigorous rules. During the development stage, we studied calculation algorithms used by Mahjong Soul and built the foundation of this program. During the testing stage, we took Mahjong Soul players' score screenshots they shared on social media as test cases, and compared the result from our program with the exact scores from Mahjong Soul to improve the performance. 
 
