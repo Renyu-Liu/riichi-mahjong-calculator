@@ -2,70 +2,94 @@
 _Created by Renyu (@Renyu-Liu) and Thomas (@akakrabz) as the final project for [CS 128H](https://honors.cs128.org)_
 ## Introduction
 Riichi Mahjong Scoring Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input to provide a detailed breakdown of points and payment distribution.
-
-### Features
-- **Graphical Interface**: for selecting tiles.
-- **Scoring Algorithm**: strictly follows standard Riichi Mahjong rules to calculate points.
-- **Game Information**: received to maximize calculation accuracy.
-- **Score Breakdown**: displayed points, fu/han, yaku, and payment distribution in details.
-
 ## Installation
 See [RUN.md](RUN.md).
 
 ## User Manual
-### 1: Select Winning Hand
 
-<img width="996" height="595" alt="image" src="https://github.com/user-attachments/assets/18e23010-3482-4c5c-bd3e-2c1288be8ebb" />
+To familiarize yourself with yaku and scoring rules, you may click "Rules" button at top right corner to view them at any time.
+
+### Composition Phase
+
+<img width="1011" height="619" alt="image" src="https://github.com/user-attachments/assets/bd1857ef-ec4e-490d-943d-30e5527edef6" />
+
+Users can build their baisc winning hand in this phase.
 
 Tiles below button "Confirm Hand" is Tile Pool. Tiles above the button is Tile Preview. Click the tile in Tile Pool to add the tile into Hand Preview. Click the tile in Hand Preview to remove the tile.
 
-You have to select at least 14 tiles to continue to next phase. Click "Confirm Hand" to continue.
+You must select at least 14 tiles to continue to next phase. Click "Confirm Hand" to continue.
 
-<img width="953" height="159" alt="image" src="https://github.com/user-attachments/assets/dae13d06-b0ee-4f8a-bf8e-0edbe1edffc6" />
+### Definition Phase
 
-Click "Modify Hand" to return to tile selecting phase.
+<img width="972" height="691" alt="image" src="https://github.com/user-attachments/assets/e5fbff67-c818-4148-824a-6764d5d4daa8" />
+<img width="966" height="692" alt="image" src="https://github.com/user-attachments/assets/bc80cf64-0192-4b8c-b174-3a97abc4685a" />
 
-### 2: Select Winning Tile
+Users can continue to complete their winning hand in this phase.
 
-<img width="955" height="125" alt="image" src="https://github.com/user-attachments/assets/06307183-bb60-4d45-81bc-860162a3580b" />
+Click "Modify" button to go back to the Composition Phase.
 
-Click "Select" button under Winning Tile to select from your hand. You must select one winning tile to continue to next phase.
+#### Winning Tile
 
-<img width="959" height="316" alt="image" src="https://github.com/user-attachments/assets/50338ecd-cd3a-47aa-8f8a-093e6c954f3b" />
+Click "Select" button under Winning Tile to select from your hand. 
 
-Click the tile image to select the winning tile.
+<img width="986" height="224" alt="image" src="https://github.com/user-attachments/assets/73ff331a-5c54-483c-bf46-76647637ac12" />
 
-<img width="952" height="154" alt="image" src="https://github.com/user-attachments/assets/67725902-045a-44be-af48-591454d8fb2a" />
+You must select a single winning tile to continue to next phase.
 
-Click the image of the winning tile to modify.
+After you select one, click the tile under Winning Tile to modify.
 
-### 3: Select Game Info
-
-<img width="957" height="139" alt="image" src="https://github.com/user-attachments/assets/ea25ca8a-b4eb-462f-85dc-6101bed07155" />
+#### Open Hand
 
 Click "Add Pon/Chii/Kan" to add pon/chii/kan you made in your round. 
 
-<img width="997" height="216" alt="image" src="https://github.com/user-attachments/assets/93efbd4b-9976-44d7-8cd0-1b253a0a7b1b" />
+After clicking "Add Kan", you can select "Closed/Open/Added Kan" to specify it.
 
-It will display all possible pon/chii/kan from your hand. Click the meld to select pon/chii/kan you made in your round. 
+Available Pon/Chii/Kan will automatically generate based on your winning hand.
 
-<img width="958" height="206" alt="image" src="https://github.com/user-attachments/assets/0570d14b-a261-43c2-be55-f2d96fa47dc9" />
+<img width="1010" height="237" alt="image" src="https://github.com/user-attachments/assets/34e71ae2-4129-43e2-9423-15c9fc9be2a6" />
 
-Click the meld image to remove the selected open meld.
+#### Game Info
 
-<img width="961" height="651" alt="image" src="https://github.com/user-attachments/assets/2a96b04b-fe48-40a3-b0b0-52b6184728da" />
+Scroll down. You can check for win type, honba, prevalent wind and seat wind.
 
-You may check for seats, context-dependent yaku, and choose the number of honba and akadora in your round. Click "Add" to add a (ura)dora tile. Click the image of (ura)dora tile to remove it.
+#### Special Yaku
 
-### 4: Calculate Final Scores
+You may check for particular yaku that don't depend on your winning hand. 
 
-Scroll down and click "Calculate Score" button to view the final score breakdown.
+Note that some yaku have prerequisites. You can't check them until you fulfill prerequisites. These prerequisites are:
 
-<img width="993" height="645" alt="image" src="https://github.com/user-attachments/assets/fe861cde-521c-48f9-a07d-de9130497efd" />
+(Menzen = No tiles in Open Hand except Closed Kan)
+* **Riichi**: Menzen
+* **Double (Riichi) & Ippatsu**: Riichi is checked
+* **Tenhou**: Win Type is Tsumo & Seat Wind is East & Menzen
+* **Chiihou**: Win Type is Tsumo & Seat Wind is NOT East & Menzen
+* **Renhou**: Win Type is Ron & Seat Wind is NOT East & Menzen
+* **Haitei & Rinshan**: Win Type is Tsumo
+* **Houtei & Chankan**: Win Type is Ron
+
+#### Dora
+
+You can select and modify Dora and Ura Dora in the same way as selecting winning tile. 
+
+Only when Riichi is checked will Ura Dora be enabled.
+
+Only when your winning hand contains at least one 5-tile will Red Dora be enabled. The upper limit of Red Dora is determined by 5-tile composition in your winning hand.
+
+Click "Calculate Score" button to move to next phase and check for your final score.
+
+### Result Phase
+
+<img width="963" height="691" alt="image" src="https://github.com/user-attachments/assets/9681e480-4835-4803-b954-aee9b0147203" />
 
 The score breakdown includes the total points, fu/han points, and yaku detected. It also guides players to redistribute their points. It will show "No Yaku Found" if no yaku is detected. 
 
-To familiarize yourself with yaku and scoring rules, you may click "Rules" button at top right corner to view them at any time.
+Click "Back" button to go back to the previous phase. Click "Start Over" to start over the program.
+
+Other examples:
+
+<img width="1001" height="513" alt="image" src="https://github.com/user-attachments/assets/24a75d16-e3e6-49d7-bb16-c74ad95f83a8" />
+
+<img width="959" height="652" alt="image" src="https://github.com/user-attachments/assets/1629cfa2-8b2c-48d0-95ea-58eb876e6f5d" />
 
 ## Technical Overview
 ### Data Structure
@@ -90,8 +114,13 @@ To familiarize yourself with yaku and scoring rules, you may click "Rules" butto
 
 ## Challenges
 
-### Future Improvement Plan: 
-* Aesthetically improve the UI layout. 
+### Current Issues
+* The launching speed of this app is slow due to the time to load images. We are working to improve the loading speed.
+* It's hard for common users to install this app. We are working to create executable object or application file for convenient access.
+
+### Future Improvement Plan
+* Develop mobile version.
+* Improve the UI layout aesthetics. 
 * Design functions to store history of input hands. 
 * Add light and dark theme. 
 * Add multiple language support (English, Chinese, Japanese). 
@@ -108,7 +137,9 @@ To familiarize yourself with yaku and scoring rules, you may click "Rules" butto
 
 * The rule used by the program is **standard 4-player East**. Nukidora and kita yaku are not supported. 
 
-* Red dora varies in different versions. We use **5-man, 5-pin, 5-pin, 5-sou** as the red dora. 
+* Red dora varies in different versions. We use **5-man, 5-pin, 5-pin, 5-sou** as the red dora.
+
+* For any disputes about yaku we use in our program, please counsel [yaku variations](https://riichi.wiki/Yaku_variations#Chiitoitsu).
 
 ### Images
 
@@ -118,3 +149,7 @@ To familiarize yourself with yaku and scoring rules, you may click "Rules" butto
 
 ### Font 
 * [Arimo](https://fonts.google.com/specimen/Arimo)
+
+## Acknowledgment
+
+The initial inpiration of this program is the video game [Mahjong Soul](https://mahjongsoul.yo-star.com) by Yostar. It is a popular and interesting digital Riichi Mahjong game, and we enjoy it. One advantage of digital Mahjong is that the system helps players calculate points, but in an actual mahjong game, players find it hard to calculate points by hand, due to complicated scoring rules. This is why we created this app. During the development stage, we studied calculation algorithms used by Mahjong Soul to build the foundation of this program. During testing stage, we took players' score screenshots they shared on social media as test cases and compared the result from our program with the exact scores from Mahjong Soul to improve the performance. Thanks to this great game, we can combine our interests with our dedicated commitment to this project.
