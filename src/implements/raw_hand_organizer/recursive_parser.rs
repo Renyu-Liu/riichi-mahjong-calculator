@@ -19,7 +19,7 @@ pub fn find_all_mentsu_recursive<F>(
         return;
     }
 
-    // Find Koutsu
+    // Find triplets
     if counts[i] >= 3 {
         let tile = index_to_tile(i);
         counts[i] -= 3;
@@ -35,7 +35,7 @@ pub fn find_all_mentsu_recursive<F>(
         counts[i] += 3;
     }
 
-    // Find Shuntsu
+    // Find sequences
     if i < SUIT_TILES_COUNT
         && (i % TILES_PER_SUIT) < MAX_SEQUENCE_START
         && counts[i] > 0

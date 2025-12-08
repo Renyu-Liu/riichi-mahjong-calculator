@@ -12,8 +12,8 @@ pub fn check_sanshoku_generic(mentsu_list: &[&Mentsu]) -> bool {
         return false;
     }
 
+    // man, pin, sou check
     let mut starters: HashMap<u8, (bool, bool, bool)> = HashMap::new();
-
     for m in mentsu_list {
         if let Hai::Suhai(Suhai { number: n, suit: s }) = m.tiles[0] {
             let entry = starters.entry(n).or_insert((false, false, false));

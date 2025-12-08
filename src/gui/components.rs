@@ -45,6 +45,7 @@ pub fn get_tile_image_path(tile: &Hai) -> String {
     format!("assets/tiles/{}", filename)
 }
 
+/// tile groups
 pub fn create_grid(elements: Vec<Element<Message>>, columns: usize) -> Element<Message> {
     let mut grid_rows: Vec<Element<Message>> = Vec::new();
     let mut current_row_elements: Vec<Element<Message>> = Vec::with_capacity(columns);

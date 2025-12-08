@@ -9,6 +9,7 @@ pub fn check_kokushi(counts: &[u8; 34], agari_hai: Hai) -> Option<(HandStructure
     let mut tiles = Vec::new();
     let mut atama_tile = None;
 
+    // yaochuu check
     for (idx, &count) in counts.iter().enumerate() {
         let tile = index_to_tile(idx);
         if !tile.is_yaochuu() {
@@ -39,17 +40,18 @@ pub fn check_kokushi(counts: &[u8; 34], agari_hai: Hai) -> Option<(HandStructure
         return None;
     }
 
+    // extra tile check
     let agari_hai_index = tile_to_index(&agari_hai);
     if counts[agari_hai_index] == 0 {
         return None;
     }
 
+    // wait check
     let atama = (atama_tile.unwrap(), atama_tile.unwrap());
-
-    // 13-sided wait
     let mut yaku = Yaku::KokushiMusou;
     let mut final_machi = Machi::KokushiIchimen;
 
+    // 13-sided wait
     if atama.0 == agari_hai {
         if tiles.len() == 13 {
             yaku = Yaku::KokushiMusouJusanmen;

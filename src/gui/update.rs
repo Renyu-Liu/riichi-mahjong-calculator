@@ -13,7 +13,7 @@ pub trait Update {
 impl Update for RiichiGui {
     fn update(&mut self, message: Message) {
         match message {
-            // --- Composition Phase ---
+            // Composition Phase
             Message::AddTile(tile) => {
                 if self.hand_tiles.len() < 18 {
                     let idx = crate::implements::tiles::tile_to_index(&tile);
@@ -41,7 +41,7 @@ impl Update for RiichiGui {
                 self.phase = Phase::Definition;
             }
 
-            // --- Definition Phase ---
+            // Definition Phase
             Message::ModifyHand => {
                 self.phase = Phase::Composition;
                 self.hand_tiles.sort_by_key(sort_tiles_by_type);
@@ -164,7 +164,7 @@ impl Update for RiichiGui {
                 }
             }
 
-            // --- Settings Updates ---
+            // Settings Updates
             Message::ToggleAgariType(agari_type) => {
                 self.agari_type = agari_type;
                 // Reset incompatible flags
@@ -258,7 +258,7 @@ impl Update for RiichiGui {
                 }
             }
 
-            // --- Result Phase ---
+            // Result Phase
             Message::CalculateScore => {
                 self.calculate_score_result();
             }

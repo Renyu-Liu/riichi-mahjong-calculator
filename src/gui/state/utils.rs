@@ -2,7 +2,7 @@ use super::super::state::RiichiGui;
 use crate::implements::types::tiles::TILE_COUNT;
 
 impl RiichiGui {
-    /// available tiles
+    /// available tiles for melds
     pub fn get_active_hand_counts(&self) -> [u8; TILE_COUNT] {
         let mut counts = [0u8; TILE_COUNT];
 

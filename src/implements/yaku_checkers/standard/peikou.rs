@@ -6,6 +6,7 @@ pub fn check_peikou<'a>(shuntsu: &[&'a Mentsu]) -> (bool, bool) {
         return (false, false);
     }
 
+    // doublepair check
     let mut counts = HashMap::new();
     for m in shuntsu {
         *counts.entry(m.tiles[0]).or_insert(0) += 1;

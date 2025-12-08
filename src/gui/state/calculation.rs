@@ -5,10 +5,12 @@ use crate::implements::types::input::UserInput;
 use crate::implements::types::tiles::{Hai, Kaze, Suhai, index_to_tile, tile_to_index};
 
 impl RiichiGui {
+    /// construct UserInput and calculate score
     pub fn calculate_score_result(&mut self) {
         if let Some(winning_tile) = self.winning_tile {
             let mut counts = self.get_active_hand_counts();
 
+            // remove winning tile if Ron
             if self.agari_type == AgariType::Ron {
                 let idx = tile_to_index(&winning_tile);
                 if counts[idx] > 0 {
@@ -16,6 +18,7 @@ impl RiichiGui {
                 }
             }
 
+            // build hand tiles from counts
             let mut hand_tiles = Vec::with_capacity(14);
             for i in 0..34 {
                 let count = counts[i];
@@ -27,6 +30,7 @@ impl RiichiGui {
                 }
             }
 
+            // build UserInput
             let input = UserInput {
                 hand_tiles: hand_tiles.clone(),
                 open_melds: self.open_melds.clone(),
@@ -59,7 +63,7 @@ impl RiichiGui {
 
             let mut best_result = calculate_agari(&input);
 
-            // Winning Tile in Open Meld
+            // fallback Winning Tile in Open Melds
             if best_result.is_err() {
                 let base_open_melds = self.open_melds.clone();
 
@@ -69,6 +73,7 @@ impl RiichiGui {
                         let mut alt_hand_tiles = hand_tiles.clone();
                         alt_hand_tiles.extend(meld_tiles.iter());
 
+                        // this meld turns concealed
                         if let Some(pos) = alt_hand_tiles.iter().position(|x| *x == winning_tile) {
                             alt_hand_tiles.remove(pos);
                         }
@@ -94,6 +99,7 @@ impl RiichiGui {
                 }
             }
 
+            // result
             self.score_result = match best_result {
                 Ok(result) => Some(Ok(result)),
                 Err(e) => Some(Err(format!("Error: {}", e))),
@@ -102,11 +108,13 @@ impl RiichiGui {
         }
     }
 
+    /// dynamic counting
     pub fn get_max_akadora_count(&self) -> u8 {
         let mut count_5m = 0;
         let mut count_5p = 0;
         let mut count_5s = 0;
 
+        // helper: +1 for 5m, 5p, 5s
         let check_tile = |tile: &Hai, c_m: &mut u8, c_p: &mut u8, c_s: &mut u8| {
             if let Hai::Suhai(Suhai { number: 5, suit }) = tile {
                 match suit {
@@ -117,6 +125,7 @@ impl RiichiGui {
             }
         };
 
+        // scan
         for tile in &self.hand_tiles {
             check_tile(tile, &mut count_5m, &mut count_5p, &mut count_5s);
         }
@@ -137,7 +146,7 @@ impl RiichiGui {
             }
         }
 
-        // 1 red 5-man, 2 red 5-pin, 1 red 5-sou
+        // 1 red 5m, 2 red 5p, 1 red 5s
         let max_m = if count_5m > 0 { 1 } else { 0 };
         let max_p = if count_5p >= 2 { 2 } else { count_5p };
         let max_s = if count_5s > 0 { 1 } else { 0 };

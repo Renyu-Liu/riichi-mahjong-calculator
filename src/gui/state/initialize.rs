@@ -84,6 +84,7 @@ impl RiichiGui {
                     .unzip()
             },
             || {
+                // rules image
                 let rules_image = if let Ok(img) = image::open("assets/riichi_rule.png") {
                     let rgba = img.to_rgba8();
                     let width = rgba.width();
@@ -97,6 +98,7 @@ impl RiichiGui {
                     None
                 };
 
+                // tile back
                 let tile_back_image = if let Ok(img) = image::open("assets/tiles/Back.png") {
                     let resized = img.resize(128, 128, image::imageops::FilterType::Nearest);
                     let rgba = resized.to_rgba8();

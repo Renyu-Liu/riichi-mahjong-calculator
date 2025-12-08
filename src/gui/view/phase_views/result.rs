@@ -79,14 +79,14 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                     None
                 };
 
-                // Han/Fu Display
+                // Han/Fu
                 let han_fu_text = if limit_name.as_ref() == Some(&HandLimit::Yakuman) {
                     text(format!("{} Han", han)).size(20)
                 } else {
                     text(format!("{} Han / {} Fu", han, fu)).size(20)
                 };
 
-                // Yaku List Display
+                // Yaku List
                 let mut yaku_col = column![];
                 let mut dora_count = 0;
                 let mut uradora_count = 0;
@@ -107,7 +107,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                     }
                 }
 
-                // Append bonus han counts
+                // dora
                 if dora_count > 0 {
                     yaku_col = yaku_col.push(text(format!("• Dora x{}", dora_count)).size(18));
                 }
@@ -119,7 +119,7 @@ pub fn build_result_view(gui: &RiichiGui) -> Element<'_, Message> {
                     yaku_col = yaku_col.push(text(format!("• Red Dora x{}", num_akadora)).size(18));
                 }
 
-                // Payment Detail Breakdown
+                // Payment
                 let tsumo_bonus = *honba as u32 * 100;
                 let ron_bonus = *honba as u32 * 300;
 

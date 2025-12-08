@@ -14,16 +14,16 @@ pub use phase::Phase;
 pub struct RiichiGui {
     pub phase: Phase,
 
-    // --- Composition Phase ---
+    // Composition Phase
     pub hand_tiles: Vec<Hai>,
     pub tile_counts: [u8; 34],
 
-    // --- Definition Phase ---
+    // Definition Phase
     pub winning_tile: Option<Hai>,
     pub open_melds: Vec<OpenMeldInput>,
     pub closed_kans: Vec<Hai>,
 
-    // --- Result Phase ---
+    // Result Phase
     pub agari_type: AgariType,
     pub bakaze: Kaze,
     pub jikaze: Kaze,

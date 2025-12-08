@@ -113,6 +113,7 @@ pub fn organize_hand(input: &UserInput) -> Result<Vec<HandOrganization>, &'stati
                 let atama = (index_to_tile(i), index_to_tile(i));
                 let mut closed_mentsu: Vec<Mentsu> = Vec::with_capacity(mentsu_needed);
 
+                // find all mentsu
                 find_all_mentsu_recursive(
                     &mut temp_counts,
                     &mut closed_mentsu,
@@ -130,7 +131,6 @@ pub fn organize_hand(input: &UserInput) -> Result<Vec<HandOrganization>, &'stati
 
                                     if input.agari_type == AgariType::Ron {
                                         if index < 4 {
-                                            // Minchou
                                             final_mentsu[index].is_minchou = true;
                                         }
                                     }
@@ -153,6 +153,7 @@ pub fn organize_hand(input: &UserInput) -> Result<Vec<HandOrganization>, &'stati
         }
     }
 
+    // irregular hand
     final_results.push(HandOrganization::Irregular {
         counts: master_counts,
         agari_hai,

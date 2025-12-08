@@ -17,6 +17,7 @@ pub fn check_ittsu<'a>(shuntsu: &[&'a Mentsu]) -> bool {
         }
     }
 
+    // 123, 456, 789
     for set in suits.values() {
         if set.contains(&1) && set.contains(&4) && set.contains(&7) {
             return true;

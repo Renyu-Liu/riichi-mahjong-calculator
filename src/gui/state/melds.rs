@@ -57,6 +57,7 @@ impl RiichiGui {
         true
     }
 
+    /// below 3 func in selector view
     pub fn get_all_possible_pons(&self) -> Vec<OpenMeldInput> {
         let available_counts = self.get_active_hand_counts();
 

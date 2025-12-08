@@ -171,7 +171,7 @@ impl RiichiGui {
             .into();
         }
 
-        // check addable pons
+        // check addable pons to kans
         let pons: Vec<(usize, &crate::implements::input::OpenMeldInput)> = self
             .open_melds
             .iter()

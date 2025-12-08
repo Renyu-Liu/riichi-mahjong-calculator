@@ -11,12 +11,15 @@ use crate::implements::input::UserInput;
 use crate::implements::scoring::AgariResult;
 
 pub fn calculate_agari(input: &UserInput) -> Result<AgariResult, &'static str> {
+    // receive input
     let player = &input.player_context;
     let game = &input.game_context;
     let agari_type = input.agari_type;
 
+    // organize hand
     let organizations = organize_hand(input)?;
 
+    // check yaku
     let mut best_result: Option<AgariResult> = None;
     let mut best_payment = 0;
 
@@ -31,6 +34,7 @@ pub fn calculate_agari(input: &UserInput) -> Result<AgariResult, &'static str> {
         }
     }
 
+    // return result
     match best_result {
         Some(res) => Ok(res),
         None => Err("No valid Yaku found"),

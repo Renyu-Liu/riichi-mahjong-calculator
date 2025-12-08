@@ -5,13 +5,13 @@ use crate::implements::tiles::{Hai, Kaze};
 
 #[derive(Debug, Clone)]
 pub enum Message {
-    // --- Composition Phase ---
+    // Composition Phase
     AddTile(Hai),
     RemoveTile(usize),
     ConfirmHand,
     CancelSelection,
 
-    // --- Definition Phase ---
+    // Definition Phase
     ModifyHand,
     StartSelectWinningTile,
     SelectWinningTile(Hai),
@@ -51,7 +51,7 @@ pub enum Message {
     RemoveUraDora(usize),
     CalculateScore,
 
-    // --- Result Phase ---
+    // Result Phase
     ReturnToDefinition,
     StartOver,
     ShowRules,

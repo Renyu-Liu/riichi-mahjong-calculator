@@ -7,6 +7,7 @@ use iced::widget::{button, column, container, image, row, text};
 use iced::{Color, Element, Length, theme};
 
 impl RiichiGui {
+    /// in composition phase
     pub fn view_hand_preview(&self) -> Element<'_, Message> {
         let tiles: Vec<Element<Message>> = self
             .hand_tiles
@@ -33,6 +34,7 @@ impl RiichiGui {
             .into()
     }
 
+    /// in definition & result phase
     pub fn view_hand_preview_locked(&self) -> Element<'_, Message> {
         let tiles: Vec<Element<Message>> = self
             .hand_tiles
@@ -51,6 +53,7 @@ impl RiichiGui {
         row(tiles).spacing(5).into()
     }
 
+    /// in composition phase
     pub fn view_tile_pool(&self) -> Element<'_, Message> {
         let mut tiles = Vec::new();
 
@@ -101,6 +104,7 @@ impl RiichiGui {
         super::super::components::create_grid(tiles, 9)
     }
 
+    /// every phase
     pub fn view_rules_overlay(&self) -> Element<'_, Message> {
         let rules_image = if let Some(handle) = &self.rules_image {
             iced::widget::scrollable(

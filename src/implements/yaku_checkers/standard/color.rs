@@ -6,6 +6,7 @@ fn check_color(all_tiles: &[Hai]) -> (bool, bool, Option<Suit>) {
     let mut is_honitsu = true;
     let mut is_chinitsu = true;
 
+    // color check
     for tile in all_tiles {
         match tile {
             Hai::Suhai(Suhai { suit: s, .. }) => {
@@ -24,6 +25,7 @@ fn check_color(all_tiles: &[Hai]) -> (bool, bool, Option<Suit>) {
         }
     }
 
+    // honor check
     if !has_jihai && suit.is_none() {
         is_honitsu = false;
         is_chinitsu = false;

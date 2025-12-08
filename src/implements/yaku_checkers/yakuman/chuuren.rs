@@ -6,16 +6,19 @@ use crate::implements::yaku_checkers::utils::get_all_tiles;
 pub fn check_chuuren(hand: &AgariHand) -> Option<bool> {
     let all_tiles = get_all_tiles(hand);
 
+    // chinitsu check
     let (is_chinitsu, suit) = check_chinitsu(&all_tiles);
     if !is_chinitsu {
         return None;
     }
     let suit = suit.unwrap();
 
+    // minchou check
     if !hand.mentsu.iter().all(|m| !m.is_minchou) {
         return None;
     }
 
+    // count check
     let mut counts = [0u8; TILES_PER_SUIT];
     for tile in &all_tiles {
         if let Hai::Suhai(Suhai { number: n, suit: s }) = tile {
@@ -25,6 +28,7 @@ pub fn check_chuuren(hand: &AgariHand) -> Option<bool> {
         }
     }
 
+    // extra tile check
     let mut has_extra = false;
     let mut extra_tile_num = 0;
 
@@ -45,15 +49,16 @@ pub fn check_chuuren(hand: &AgariHand) -> Option<bool> {
             return None;
         }
     }
-
     if !has_extra {
         return None;
     }
+
+    // junsei check
     if let Hai::Suhai(Suhai { number: n, suit: s }) = hand.agari_hai {
         if s == suit && n as usize == extra_tile_num {
             return Some(true);
         }
     }
-
+    // not junsei
     Some(false)
 }
