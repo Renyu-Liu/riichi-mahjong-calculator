@@ -1,10 +1,13 @@
 use crate::implements::types::{
     game::AgariType,
     hand::{AgariHand, HandStructure, Machi, Mentsu, MentsuType},
-    tiles::{Hai, Jihai, Kaze, Sangenpai, Suhai, Suit, index_to_tile},
+    tiles::{
+        CHIITOITSU_PAIR_COUNT, Hai, Jihai, Kaze, STANDARD_HAND_SIZE, Sangenpai, Suhai, Suit,
+        TILE_COUNT, index_to_tile,
+    },
 };
 
-pub fn check_chiitoitsu(counts: &[u8; 34], agari_hai: Hai) -> Option<HandStructure> {
+pub fn check_chiitoitsu(counts: &[u8; TILE_COUNT], agari_hai: Hai) -> Option<HandStructure> {
     let mut pair_count = 0;
     let mut pairs = Vec::new();
 
@@ -20,7 +23,7 @@ pub fn check_chiitoitsu(counts: &[u8; 34], agari_hai: Hai) -> Option<HandStructu
         }
     }
 
-    if pair_count == 7 {
+    if pair_count == CHIITOITSU_PAIR_COUNT {
         Some(HandStructure::Chiitoitsu {
             pairs: pairs.try_into().ok()?,
             agari_hai,
@@ -74,7 +77,7 @@ pub fn get_dora_tile(indicator: &Hai) -> Hai {
 }
 
 pub fn get_all_tiles(hand: &AgariHand) -> Vec<Hai> {
-    let mut tiles = Vec::with_capacity(14);
+    let mut tiles = Vec::with_capacity(STANDARD_HAND_SIZE);
     tiles.push(hand.atama.0);
     tiles.push(hand.atama.1);
     for mentsu in &hand.mentsu {

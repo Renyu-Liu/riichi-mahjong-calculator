@@ -1,6 +1,10 @@
 use crate::implements::types::{
     game::{AgariType, GameContext, PlayerContext},
     hand::{HandStructure, Machi, MentsuType},
+    scoring::{
+        FU_BASE, FU_CHIITOITSU, FU_MENZEN_RON, FU_PAIR_DRAGON, FU_PAIR_SINGLE_WAIT, FU_PAIR_WIND,
+        FU_PINFU_RON, FU_PINFU_TSUMO, FU_ROUND_UP, FU_TSUMO,
+    },
     tiles::{Hai, Jihai},
     yaku::Yaku,
 };
@@ -24,33 +28,33 @@ pub fn calculate_fu(
 ) -> u8 {
     // Chiitoitsu
     if yaku_list.contains(&Yaku::Chiitoitsu) {
-        return 25;
+        return FU_CHIITOITSU;
     }
 
     // Pinfu
     if yaku_list.contains(&Yaku::Pinfu) {
         return if agari_type == AgariType::Tsumo {
-            20
+            FU_PINFU_TSUMO
         } else {
-            30
+            FU_PINFU_RON
         };
     }
 
     // Standard Fu
-    let mut fu = 20;
+    let mut fu = FU_BASE as u32;
 
     let hand = match hand_structure {
         HandStructure::YonmentsuIchiatama(h) => h,
         HandStructure::ChuurenPoutou { hand, .. } => hand,
-        HandStructure::Chiitoitsu { .. } => return 25,
+        HandStructure::Chiitoitsu { .. } => return FU_CHIITOITSU,
         HandStructure::KokushiMusou { .. } => return 0,
     };
 
     // Agari Type
     if agari_type == AgariType::Tsumo {
-        fu += 2;
+        fu += FU_TSUMO as u32;
     } else if player.is_menzen {
-        fu += 10;
+        fu += FU_MENZEN_RON as u32;
     }
 
     // Melds
@@ -74,25 +78,26 @@ pub fn calculate_fu(
 
     // Wait
     match hand.machi {
-        Machi::Kanchan | Machi::Penchan | Machi::Tanki => fu += 2,
+        Machi::Kanchan | Machi::Penchan | Machi::Tanki => fu += FU_PAIR_SINGLE_WAIT as u32,
         _ => {}
     }
 
-    (((fu + 9) / 10) * 10) as u8
+    let round_up = FU_ROUND_UP as u32;
+    (((fu + round_up - 1) / round_up) * round_up) as u8
 }
 
 fn get_pair_fu(tile: &Hai, player: &PlayerContext, game: &GameContext) -> u32 {
     match tile {
         // Dragon Pair
-        Hai::Jihai(Jihai::Sangen(_)) => 2,
+        Hai::Jihai(Jihai::Sangen(_)) => FU_PAIR_DRAGON,
         // Wind Pair
         Hai::Jihai(Jihai::Kaze(k)) => {
             let mut fu = 0;
             if *k == game.bakaze {
-                fu += 2;
+                fu += FU_PAIR_WIND;
             }
             if *k == player.jikaze {
-                fu += 2;
+                fu += FU_PAIR_WIND;
             }
             fu
         }

@@ -6,10 +6,13 @@ pub enum Suit {
     Souzu, // 索子 (Bamboo)
 }
 
+// tile number
 pub const TILE_COUNT: usize = 34;
 pub const SUIT_TILES_COUNT: usize = 27;
 pub const TILES_PER_SUIT: usize = 9;
 pub const MAX_SEQUENCE_START: usize = 7;
+pub const CHIITOITSU_PAIR_COUNT: usize = 7;
+pub const STANDARD_HAND_SIZE: usize = 14;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum Kaze {

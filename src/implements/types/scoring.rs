@@ -1,6 +1,18 @@
 use super::game::AgariType;
 use super::yaku::Yaku;
 
+// fu calculation
+pub const FU_CHIITOITSU: u8 = 25;
+pub const FU_PINFU_TSUMO: u8 = 20;
+pub const FU_PINFU_RON: u8 = 30;
+pub const FU_BASE: u8 = 20;
+pub const FU_MENZEN_RON: u8 = 10;
+pub const FU_TSUMO: u8 = 2;
+pub const FU_PAIR_SINGLE_WAIT: u8 = 2;
+pub const FU_PAIR_WIND: u32 = 2;
+pub const FU_PAIR_DRAGON: u32 = 2;
+pub const FU_ROUND_UP: u8 = 10;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 // point limits
 pub enum HandLimit {

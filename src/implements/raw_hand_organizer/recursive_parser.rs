@@ -1,20 +1,20 @@
 use crate::implements::types::{
     hand::{Mentsu, MentsuType},
-    tiles::index_to_tile,
+    tiles::{MAX_SEQUENCE_START, SUIT_TILES_COUNT, TILE_COUNT, TILES_PER_SUIT, index_to_tile},
 };
 
 pub fn find_all_mentsu_recursive<F>(
-    counts: &mut [u8; 34],
+    counts: &mut [u8; TILE_COUNT],
     mentsu: &mut Vec<Mentsu>,
     callback: &mut F,
 ) where
     F: FnMut(&Vec<Mentsu>),
 {
     let mut i = 0;
-    while i < 34 && counts[i] == 0 {
+    while i < TILE_COUNT && counts[i] == 0 {
         i += 1;
     }
-    if i == 34 {
+    if i == TILE_COUNT {
         callback(mentsu);
         return;
     }
@@ -36,7 +36,12 @@ pub fn find_all_mentsu_recursive<F>(
     }
 
     // Find Shuntsu
-    if i < 27 && (i % 9) < 7 && counts[i] > 0 && counts[i + 1] > 0 && counts[i + 2] > 0 {
+    if i < SUIT_TILES_COUNT
+        && (i % TILES_PER_SUIT) < MAX_SEQUENCE_START
+        && counts[i] > 0
+        && counts[i + 1] > 0
+        && counts[i + 2] > 0
+    {
         let tile1 = index_to_tile(i);
         let tile2 = index_to_tile(i + 1);
         let tile3 = index_to_tile(i + 2);
