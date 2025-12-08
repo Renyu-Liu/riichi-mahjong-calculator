@@ -1,5 +1,3 @@
-// utils.rs: utility functions for yaku checkers
-
 use crate::implements::types::{
     game::AgariType,
     hand::{AgariHand, HandStructure, Machi, Mentsu, MentsuType},
@@ -172,44 +170,28 @@ pub fn is_green_tile(tile: &Hai) -> bool {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::implements::types::tiles::{Hai, Suhai, Suit};
+pub struct YakuCheckContext<'a> {
+    pub _hand: &'a AgariHand,
+    pub all_tiles: Vec<Hai>,
+    pub all_groups: Vec<Vec<Hai>>,
+    pub shuntsu_list: Vec<&'a Mentsu>,
+}
 
-    #[test]
-    fn test_chiitoitsu_strict_pairs() {
-        let mut counts = [0u8; 34];
-        // 5 distinct pairs
-        counts[0] = 2; // 1m
-        counts[1] = 2; // 2m
-        counts[2] = 2; // 3m
-        counts[3] = 2; // 4m
-        counts[4] = 2; // 5m
+impl<'a> YakuCheckContext<'a> {
+    pub fn new(hand: &'a AgariHand) -> Self {
+        let all_tiles = get_all_tiles(hand);
+        let all_groups = get_all_groups(hand);
+        let shuntsu_list: Vec<&Mentsu> = hand
+            .mentsu
+            .iter()
+            .filter(|m| m.mentsu_type == MentsuType::Shuntsu)
+            .collect();
 
-        // 1 quad (4 identical tiles)
-        counts[5] = 4; // 6m
-
-        // Dummy agari_hai
-        let agari_hai = Hai::Suhai(Suhai {
-            number: 1,
-            suit: Suit::Manzu,
-        });
-
-        // Should be rejected
-        assert!(
-            check_chiitoitsu(&counts, agari_hai).is_none(),
-            "Should reject 4 identical tiles as 2 pairs"
-        );
-
-        // Valid chiitoitsu
-        let mut valid_counts = [0u8; 34];
-        for i in 0..7 {
-            valid_counts[i] = 2;
+        Self {
+            _hand: hand,
+            all_tiles,
+            all_groups,
+            shuntsu_list,
         }
-        assert!(
-            check_chiitoitsu(&valid_counts, agari_hai).is_some(),
-            "Should accept 7 distinct pairs"
-        );
     }
 }

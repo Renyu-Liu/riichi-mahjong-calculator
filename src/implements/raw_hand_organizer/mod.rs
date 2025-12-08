@@ -112,46 +112,43 @@ pub fn organize_hand(input: &UserInput) -> Result<Vec<HandOrganization>, &'stati
                 temp_counts[i] -= 2;
                 let atama = (index_to_tile(i), index_to_tile(i));
                 let mut closed_mentsu: Vec<Mentsu> = Vec::with_capacity(mentsu_needed);
-                let mut recursive_results: Vec<Vec<Mentsu>> = Vec::new();
 
                 find_all_mentsu_recursive(
                     &mut temp_counts,
                     &mut closed_mentsu,
-                    &mut recursive_results,
-                );
+                    &mut |res: &Vec<Mentsu>| {
+                        if res.len() == mentsu_needed {
+                            let mut full_mentsu = open_mentsu.clone();
+                            full_mentsu.extend(res.iter().cloned());
 
-                for res in recursive_results {
-                    if res.len() == mentsu_needed {
-                        let mut full_mentsu = open_mentsu.clone();
-                        full_mentsu.extend(res);
+                            if let Ok(mentsu_array) = full_mentsu.clone().try_into() {
+                                let possible_waits =
+                                    determine_wait_type(&mentsu_array, atama, agari_hai);
 
-                        let mentsu_array: [Mentsu; 4] = full_mentsu
-                            .try_into()
-                            .map_err(|_| "final_mentsu length not 4")?;
+                                for (machi, index) in possible_waits {
+                                    let mut final_mentsu = mentsu_array;
 
-                        let possible_waits = determine_wait_type(&mentsu_array, atama, agari_hai);
+                                    if input.agari_type == AgariType::Ron {
+                                        if index < 4 {
+                                            // Minchou
+                                            final_mentsu[index].is_minchou = true;
+                                        }
+                                    }
 
-                        for (machi, index) in possible_waits {
-                            let mut final_mentsu = mentsu_array;
+                                    let agari_hand = AgariHand {
+                                        mentsu: final_mentsu,
+                                        atama,
+                                        agari_hai,
+                                        machi,
+                                    };
 
-                            if input.agari_type == AgariType::Ron {
-                                if index < 4 {
-                                    // Minchou
-                                    final_mentsu[index].is_minchou = true;
+                                    final_results
+                                        .push(HandOrganization::YonmentsuIchiatama(agari_hand));
                                 }
                             }
-
-                            let agari_hand = AgariHand {
-                                mentsu: final_mentsu,
-                                atama,
-                                agari_hai,
-                                machi,
-                            };
-
-                            final_results.push(HandOrganization::YonmentsuIchiatama(agari_hand));
                         }
-                    }
-                }
+                    },
+                );
             }
         }
     }

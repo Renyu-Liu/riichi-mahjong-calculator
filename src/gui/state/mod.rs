@@ -2,6 +2,7 @@ pub mod calculation;
 pub mod initialize;
 pub mod melds;
 pub mod phase;
+pub mod utils;
 
 use crate::implements::types::{
     game::AgariType,

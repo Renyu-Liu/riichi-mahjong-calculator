@@ -39,73 +39,80 @@ impl RiichiGui {
         use rayon::prelude::*;
 
         // image loading and resizing
-        let (tile_images, tile_images_sideways): (
-            std::collections::HashMap<Hai, iced::widget::image::Handle>,
-            std::collections::HashMap<Hai, iced::widget::image::Handle>,
-        ) = (0..34)
-            .into_par_iter()
-            .map(|i| {
-                let tile = crate::implements::types::tiles::index_to_tile(i);
-                let path = crate::gui::components::get_tile_image_path(&tile);
+        let ((tile_images, tile_images_sideways), (rules_image, tile_back_image)) = rayon::join(
+            || {
+                (0..34)
+                    .into_par_iter()
+                    .map(|i| {
+                        let tile = crate::implements::types::tiles::index_to_tile(i);
+                        let path = crate::gui::components::get_tile_image_path(&tile);
 
-                // fast render
-                if let Ok(img) = image::open(&path) {
-                    let resized = img.resize(256, 256, image::imageops::FilterType::Nearest);
+                        // fast render
+                        if let Ok(img) = image::open(&path) {
+                            let resized =
+                                img.resize(256, 256, image::imageops::FilterType::Nearest);
+                            let rgba = resized.to_rgba8();
+                            let width = rgba.width();
+                            let height = rgba.height();
+                            let pixels = rgba.into_raw();
+
+                            let handle = iced::widget::image::Handle::from_pixels(
+                                width,
+                                height,
+                                pixels.clone(),
+                            );
+
+                            // sideways image
+                            let rotated = resized.rotate270();
+                            let rgba_rotated = rotated.to_rgba8();
+                            let width_rotated = rgba_rotated.width();
+                            let height_rotated = rgba_rotated.height();
+                            let pixels_rotated = rgba_rotated.into_raw();
+                            let handle_sideways = iced::widget::image::Handle::from_pixels(
+                                width_rotated,
+                                height_rotated,
+                                pixels_rotated,
+                            );
+
+                            Some(((tile, handle), (tile, handle_sideways)))
+                        } else {
+                            eprintln!("Failed to load image: {}", path);
+                            None
+                        }
+                    })
+                    .filter_map(|x| x)
+                    .unzip()
+            },
+            || {
+                let rules_image = if let Ok(img) = image::open("assets/riichi_rule.png") {
+                    let rgba = img.to_rgba8();
+                    let width = rgba.width();
+                    let height = rgba.height();
+                    let pixels = rgba.into_raw();
+                    Some(iced::widget::image::Handle::from_pixels(
+                        width, height, pixels,
+                    ))
+                } else {
+                    eprintln!("Failed to load rules image");
+                    None
+                };
+
+                let tile_back_image = if let Ok(img) = image::open("assets/tiles/Back.png") {
+                    let resized = img.resize(128, 128, image::imageops::FilterType::Nearest);
                     let rgba = resized.to_rgba8();
                     let width = rgba.width();
                     let height = rgba.height();
                     let pixels = rgba.into_raw();
-
-                    let handle =
-                        iced::widget::image::Handle::from_pixels(width, height, pixels.clone());
-
-                    // sideways image
-                    let rotated = resized.rotate270();
-                    let rgba_rotated = rotated.to_rgba8();
-                    let width_rotated = rgba_rotated.width();
-                    let height_rotated = rgba_rotated.height();
-                    let pixels_rotated = rgba_rotated.into_raw();
-                    let handle_sideways = iced::widget::image::Handle::from_pixels(
-                        width_rotated,
-                        height_rotated,
-                        pixels_rotated,
-                    );
-
-                    Some(((tile, handle), (tile, handle_sideways)))
+                    Some(iced::widget::image::Handle::from_pixels(
+                        width, height, pixels,
+                    ))
                 } else {
-                    eprintln!("Failed to load image: {}", path);
+                    eprintln!("Failed to load tile back image");
                     None
-                }
-            })
-            .filter_map(|x| x)
-            .unzip();
-
-        let rules_image = if let Ok(img) = image::open("assets/riichi_rule.png") {
-            let rgba = img.to_rgba8();
-            let width = rgba.width();
-            let height = rgba.height();
-            let pixels = rgba.into_raw();
-            Some(iced::widget::image::Handle::from_pixels(
-                width, height, pixels,
-            ))
-        } else {
-            eprintln!("Failed to load rules image");
-            None
-        };
-
-        let tile_back_image = if let Ok(img) = image::open("assets/tiles/Back.png") {
-            let resized = img.resize(256, 256, image::imageops::FilterType::Nearest);
-            let rgba = resized.to_rgba8();
-            let width = rgba.width();
-            let height = rgba.height();
-            let pixels = rgba.into_raw();
-            Some(iced::widget::image::Handle::from_pixels(
-                width, height, pixels,
-            ))
-        } else {
-            eprintln!("Failed to load tile back image");
-            None
-        };
+                };
+                (rules_image, tile_back_image)
+            },
+        );
 
         let defaults = GameStateDefaults::default();
 

@@ -1,6 +1,6 @@
 use super::tiles::Hai;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum MentsuType {
     Shuntsu, // 順子 (Sequence)
     Koutsu,  // 刻子 (Triplet)

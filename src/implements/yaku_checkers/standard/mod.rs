@@ -20,7 +20,7 @@ use self::{
 use super::utils::*;
 use crate::implements::types::{
     game::{AgariType, GameContext, PlayerContext},
-    hand::{AgariHand, Machi, Mentsu, MentsuType},
+    hand::{AgariHand, Machi},
     tiles::Hai,
     yaku::Yaku,
 };
@@ -32,6 +32,8 @@ pub fn find_standard_yaku(
     agari_type: AgariType,
 ) -> Vec<Yaku> {
     let mut yaku_list = Vec::new();
+
+    let context = YakuCheckContext::new(hand);
 
     // context-based Yaku
     if player.is_daburu_riichi {
@@ -72,14 +74,8 @@ pub fn find_standard_yaku(
     }
 
     // Sequence Yaku
-    let shuntsu: Vec<&Mentsu> = hand
-        .mentsu
-        .iter()
-        .filter(|m| m.mentsu_type == MentsuType::Shuntsu)
-        .collect();
-
     if player.is_menzen {
-        let (iipeikou, ryanpeikou) = check_peikou(&shuntsu);
+        let (iipeikou, ryanpeikou) = check_peikou(&context.shuntsu_list);
         if ryanpeikou {
             yaku_list.push(Yaku::Ryanpeikou);
         } else if iipeikou {
@@ -87,11 +83,11 @@ pub fn find_standard_yaku(
         }
     }
 
-    if check_sanshoku_doujun(&shuntsu) {
+    if check_sanshoku_doujun(&context.shuntsu_list) {
         yaku_list.push(Yaku::SanshokuDoujun);
     }
 
-    if check_ittsu(&shuntsu) {
+    if check_ittsu(&context.shuntsu_list) {
         yaku_list.push(Yaku::Ittsu);
     }
 
@@ -120,16 +116,13 @@ pub fn find_standard_yaku(
     }
 
     // Terminal/Honor Yaku
-    let all_tiles = get_all_tiles(hand);
-    let all_groups = get_all_groups(hand);
-
-    let is_honroutou =
-        all_tiles.iter().all(|t| t.is_yaochuu()) && !all_tiles.iter().all(|t| t.is_terminal()); // Exclude Chinroutou
+    let is_honroutou = context.all_tiles.iter().all(|t| t.is_yaochuu())
+        && !context.all_tiles.iter().all(|t| t.is_terminal()); // Exclude Chinroutou
 
     if is_honroutou {
         yaku_list.push(Yaku::Honroutou);
     } else {
-        let (is_chanta, is_junchan) = check_chanta_junchan(&all_groups);
+        let (is_chanta, is_junchan) = check_chanta_junchan(&context.all_groups);
         if is_junchan {
             yaku_list.push(Yaku::Junchan);
         } else if is_chanta {
@@ -138,11 +131,11 @@ pub fn find_standard_yaku(
     }
 
     // Color Yaku
-    let (is_chinitsu, _) = check_chinitsu(&all_tiles);
+    let (is_chinitsu, _) = check_chinitsu(&context.all_tiles);
     if is_chinitsu {
         yaku_list.push(Yaku::Chinitsu);
     } else {
-        let (is_honitsu, _) = check_honitsu(&all_tiles);
+        let (is_honitsu, _) = check_honitsu(&context.all_tiles);
         if is_honitsu {
             yaku_list.push(Yaku::Honitsu);
         }

@@ -3,17 +3,19 @@ use crate::implements::types::{
     tiles::index_to_tile,
 };
 
-pub fn find_all_mentsu_recursive(
+pub fn find_all_mentsu_recursive<F>(
     counts: &mut [u8; 34],
     mentsu: &mut Vec<Mentsu>,
-    results: &mut Vec<Vec<Mentsu>>,
-) {
+    callback: &mut F,
+) where
+    F: FnMut(&Vec<Mentsu>),
+{
     let mut i = 0;
     while i < 34 && counts[i] == 0 {
         i += 1;
     }
     if i == 34 {
-        results.push(mentsu.clone());
+        callback(mentsu);
         return;
     }
 
@@ -27,7 +29,7 @@ pub fn find_all_mentsu_recursive(
             tiles: [tile, tile, tile, tile],
         });
 
-        find_all_mentsu_recursive(counts, mentsu, results);
+        find_all_mentsu_recursive(counts, mentsu, callback);
 
         mentsu.pop();
         counts[i] += 3;
@@ -48,7 +50,7 @@ pub fn find_all_mentsu_recursive(
             tiles: [tile1, tile2, tile3, tile3],
         });
 
-        find_all_mentsu_recursive(counts, mentsu, results);
+        find_all_mentsu_recursive(counts, mentsu, callback);
 
         mentsu.pop();
         counts[i] += 1;

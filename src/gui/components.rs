@@ -46,50 +46,33 @@ pub fn get_tile_image_path(tile: &Hai) -> String {
 }
 
 pub fn create_grid(elements: Vec<Element<Message>>, columns: usize) -> Element<Message> {
-    let mut rows = column![].spacing(10);
-    let mut current_row = row![].spacing(10);
-    let mut count_in_row = 0;
+    let mut grid_rows: Vec<Element<Message>> = Vec::new();
+    let mut current_row_elements: Vec<Element<Message>> = Vec::with_capacity(columns);
 
     for element in elements {
-        current_row = current_row.push(element);
-        count_in_row += 1;
+        current_row_elements.push(element);
 
-        if count_in_row >= columns {
-            rows = rows.push(current_row);
-            current_row = row![].spacing(10);
-            count_in_row = 0;
+        if current_row_elements.len() == columns {
+            grid_rows.push(
+                row(std::mem::replace(
+                    &mut current_row_elements,
+                    Vec::with_capacity(columns),
+                ))
+                .spacing(10)
+                .into(),
+            );
         }
     }
 
-    if count_in_row > 0 {
-        rows = rows.push(current_row);
+    if !current_row_elements.is_empty() {
+        grid_rows.push(row(current_row_elements).spacing(10).into());
     }
 
-    rows.into()
+    column(grid_rows).spacing(10).into()
 }
 
-pub fn sort_tiles_by_type(tile: &Hai) -> (u8, u8) {
-    match tile {
-        Hai::Suhai(Suhai {
-            number: n,
-            suit: Suit::Manzu,
-        }) => (0, *n),
-        Hai::Suhai(Suhai {
-            number: n,
-            suit: Suit::Pinzu,
-        }) => (1, *n),
-        Hai::Suhai(Suhai {
-            number: n,
-            suit: Suit::Souzu,
-        }) => (2, *n),
-        Hai::Jihai(Jihai::Kaze(Kaze::Ton)) => (3, 0),
-        Hai::Jihai(Jihai::Kaze(Kaze::Nan)) => (3, 1),
-        Hai::Jihai(Jihai::Kaze(Kaze::Shaa)) => (3, 2),
-        Hai::Jihai(Jihai::Kaze(Kaze::Pei)) => (3, 3),
-        Hai::Jihai(Jihai::Sangen(Sangenpai::Haku)) => (4, 0),
-        Hai::Jihai(Jihai::Sangen(Sangenpai::Hatsu)) => (4, 1),
-        Hai::Jihai(Jihai::Sangen(Sangenpai::Chun)) => (4, 2),
-    }
+pub fn sort_tiles_by_type(tile: &Hai) -> usize {
+    crate::implements::tiles::tile_to_index(tile)
 }
 
 pub fn insert_tile_sorted(tiles: &mut Vec<Hai>, tile: Hai) {

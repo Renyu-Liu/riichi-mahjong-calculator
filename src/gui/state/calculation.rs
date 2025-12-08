@@ -2,35 +2,28 @@ use super::RiichiGui;
 use crate::implements::calculate_agari;
 use crate::implements::types::game::{AgariType, GameContext, PlayerContext};
 use crate::implements::types::input::UserInput;
-use crate::implements::types::tiles::{Hai, Kaze, Suhai};
+use crate::implements::types::tiles::{Hai, Kaze, Suhai, index_to_tile, tile_to_index};
 
 impl RiichiGui {
     pub fn calculate_score_result(&mut self) {
         if let Some(winning_tile) = self.winning_tile {
-            let mut hand_tiles = self.hand_tiles.clone();
+            let mut counts = self.get_active_hand_counts();
 
-            // Filter out Open Melds
-            for meld in &self.open_melds {
-                for tile in self.get_meld_tiles(meld) {
-                    if let Some(pos) = hand_tiles.iter().position(|x| *x == tile) {
-                        hand_tiles.remove(pos);
-                    }
-                }
-            }
-
-            // Filter out Closed Kans
-            for tile in &self.closed_kans {
-                for _ in 0..4 {
-                    if let Some(pos) = hand_tiles.iter().position(|x| *x == *tile) {
-                        hand_tiles.remove(pos);
-                    }
-                }
-            }
-
-            // Remove winning tile if Ron
             if self.agari_type == AgariType::Ron {
-                if let Some(pos) = hand_tiles.iter().position(|x| *x == winning_tile) {
-                    hand_tiles.remove(pos);
+                let idx = tile_to_index(&winning_tile);
+                if counts[idx] > 0 {
+                    counts[idx] -= 1;
+                }
+            }
+
+            let mut hand_tiles = Vec::with_capacity(14);
+            for i in 0..34 {
+                let count = counts[i];
+                if count > 0 {
+                    let tile = index_to_tile(i);
+                    for _ in 0..count {
+                        hand_tiles.push(tile);
+                    }
                 }
             }
 

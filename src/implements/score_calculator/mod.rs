@@ -38,7 +38,8 @@ pub fn calculate_score(
     );
 
     if num_yakuman > 0 {
-        let han = 13 * num_yakuman as u8;
+        let extra_han = calculate_han(&yaku_list, player.is_menzen);
+        let han = 13 * num_yakuman as u8 + extra_han;
         let limit_name = Some(HandLimit::Yakuman);
         let base_yakuman_points = (8000 * num_yakuman) as u32;
 

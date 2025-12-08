@@ -5,6 +5,16 @@ use crate::implements::types::{
     yaku::Yaku,
 };
 
+const FU_TABLE_KOUTSU: [[u32; 2]; 2] = [
+    [4, 8], // Closed: simple, terminal
+    [2, 4], // Open: simple, terminal
+];
+
+const FU_TABLE_KANTSU: [[u32; 2]; 2] = [
+    [16, 32], // Closed: simple, terminal
+    [8, 16],  // Open: simple, terminal
+];
+
 pub fn calculate_fu(
     hand_structure: &HandStructure,
     yaku_list: &[Yaku],
@@ -38,9 +48,9 @@ pub fn calculate_fu(
 
     // Agari Type
     if agari_type == AgariType::Tsumo {
-        fu += 2; // Tsumo fu
+        fu += 2;
     } else if player.is_menzen {
-        fu += 10; // Menzen Ron fu
+        fu += 10;
     }
 
     // Melds
@@ -50,20 +60,10 @@ pub fn calculate_fu(
 
         match mentsu.mentsu_type {
             MentsuType::Koutsu => {
-                fu += match (is_open, is_yaochuu) {
-                    (true, false) => 2,  // Open simple triplet
-                    (true, true) => 4,   // Open terminal/honor triplet
-                    (false, false) => 4, // Concealed simple triplet
-                    (false, true) => 8,  // Concealed terminal/honor triplet
-                };
+                fu += FU_TABLE_KOUTSU[is_open as usize][is_yaochuu as usize];
             }
             MentsuType::Kantsu => {
-                fu += match (is_open, is_yaochuu) {
-                    (true, false) => 8,   // Open simple quad
-                    (true, true) => 16,   // Open terminal/honor quad
-                    (false, false) => 16, // Concealed simple quad
-                    (false, true) => 32,  // Concealed terminal/honor quad
-                };
+                fu += FU_TABLE_KANTSU[is_open as usize][is_yaochuu as usize];
             }
             MentsuType::Shuntsu => {}
         }
@@ -89,10 +89,10 @@ fn get_pair_fu(tile: &Hai, player: &PlayerContext, game: &GameContext) -> u32 {
         Hai::Jihai(Jihai::Kaze(k)) => {
             let mut fu = 0;
             if *k == game.bakaze {
-                fu += 2; // Prevalent Wind
+                fu += 2;
             }
             if *k == player.jikaze {
-                fu += 2; // Seat Wind
+                fu += 2;
             }
             fu
         }

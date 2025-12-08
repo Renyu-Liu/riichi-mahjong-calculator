@@ -38,6 +38,33 @@ pub fn check_all_yaku(
     yakuman_list.extend(hand_yakuman);
 
     if !yakuman_list.is_empty() {
+        if player.is_daburu_riichi {
+            yakuman_list.push(Yaku::DaburuRiichi);
+        } else if player.is_riichi {
+            yakuman_list.push(Yaku::Riichi);
+        }
+
+        if player.is_ippatsu {
+            yakuman_list.push(Yaku::Ippatsu);
+        }
+
+        if player.is_menzen && agari_type == AgariType::Tsumo {
+            yakuman_list.push(Yaku::MenzenTsumo);
+        }
+
+        if game.is_haitei {
+            yakuman_list.push(Yaku::HaiteiRaoyue);
+        }
+        if game.is_houtei {
+            yakuman_list.push(Yaku::HouteiRaoyui);
+        }
+        if game.is_rinshan {
+            yakuman_list.push(Yaku::RinshanKaihou);
+        }
+        if game.is_chankan {
+            yakuman_list.push(Yaku::Chankan);
+        }
+
         let final_yakuman = post_process_yakuman(yakuman_list);
 
         return Ok(YakuResult {
