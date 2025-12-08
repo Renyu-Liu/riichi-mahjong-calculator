@@ -154,4 +154,8 @@ Other examples:
 
 ## Acknowledgment
 
-The initial inpiration of this program is the video game [Mahjong Soul](https://mahjongsoul.yo-star.com) by Yostar. It is a popular and interesting digital Riichi Mahjong game, and we enjoy it. One advantage of digital Mahjong is that the system helps players calculate points, but in an actual mahjong game, players find it hard to calculate points by hand, due to complicated scoring rules. This is why we created this app. During the development stage, we studied calculation algorithms used by Mahjong Soul to build the foundation of this program. During testing stage, we took players' score screenshots they shared on social media as test cases and compared the result from our program with the exact scores from Mahjong Soul to improve the performance. Thanks to this great game, we can combine our interests with our dedicated commitment to this project.
+The initial inpiration of this program is the video game [Mahjong Soul](https://mahjongsoul.yo-star.com) by Yostar. It is a popular and interesting digital Riichi Mahjong game, and we enjoy it. One advantage of digital Mahjong is that the system helps players calculate points, but in an actual mahjong game, players find it hard to calculate points by hand, due to complicated scoring rules. This is why we created this app. 
+
+Mahjong Soul provides a good example of how to perform calculation under rigorous rules. During the development stage, we studied calculation algorithms used by Mahjong Soul and built the foundation of this program. During the testing stage, we took Mahjong Soul players' score screenshots they shared on social media as test cases, and compared the result from our program with the exact scores from Mahjong Soul to improve the performance. 
+
+Thanks to this great game, we can combine our interests with our dedicated commitment to this project.
