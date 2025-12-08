@@ -2,54 +2,14 @@
 _Created by Renyu (@Renyu-Liu) and Thomas (@akakrabz) as the final project for [CS 128H](https://honors.cs128.org)_
 ## Introduction
 Riichi Mahjong Scoring Calculator is a desktop application built with Rust that calculates Riichi Mahjong scores. It takes the winning hand composition and game information as input to provide a detailed breakdown of points and payment distribution.
-
-### Features
-- **Graphical Interface**: for selecting tiles.
-- **Scoring Algorithm**: strictly follows standard Riichi Mahjong rules to calculate points.
-- **Game Information**: received to maximize calculation accuracy.
-- **Score Breakdown**: displayed points, fu/han, yaku, and payment distribution in details.
-
 ## Installation
-
-### Prerequisites
-
-- **[Rust](https://rust-lang.org/tools/install/)**
-- **[Git](https://git-scm.com)** (optional, for cloning the repository)
-
-#### macOS
-- **Xcode Command Line Tools** - Install with: `xcode-select --install`
-
-#### Windows
-- **Visual Studio Build Tools** - Download from [Visual Studio](https://visualstudio.microsoft.com/downloads/)
-- Select the "Desktop development with C++" workload during installation
-
-### 1. Clone or Download the Repository
-
-**Clone Using Git:**
-```bash
-git clone https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator.git
-cd Riichi_Mahjong_Scoring_Calculator
-```
-
-**Or Download ZIP:**
-- Download and extract the ZIP file from [this GitHub repository](https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator)
-- Navigate to the extracted folder:
-```bash
-cd .../Riichi_Mahjong_Scoring_Calculator-main
-```
-
-### 2. Run the Application
-```bash
-cargo build
-cargo run
-```
-Note: Wait ~5 seconds for the app to launch.
+See [RUN.md](RUN.md).
 
 ## User Manual
 
 To familiarize yourself with yaku and scoring rules, you may click "Rules" button at top right corner to view them at any time.
 
-### 1: Composition Phase
+### Composition Phase
 
 <img width="1011" height="619" alt="image" src="https://github.com/user-attachments/assets/bd1857ef-ec4e-490d-943d-30e5527edef6" />
 
@@ -59,7 +19,7 @@ Tiles below button "Confirm Hand" is Tile Pool. Tiles above the button is Tile P
 
 You must select at least 14 tiles to continue to next phase. Click "Confirm Hand" to continue.
 
-### 2: Definition Phase
+### Definition Phase
 
 <img width="972" height="691" alt="image" src="https://github.com/user-attachments/assets/e5fbff67-c818-4148-824a-6764d5d4daa8" />
 <img width="966" height="692" alt="image" src="https://github.com/user-attachments/assets/bc80cf64-0192-4b8c-b174-3a97abc4685a" />
@@ -117,7 +77,7 @@ Only when your winning hand contains at least one 5-tile will Red Dora be enable
 
 Click "Calculate Score" button to move to next phase and check for your final score.
 
-### 4: Calculate Final Scores
+### Result Phase
 
 <img width="963" height="691" alt="image" src="https://github.com/user-attachments/assets/9681e480-4835-4803-b954-aee9b0147203" />
 
@@ -154,11 +114,11 @@ Other examples:
 
 ## Challenges
 
-### Current Issues:
+### Current Issues
 * The launching speed of this app is slow due to the time to load images. We are working to improve the loading speed.
 * It's hard for common users to install this app. We are working to create executable object or application file for convenient access.
 
-### Future Improvement Plan: 
+### Future Improvement Plan
 * Develop mobile version.
 * Improve the UI layout aesthetics. 
 * Design functions to store history of input hands. 
