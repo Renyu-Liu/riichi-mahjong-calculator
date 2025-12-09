@@ -23,7 +23,7 @@ In MSYS2 UCRT64 terminal run:
 - [rustup + cargo](https://rust-lang.org/tools/install/)
 - [Git](https://git-scm.com)
 
-### 2. **Git Clone or Download**
+## 2. **Git Clone or Download**
 **Note**: please include `--depth 1` to save your downloading time.
 ```bash
     git clone --depth 1 https://github.com/Renyu-Liu/riichi-mahjong-calculator.git
@@ -31,7 +31,7 @@ In MSYS2 UCRT64 terminal run:
 ```
 _Or download the ZIP and `cd` into the extracted folder._
 
-### 3. Run
+## 3. Run
 ```bash
     cargo run --release
 ```
