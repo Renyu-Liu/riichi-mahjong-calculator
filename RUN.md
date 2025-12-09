@@ -1,7 +1,4 @@
 #  Install and Run riichi-mahjong-calculator
-**Note:** Initial `cargo run --release` builds may take up to 1~4 minutes to compile. Wait ~5 seconds for app to launch.
-
-
 ## 1. **Install Prerequisites**
 ### Windows
 - [Rust](https://rust-lang.org/tools/install/) including `rustup` and `cargo`
@@ -23,15 +20,18 @@ In MSYS2 UCRT64 terminal run:
 - [rustup + cargo](https://rust-lang.org/tools/install/)
 - [Git](https://git-scm.com)
 
-## 2. **Git Clone or Download**
-**Note**: please include `--depth 1` to save your downloading time.
+## 2. **Git Clone or Download ZIP**
+
 ```bash
     git clone --depth 1 https://github.com/Renyu-Liu/riichi-mahjong-calculator.git
     cd riichi-mahjong-calculator
 ```
-_Or download the ZIP and `cd` into the extracted folder._
+**Note**: please include `--depth 1` to save your downloading time and local storage.
+
+_Or download ZIP and `cd` into the extracted folder in terminal._
 
 ## 3. Run
 ```bash
     cargo run --release
 ```
+**Note:** Initial builds may take up to 1~4 minutes to compile. Wait ~5 seconds for app to launch.
