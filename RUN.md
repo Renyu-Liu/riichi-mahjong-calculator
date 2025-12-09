@@ -1,31 +1,47 @@
-# Run Riichi Mahjong Calculator
+#  Build instructions
+    > **Warning:** Initial `cargo run --release` builds may take up to ~4 minutes to compile.
 
-## Prerequisites
+## Windows (MSYS2)
 
-- **[Rust](https://rust-lang.org/tools/install/)**
-- **[Git](https://git-scm.com)** (only for cloning the repository)
-- **Xcode Command Line Tools** (MacOS): Run `xcode-select --install`
-- **Visual Studio Build Tools** (Windows): Download from [Visual Studio](https://visualstudio.microsoft.com/downloads/). Install "Desktop development with C++".
+1. **Install Prerequisites**
+    - [Rust](https://rust-lang.org/tools/install/) including `rustup` and `cargo`
+    - [Git for Windows](https://git-scm.com)
+    - [MSYS2](https://www.msys2.org/) (UCRT64 environment). In MSYS2 UCRT64 terminal run:
+      ```bash
+      pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
+      ```
+      Note: you must add the path (usually C:\msys64\usr\bin) to PATH
+2. **Clone or Download**
+    ```bash
+    git clone https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator.git
+    cd Riichi_Mahjong_Scoring_Calculator
+    ```
+    _Or download the ZIP and `cd` into the extracted folder._
+3. **Run**
+    ```bash
+    cargo run --release
+    ```
 
-## Installation
+## macOS
 
-### 1. Clone or Download the Repository
+1. **Install Prerequisites**
+    - [Rust](https://rust-lang.org/tools/install/) (`rustup`, `cargo`)
+    - [Git](https://git-scm.com)
+    - Xcode Command Line Tools: `xcode-select --install`
+2. **Clone or Download** (same as above)
+3. **Run**
+    ```bash
+    cargo run --release
+    ```
 
-**Clone Using Git:**
-```bash
-git clone https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator.git
-cd Riichi_Mahjong_Scoring_Calculator
-```
+## Linux
 
-**Or Download ZIP:**
-- Download and extract the ZIP file from [this GitHub repository](https://github.com/Renyu-Liu/Riichi_Mahjong_Scoring_Calculator)
-- Navigate to the extracted folder:
-```bash
-cd .../Riichi_Mahjong_Scoring_Calculator-main
-```
+1. **Install Prerequisites**
+    - [rustup + cargo](https://rust-lang.org/tools/install/)
+    - [Git](https://git-scm.com)
+2. **Clone or Download** (same as above)
+3. **Run**
+    ```bash
+    cargo run --release
+    ```
 
-### 2. Run the Application
-```bash
-cargo run
-```
-Note: Wait ~5 seconds for the app to launch.
